@@ -1,0 +1,58 @@
+\chapter{Análisis exploratorio de datos}
+\label{ch:eda}
+
+Este capítulo corresponde al notebook \texttt{01\_eda}. Se describe la
+distribución de clases, la composición por plataforma y la longitud de los
+textos tokenizados.
+
+\section{Distribución de clases}
+
+La Figura~\ref{fig:dist-clases} muestra el conteo por clase en el corpus.
+Existe desbalance: la clase Lenguaje Ofensivo es la más frecuente, mientras que
+Amenazas/Violencia es minoritaria. Este desbalance motiva el uso de pesos de
+clase y la elección de F1-macro como métrica principal.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{01_distribucion_clases.png}
+\caption{Distribución de clases en el corpus.}
+\label{fig:dist-clases}
+\end{figure}
+
+\section{Baselines triviales}
+
+Antes de entrenar modelos, se estiman baselines triviales (Tabla~\ref{tab:trivial}):
+clase mayoritaria, azar uniforme y azar estratificado. El F1-macro de la clase
+mayoritaria es apenas $0{,}087$, y el azar se sitúa en $0{,}25$. Cualquier modelo
+útil debe superar claramente estos umbrales.
+
+\begin{table}[H]
+\centering
+\caption{Baselines triviales (F1-macro).}
+\label{tab:trivial}
+\input{generated/tab_trivial_baselines}
+\end{table}
+
+\section{Plataforma y longitud de tokens}
+
+La Figura~\ref{fig:plataforma} desglosa las clases por plataforma. X concentra
+más volumen; Facebook presenta una distribución distinta que, como se verá en
+la evaluación por cortes, resulta más difícil para el modelo.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{02_plataforma_clases.png}
+\caption{Distribución de clases por plataforma.}
+\label{fig:plataforma}
+\end{figure}
+
+La Figura~\ref{fig:tokens} muestra la longitud en tokens del texto de entrada.
+La mayoría de instancias cabe cómodamente bajo el \texttt{max\_length} de 128
+tokens usado en mBERT.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{03_token_lengths.png}
+\caption{Distribución de longitudes en tokens.}
+\label{fig:tokens}
+\end{figure}

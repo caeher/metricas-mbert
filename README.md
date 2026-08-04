@@ -65,6 +65,19 @@ jupyter notebook notebooks/
 | 2 | Discurso de Odio |
 | 3 | Amenazas/Violencia |
 
+## Informes
+
+El informe LaTeX de métricas vive en `reports/latex/`. Para regenerar tablas y
+exportar a Word:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/build_report.ps1
+# o solo tablas + docx (sin regenerar figuras):
+powershell -ExecutionPolicy Bypass -File scripts/build_report.ps1 -SkipFigures
+```
+
+Salida: `reports/latex/main.docx` (y opcionalmente PDF con `-Pdf`).
+
 ## Licencia
 
 Investigación académica — UES ESI 2026.

@@ -1,0 +1,62 @@
+\chapter{Metodología}
+\label{ch:metodologia}
+
+\section{Datos y particiones}
+
+El corpus procesado reside en \texttt{data/processed/} con particiones
+\texttt{train.csv}, \texttt{val.csv} y \texttt{test.csv}, más el corpus limpio
+completo. Cada instancia incluye el texto de entrada del modelo
+(\texttt{texto\_modelo}), la etiqueta ordinal, metadatos de plataforma y
+indicadores de sarcasmo, ironía, contexto político y conteo de jerga local
+(\texttt{n\_jerga}).
+
+\section{Pipeline experimental}
+
+El flujo de trabajo es reproducible y se alinea con los notebooks 01--07:
+
+\begin{enumerate}[leftmargin=*]
+  \item Análisis exploratorio (distribuciones, plataformas, longitudes).
+  \item Normalización de texto y extracción de features (pesos de clase,
+        indicadores dialectales).
+  \item Baselines TF-IDF (Logistic Regression, LinearSVC, MultinomialNB).
+  \item Fine-tuning de mBERT~\cite{devlin2019bert} con early stopping.
+  \item Evaluación completa: métricas globales, por clase, por cortes, McNemar
+        y comparación de modelos.
+  \item Benchmark zero-shot sobre datasets públicos de Hugging Face.
+  \item Interpretabilidad con LIME~\cite{ribeiro2016lime} y
+        SHAP~\cite{lundberg2017shap}.
+\end{enumerate}
+
+\section{Métricas de evaluación}
+
+Se implementa un conjunto amplio de métricas en el módulo de evaluación del
+proyecto:
+
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Clásicas:} accuracy, balanced accuracy, precision/recall/F1
+        (macro y weighted), MCC.
+  \item \textbf{Ordinales:} MAE, RMSE y porcentaje de errores grandes
+        ($\lvert y - \hat{y}\rvert \ge 2$).
+  \item \textbf{Acuerdo:} kappa lineal y Quadratic Weighted Kappa (QWK).
+  \item \textbf{Probabilísticas:} ROC-AUC OVR macro, log-loss, ECE y Brier macro.
+  \item \textbf{Incertidumbre:} intervalo de confianza bootstrap del F1-macro
+        (1000 remuestreos, $\alpha = 0{,}05$).
+  \item \textbf{Comparación de modelos:} prueba de McNemar~\cite{mcnemar1947}
+        entre mBERT y cada baseline.
+\end{itemize}
+
+La métrica de decisión principal es el \textbf{F1-macro}, que trata por igual
+las cuatro clases y es adecuada ante desbalance.
+
+\section{Cortes (slices)}
+
+Además del desempeño global, se calculan métricas sobre subconjuntos:
+
+\begin{itemize}[leftmargin=*]
+  \item Plataforma (X vs.\ Facebook).
+  \item Presencia de jerga local (\texttt{n\_jerga} $> 0$ vs.\ $= 0$).
+  \item Sarcasmo, ironía y contexto político (sí/no).
+\end{itemize}
+
+Como sonda de sesgo dialectal se estima la tasa de falsos positivos sobre la
+clase No Tóxico, separando instancias con y sin jerga salvadoreña.

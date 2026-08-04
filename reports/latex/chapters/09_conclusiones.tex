@@ -1,0 +1,47 @@
+\chapter{Conclusiones y limitaciones}
+\label{ch:conclusiones}
+
+\section{Hallazgos principales}
+
+\begin{enumerate}[leftmargin=*]
+  \item mBERT alcanza F1-macro \textbf{0{,}778} en test ($n=460$), superando a
+        LinearSVC ($0{,}765$) y al resto de baselines, pero \textbf{sin alcanzar}
+        la meta de $0{,}80$ definida en la configuración del proyecto. El
+        intervalo bootstrap superior ($0{,}814$) incluye el objetivo, lo que
+        sugiere que con más datos o calibración podría lograrse.
+  \item La prueba de McNemar confirma superioridad significativa solo frente a
+        MultinomialNB; el margen frente a LinearSVC/LogReg no es concluyente.
+  \item Los cortes revelan fragilidad ante ironía y sarcasmo, y peor desempeño
+        en Facebook respecto a X.
+  \item La sonda dialectal muestra FPR elevado en No Tóxico con jerga local
+        ($41\,\%$ vs.\ $16\,\%$), señal de posible sesgo léxico.
+  \item El benchmark zero-shot (F1-macro $0{,}14$--$0{,}31$) evidencia
+        transferencia limitada fuera del dominio salvadoreño.
+\end{enumerate}
+
+\section{Limitaciones}
+
+\begin{itemize}[leftmargin=*]
+  \item Tamaño moderado del test y de algunos slices (jerga, ironía).
+  \item Calibración imperfecta (ECE $\approx 0{,}16$).
+  \item Concordancia LIME--SHAP nula en la corrida reportada.
+  \item Benchmark externo sujeto a proyección de etiquetas y truncado de
+        muestras.
+\end{itemize}
+
+\section{Trabajo futuro}
+
+\begin{itemize}[leftmargin=*]
+  \item Ampliar datos etiquetados, especialmente ironía/sarcasmo y Facebook.
+  \item Técnicas de calibración y reponderación para reducir el ECE y el FPR
+        dialectal.
+  \item Adaptación al dominio (continued pretraining o few-shot) antes del
+        benchmark externo.
+  \item Re-ejecutar y estabilizar el pipeline SHAP; enriquecer explicaciones
+        globales LIME.
+  \item Explorar modelos más recientes multilingües o específicos de español.
+\end{itemize}
+
+En conjunto, el sistema es competitivo en el dominio local y reproducible, pero
+requiere mejoras en robustez retórica, equidad dialectal y generalización
+externa antes de un despliegue de moderación automatizada.

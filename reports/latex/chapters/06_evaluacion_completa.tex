@@ -1,0 +1,122 @@
+\chapter{Evaluación completa y comparación}
+\label{ch:evaluacion}
+
+Este capítulo (notebook \texttt{05\_metricas\_y\_comparacion}) concentra los
+resultados centrales del proyecto sobre el conjunto de prueba ($n = 460$).
+
+\section{Métricas globales de mBERT}
+
+La Tabla~\ref{tab:mbert-global} resume las métricas globales. El F1-macro es
+\textbf{0{,}778}, con intervalo bootstrap 95\,\% $[0{,}736,\ 0{,}814]$. La
+accuracy es $0{,}783$ y el MCC $0{,}704$. El QWK de $0{,}736$ indica buen
+acuerdo ordinal. El ECE de $0{,}157$ sugiere margen de mejora en calibración.
+
+\begin{table}[H]
+\centering
+\caption{Métricas globales de mBERT en test.}
+\label{tab:mbert-global}
+\input{generated/tab_mbert_global}
+\end{table}
+
+\section{Desempeño por clase}
+
+La Tabla~\ref{tab:mbert-perclass} desglosa precision, recall y F1 por clase.
+Lenguaje Ofensivo obtiene el mejor F1 ($0{,}795$), seguido de No Tóxico
+($0{,}814$). Discurso de Odio es la clase más débil ($0{,}746$), aunque el
+soporte es menor.
+
+\begin{table}[H]
+\centering
+\caption{Métricas por clase — mBERT (test).}
+\label{tab:mbert-perclass}
+\input{generated/tab_mbert_perclass}
+\end{table}
+
+La matriz de confusión (Figura~\ref{fig:cm}) confirma confusiones
+preferentemente entre clases adyacentes en la escala ordinal (p.\,ej.\ ofensivo
+$\leftrightarrow$ odio), coherente con el MAE ordinal de $0{,}324$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{04_confusion_matrix.png}
+\caption{Matriz de confusión de mBERT en el conjunto de prueba.}
+\label{fig:cm}
+\end{figure}
+
+\section{Comparación de modelos}
+
+La Tabla~\ref{tab:comparison} y la Figura~\ref{fig:comparison} ordenan todos
+los modelos por F1-macro. mBERT lidera ($0{,}778$), con LinearSVC a poca
+distancia ($0{,}765$). El margen sobre MultinomialNB es sustancial.
+
+\begin{table}[H]
+\centering
+\caption{Comparación de modelos (F1-macro en test).}
+\label{tab:comparison}
+\input{generated/tab_model_comparison}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{06_model_comparison_bar.png}
+\caption{Comparación de F1-macro entre modelos.}
+\label{fig:comparison}
+\end{figure}
+
+\section{Pruebas de McNemar}
+
+La Tabla~\ref{tab:mcnemar} reporta la prueba de McNemar~\cite{mcnemar1947}
+entre mBERT y cada baseline. La diferencia frente a MultinomialNB es
+altamente significativa ($p \approx 4 \times 10^{-6}$). Frente a Logistic
+Regression ($p \approx 0{,}28$) y LinearSVC ($p \approx 0{,}52$) no se
+rechaza la hipótesis nula: el margen de mBERT sobre los mejores baselines
+lineales no es estadísticamente concluyente en este tamaño de test.
+
+\begin{table}[H]
+\centering
+\caption{Pruebas de McNemar: mBERT vs.\ baselines.}
+\label{tab:mcnemar}
+\input{generated/tab_mcnemar}
+\end{table}
+
+\section{Métricas por cortes (slices)}
+
+La Tabla~\ref{tab:slices} y la Figura~\ref{fig:slices} muestran el F1-macro
+por subconjunto. Destacan:
+
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Plataforma X} (F1 $0{,}839$) vs.\ \textbf{Facebook}
+        (F1 $0{,}673$): brecha importante.
+  \item \textbf{Ironía} (F1 $0{,}525$) y \textbf{sarcasmo} (F1 $0{,}588$)
+        degradan el desempeño respecto a sus contrapartes sin figura retórica.
+  \item Contexto político no perjudica; incluso mejora ligeramente.
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\caption{F1-macro y accuracy por cortes.}
+\label{tab:slices}
+\input{generated/tab_slices}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{07_slice_f1_heatmap.png}
+\caption{F1-macro por corte (slice).}
+\label{fig:slices}
+\end{figure}
+
+\section{Sonda de sesgo dialectal}
+
+La Tabla~\ref{tab:dialect} reporta la tasa de falsos positivos sobre No Tóxico.
+Con jerga local el FPR es \textbf{0{,}414} ($n=29$), frente a \textbf{0{,}160}
+sin jerga ($n=94$). Aunque el subconjunto con jerga es pequeño, el patrón
+sugiere que el modelo puede asociar léxico dialectal con toxicidad, un riesgo
+relevante para la equidad en el contexto salvadoreño.
+
+\begin{table}[H]
+\centering
+\caption{Sonda de sesgo dialectal (FP en No Tóxico).}
+\label{tab:dialect}
+\input{generated/tab_dialect_bias}
+\end{table}

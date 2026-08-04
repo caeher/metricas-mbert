@@ -1,0 +1,52 @@
+\chapter{Fine-tuning de mBERT}
+\label{ch:mbert}
+
+Este capítulo corresponde al notebook \texttt{04\_finetuning\_mbert}. Se
+describe el entrenamiento de \texttt{bert-base-multilingual-cased}
+~\cite{devlin2019bert} sobre el corpus salvadoreño.
+
+\section{Configuración de entrenamiento}
+
+Los hiperparámetros principales (modo CPU, según \texttt{config/settings.yaml})
+se resumen en la Tabla~\ref{tab:hparams}.
+
+\begin{table}[H]
+\centering
+\caption{Hiperparámetros de fine-tuning (CPU).}
+\label{tab:hparams}
+\begin{tabular}{lc}
+\toprule
+Parámetro & Valor \\
+\midrule
+Modelo base & \texttt{bert-base-multilingual-cased} \\
+Épocas & 4 \\
+Batch size (train) & 8 \\
+Batch size (eval) & 16 \\
+Learning rate & $2 \times 10^{-5}$ \\
+Warmup ratio & 0{,}1 \\
+Weight decay & 0{,}01 \\
+Max length & 128 \\
+Early stopping patience & 2 \\
+Semilla & 42 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Métricas de validación}
+
+Al finalizar el entrenamiento (época 4), el modelo alcanza en validación un
+F1-macro de \textbf{0{,}771} y una accuracy de \textbf{0{,}771}
+(\texttt{train\_metrics.json}). La Figura~\ref{fig:training} muestra la
+evolución de la pérdida y del F1 de evaluación a lo largo del entrenamiento,
+cuando el historial del \texttt{Trainer} está disponible.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{09_training_loss.png}
+\caption{Curva de entrenamiento: pérdida y F1-macro de evaluación.}
+\label{fig:training}
+\end{figure}
+
+El checkpoint final se guarda en \texttt{models/mbert-sv/} y se usa para todas
+las evaluaciones posteriores (test local, slices, benchmark e
+interpretabilidad).

@@ -1,0 +1,44 @@
+\chapter{Benchmark externo (zero-shot)}
+\label{ch:benchmark}
+
+Este capítulo corresponde al notebook \texttt{06\_benchmark\_externo}. El
+modelo mBERT afinado en el corpus local se evalúa sin reentrenamiento sobre
+datasets públicos en español/latam hospedados en Hugging Face
+~\cite{socialtox,sinodio,contextualizedhate,textdetox,aliaes,exist}.
+
+\section{Protocolo}
+
+Para cada dataset se proyectan las etiquetas originales a un esquema
+compatible (multiclase o binario según disponibilidad), se limita el tamaño
+según la configuración y se calculan F1-macro, F1-binario y accuracies.
+
+\section{Resultados}
+
+La Tabla~\ref{tab:benchmark} y la Figura~\ref{fig:benchmark} resumen los seis
+datasets evaluados con estado \texttt{ok}. El mejor F1-macro zero-shot es
+$0{,}313$ (contextualized hate speech); el peor, $0{,}139$ (SinOdio-LATAM).
+En métrica binaria algunos datasets alcanzan F1 $\approx 0{,}70$, pero el
+desempeño multiclase permanece lejos del F1-macro local de $0{,}778$.
+
+\begin{table}[H]
+\centering
+\caption{Benchmark zero-shot de mBERT-SV sobre datasets externos.}
+\label{tab:benchmark}
+\input{generated/tab_benchmark}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{05_benchmark_externo.png}
+\caption{F1-macro y F1-binario en el benchmark externo.}
+\label{fig:benchmark}
+\end{figure}
+
+\section{Discusión}
+
+La caída de desempeño confirma un fuerte \emph{domain shift}: el modelo está
+especializado en el dialecto, la distribución de clases y las plataformas del
+corpus salvadoreño. La transferencia zero-shot a odio contextualizado argentino,
+toxicidad social española o datasets de sexismo (EXIST) no es suficiente para
+uso productivo sin adaptación adicional (fine-tuning, few-shot o alineación de
+etiquetas más fina).

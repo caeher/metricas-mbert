@@ -1,0 +1,59 @@
+\chapter{Interpretabilidad}
+\label{ch:interpretabilidad}
+
+Este capítulo corresponde al notebook \texttt{07\_interpretabilidad} y al
+script \texttt{run\_interpretability.py}. Se emplean
+LIME~\cite{ribeiro2016lime} y SHAP~\cite{lundberg2017shap} para explicar
+predicciones de mBERT.
+
+\section{Falsos positivos y jerga}
+
+La Tabla~\ref{tab:fp-jerga} cuenta falsos positivos de la clase No Tóxico
+según presencia de jerga. Hay 12 FP con jerga y 15 sin jerga; dado el menor
+tamaño del grupo con jerga, la tasa relativa es mayor (coherente con la sonda
+del Capítulo~\ref{ch:evaluacion}).
+
+\begin{table}[H]
+\centering
+\caption{Falsos positivos No Tóxico según jerga.}
+\label{tab:fp-jerga}
+\input{generated/tab_fp_jerga}
+\end{table}
+
+\section{Concordancia LIME--SHAP}
+
+Se calcula el índice de Jaccard entre los top-$k$ tokens de LIME y SHAP por
+instancia (Tabla~\ref{tab:jaccard}). En la corrida actual el Jaccard es
+\textbf{0} en todas las instancias muestreadas. Esto puede deberse a
+desalineación de tokenización, fallos parciales de SHAP o presupuestos de
+evaluación bajos (\texttt{max\_evals}). Se reporta como limitación: las
+explicaciones LIME siguen siendo informativas de forma aislada, pero no se
+valida solapamiento con SHAP en esta ejecución.
+
+\begin{table}[H]
+\centering
+\caption{Jaccard top-$k$ entre LIME y SHAP por instancia.}
+\label{tab:jaccard}
+\input{generated/tab_lime_shap_jaccard}
+\end{table}
+
+\section{Importancias globales LIME}
+
+Cuando el agregado de pesos LIME está disponible, la Tabla~\ref{tab:lime} y la
+Figura~\ref{fig:lime} muestran los tokens más influyentes por clase. Si el
+archivo de métricas está vacío (corrida incompleta), las tablas/figuras
+incluyen un marcador de datos no disponibles.
+
+\begin{table}[H]
+\centering
+\caption{Top tokens LIME por clase (agregado).}
+\label{tab:lime}
+\input{generated/tab_lime_weights}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\textwidth]{08_lime_global_weights.png}
+\caption{Importancias globales LIME por clase.}
+\label{fig:lime}
+\end{figure}

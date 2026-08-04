@@ -1,4 +1,4 @@
-.PHONY: venv install test lint train benchmark notebooks clean
+.PHONY: venv install test lint train benchmark notebooks report report-figures clean
 
 venv:
 	python -m venv .venv
@@ -22,6 +22,13 @@ benchmark:
 
 notebooks:
 	.venv\Scripts\jupyter notebook notebooks/
+
+# Regenera tablas LaTeX + DOCX (usa scripts/build_report.ps1 en Windows)
+report:
+	powershell -ExecutionPolicy Bypass -File scripts/build_report.ps1 -SkipFigures
+
+report-figures:
+	powershell -ExecutionPolicy Bypass -File scripts/build_report.ps1
 
 clean:
 	rmdir /s /q .pytest_cache 2>nul || exit 0

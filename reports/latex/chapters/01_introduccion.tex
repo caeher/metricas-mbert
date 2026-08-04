@@ -1,0 +1,68 @@
+\chapter{Introducción}
+\label{ch:intro}
+
+\section{Problema}
+
+El discurso de odio y la toxicidad en redes sociales constituyen un desafío creciente
+para la moderación de contenidos, en especial en contextos dialectales poco
+representados en los corpus de entrenamiento masivos. Este informe documenta el
+desarrollo y la evaluación de un sistema de clasificación multiclase de toxicidad
+aplicado a publicaciones de redes sociales de El Salvador (plataformas X/Twitter y
+Facebook).
+
+El problema se formula como clasificación ordinal de cuatro niveles de gravedad, donde
+el modelo debe distinguir entre contenido no tóxico, lenguaje ofensivo, discurso de
+odio y amenazas o violencia.
+
+\section{Esquema de clases}
+
+Las etiquetas son ordinales (0--3) y se resumen en la Tabla~\ref{tab:clases}.
+
+\begin{table}[H]
+\centering
+\caption{Esquema de clases del corpus.}
+\label{tab:clases}
+\begin{tabular}{cl}
+\toprule
+Label & Clase \\
+\midrule
+0 & No Tóxico \\
+1 & Lenguaje Ofensivo \\
+2 & Discurso de Odio \\
+3 & Amenazas/Violencia \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Objetivos y métrica principal}
+
+El objetivo principal del proyecto es entrenar un modelo \emph{mBERT}
+(\texttt{bert-base-multilingual-cased})~\cite{devlin2019bert} mediante fine-tuning
+sobre el corpus local y alcanzar un F1-macro de al menos \textbf{0{,}80} en el
+conjunto de prueba, según la meta definida en la configuración del proyecto.
+
+Además se buscan:
+\begin{itemize}[leftmargin=*]
+  \item Establecer baselines clásicos (TF-IDF + clasificadores lineales).
+  \item Evaluar robustez por cortes (plataforma, jerga, sarcasmo, ironía).
+  \item Medir transferencia zero-shot a corpora externos en español.
+  \item Explorar interpretabilidad con LIME~\cite{ribeiro2016lime} y
+        SHAP~\cite{lundberg2017shap}.
+\end{itemize}
+
+\section{Resumen ejecutivo de resultados}
+
+Sobre el conjunto de prueba ($n = 460$), el modelo mBERT alcanza un
+\textbf{F1-macro de 0{,}778} (intervalo bootstrap 95\,\%: $[0{,}736,\ 0{,}814]$),
+superando al mejor baseline TF-IDF (LinearSVC, F1-macro $0{,}765$). El objetivo de
+$0{,}80$ no se alcanza, aunque el intervalo de confianza superior lo incluye.
+
+En evaluación zero-shot sobre seis datasets externos, el F1-macro cae al rango
+$0{,}14$--$0{,}31$, lo que indica transferencia limitada fuera del dominio local.
+Los cortes más difíciles son ironía (F1 $\approx 0{,}52$) y sarcasmo
+(F1 $\approx 0{,}59$), mientras que el desempeño en la plataforma X es sólido
+(F1 $\approx 0{,}84$).
+
+Los capítulos siguientes siguen el orden de los notebooks reproducibles del
+proyecto (01--07): análisis exploratorio, preprocesamiento, baselines, fine-tuning,
+evaluación completa, benchmark externo e interpretabilidad.

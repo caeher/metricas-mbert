@@ -1,0 +1,49 @@
+\chapter{Preprocesamiento y baselines TF-IDF}
+\label{ch:baselines}
+
+Este capítulo agrupa los notebooks \texttt{02\_preprocesamiento\_features} y
+\texttt{03\_baselines\_tfidf}.
+
+\section{Normalización y features}
+
+El pipeline de normalización produce \texttt{texto\_modelo} (texto limpio para el
+clasificador) y features auxiliares: conteos de caracteres/palabras, emojis,
+menciones, hashtags, ratio de mayúsculas y, de forma crítica para el análisis
+dialectal, el conteo de jerga salvadoreña (\texttt{n\_jerga}).
+
+Para mitigar el desbalance se calculan pesos de clase (Tabla~\ref{tab:weights}).
+Amenazas/Violencia y Discurso de Odio reciben pesos mayores que Lenguaje
+Ofensivo, la clase más frecuente.
+
+\begin{table}[H]
+\centering
+\caption{Pesos de clase usados en el entrenamiento.}
+\label{tab:weights}
+\input{generated/tab_class_weights}
+\end{table}
+
+\section{Baselines TF-IDF}
+
+Se entrenan tres clasificadores clásicos sobre un vectorizador TF-IDF
+(n-gramas 1--2, máximo 10\,000 features, \texttt{sublinear\_tf}):
+
+\begin{itemize}[leftmargin=*]
+  \item Logistic Regression (class\_weight balanced).
+  \item LinearSVC (class\_weight balanced).
+  \item MultinomialNB.
+\end{itemize}
+
+Los resultados en test se muestran en la Tabla~\ref{tab:baselines}. LinearSVC
+obtiene el mejor F1-macro ($0{,}765$), seguido de Logistic Regression
+($0{,}758$) y MultinomialNB ($0{,}648$). Todos superan ampliamente los baselines
+triviales del Capítulo~\ref{ch:eda}.
+
+\begin{table}[H]
+\centering
+\caption{Baselines TF-IDF en el conjunto de prueba (F1-macro).}
+\label{tab:baselines}
+\input{generated/tab_baselines}
+\end{table}
+
+Estos baselines constituyen el piso competitivo frente al cual se evalúa mBERT
+en el Capítulo~\ref{ch:evaluacion}.

@@ -17,6 +17,15 @@ data/external/
 reports/figures/*.png
 reports/metrics/*.csv
 reports/tables/*.md
+reports/latex/figures/*.png
+reports/latex/main.docx
+reports/latex/main.pdf
+reports/latex/*.aux
+reports/latex/*.log
+reports/latex/*.out
+reports/latex/*.toc
+reports/latex/*.bbl
+reports/latex/*.blg
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
