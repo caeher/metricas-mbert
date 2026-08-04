@@ -1,0 +1,93 @@
+project:
+  name: discurso-odio-sv
+  seed: 42
+  target_f1_macro: 0.80
+
+paths:
+  data_processed: data/processed
+  data_external: data/external
+  models: models
+  reports_figures: reports/figures
+  reports_metrics: reports/metrics
+  reports_tables: reports/tables
+
+labels:
+  num_classes: 4
+  names:
+    - "No Tóxico"
+    - "Lenguaje Ofensivo"
+    - "Discurso de Odio"
+    - "Amenazas/Violencia"
+  short_names:
+    - no_toxico
+    - ofensivo
+    - odio
+    - amenazas
+
+model:
+  name: bert-base-multilingual-cased
+  text_column: texto_modelo
+  label_column: label
+  max_length: 128
+  output_dir: models/mbert-sv
+
+training:
+  cpu:
+    num_train_epochs: 4
+    per_device_train_batch_size: 8
+    per_device_eval_batch_size: 16
+    learning_rate: 2.0e-5
+    warmup_ratio: 0.1
+    weight_decay: 0.01
+    early_stopping_patience: 2
+  gpu:
+    num_train_epochs: 5
+    per_device_train_batch_size: 16
+    per_device_eval_batch_size: 32
+    learning_rate: 2.0e-5
+    warmup_ratio: 0.1
+    weight_decay: 0.01
+    early_stopping_patience: 3
+
+eda:
+  min_samples_per_class: 480
+  high_precision_samples: 771
+
+benchmark:
+  default_datasets:
+    - id: piuba-bigdata/contextualized_hate_speech
+      split: test
+      max_samples: 2000
+      gated: false
+    - id: gplsi/SocialTOX
+      split: test
+      max_samples: null
+      gated: false
+    - id: antonn-dromundo/SinOdio-LATAM-Regional-HateSpeech
+      split: test
+      max_samples: null
+      gated: false
+    - id: textdetox/multilingual_toxicity_dataset
+      split: es
+      max_samples: 2000
+      gated: false
+    - id: SINAI/ALIA-es-discriminative-hate-speech
+      config: human_sample
+      split: test
+      max_samples: null
+      gated: false
+    - id: Gerard-1705/exist_dataset_es
+      split: test
+      max_samples: 1500
+      gated: false
+  gated_datasets:
+    - valeriobasile/HatEval
+    - SINAI/OffendES
+    - CLiC-UB/DETESTS-Dis
+    - dolfsai/toxic_es
+    - fmplaza/EmoEvent
+
+interpretability:
+  lime_samples: 40
+  shap_samples: 24
+  top_k_tokens: 10
