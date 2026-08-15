@@ -21,8 +21,8 @@ Garantizar que cada número por plataforma pertenezca al modelo, checkpoint y ej
 
 ## Criterios de aceptación
 
-- [ ] El informe de XLM-R reporta 0.867 para X y 0.715 para Facebook al usar el checkpoint auditado, o explica el cambio de ejecución con su evidencia.
-- [ ] Ningún texto, tabla o leyenda de XLM-R utiliza los valores de plataforma de mBERT.
-- [ ] Cada métrica por plataforma identifica modelo, checkpoint y tamaño del subconjunto.
-- [ ] Una verificación automatizada falla si una cifra del informe difiere del artefacto de métricas generado.
+- [x] El informe de XLM-R reporta 0.867 para X y 0.715 para Facebook al usar el checkpoint auditado, o explica el cambio de ejecución con su evidencia.
+- [x] Ningún texto, tabla o leyenda de XLM-R utiliza los valores de plataforma de mBERT.
+- [x] Cada métrica por plataforma identifica modelo, checkpoint y tamaño del subconjunto.
+- [x] Una verificación automatizada falla si una cifra del informe difiere del artefacto de métricas generado.
 

@@ -18,6 +18,9 @@ if [[ "${SKIP_FIGURES:-0}" != "1" ]]; then
   "$PYTHON" scripts/generate_latex_report.py
 fi
 
+echo "==> Verificando consistencia de métricas por plataforma..."
+"$PYTHON" scripts/check_report_platform_metrics.py
+
 LATEX_DIR="$ROOT/reports/latex"
 RESOURCE_PATH="$LATEX_DIR:$LATEX_DIR/figures:$ROOT/reports/figures"
 

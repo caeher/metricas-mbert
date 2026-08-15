@@ -14,6 +14,7 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from discurso_odio.evaluation.slices import platform_rows
 from discurso_odio.paths import MODELS_DIR, PROJECT_ROOT, REPORTS_FIGURES, REPORTS_METRICS, REPORTS_TABLES
 from discurso_odio.utils.plotting import setup_plot_style
 
@@ -171,7 +172,7 @@ def _slice_sort_key(slice_name: str) -> tuple[int, str]:
     return (len(order), slice_name)
 
 
-def plot_slice_f1(model: str | None = "mbert"):
+def plot_slice_f1(model: str | None = "mbert", outfile: str = "07_slice_f1_heatmap.png"):
     path = REPORTS_METRICS / "slice_metrics.csv"
     if not path.exists():
         return
@@ -215,15 +216,80 @@ def plot_slice_f1(model: str | None = "mbert"):
     ax.set_yticks(y_pos)
     ax.set_yticklabels(df["label"])
     ax.set_xlabel("F1-macro")
-    title_model = "mBERT" if model == "mbert" else (model or "")
+    model_labels = {"mbert": "mBERT", "xlm-roberta": "XLM-RoBERTa"}
+    title_model = model_labels.get(model or "", model or "")
     ax.set_title(f"F1-macro por corte (slice){' — ' + title_model if title_model else ''}")
     ax.invert_yaxis()
     for i, v in enumerate(df["f1_macro"]):
         ax.text(v + 0.01, i, f"{v:.3f}", va="center", fontsize=8)
     plt.tight_layout()
-    plt.savefig(REPORTS_FIGURES / "07_slice_f1_heatmap.png")
+    plt.savefig(REPORTS_FIGURES / outfile)
     plt.close()
-    print("Generado: 07_slice_f1_heatmap.png")
+    print(f"Generado: {outfile}")
+
+
+def plot_slice_f1_xlmr():
+    path = REPORTS_METRICS / "slice_metrics.csv"
+    if not path.exists():
+        return
+    df = pd.read_csv(path)
+    if "model" not in df.columns or "xlm-roberta" not in df["model"].values:
+        return
+    plot_slice_f1(model="xlm-roberta", outfile="07b_slice_f1_xlmr.png")
+
+
+def plot_platform_f1_grouped():
+    path = REPORTS_METRICS / "slice_metrics.csv"
+    out = REPORTS_FIGURES / "08_platform_f1_grouped.png"
+    if not path.exists():
+        _placeholder_figure(out, "slice_metrics.csv\nno disponible")
+        return
+
+    df = platform_rows(pd.read_csv(path))
+    if df.empty:
+        _placeholder_figure(out, "Sin métricas por plataforma")
+        return
+
+    platform_order = ["plataforma_X", "plataforma_Facebook"]
+    platform_labels = {"plataforma_X": "X", "plataforma_Facebook": "Facebook"}
+    model_labels = {"mbert": "mBERT", "xlm-roberta": "XLM-RoBERTa"}
+    models = sorted(df["model"].unique()) if "model" in df.columns else ["mbert"]
+
+    x = np.arange(len(platform_order))
+    width = 0.35 if len(models) > 1 else 0.5
+    colors = ["#219ebc", "#fb8500", "#8ecae6"]
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    for i, model in enumerate(models):
+        sub = df[df["model"] == model].set_index("slice")
+        f1s = [sub.loc[p, "f1_macro"] if p in sub.index else np.nan for p in platform_order]
+        ns = [int(sub.loc[p, "n"]) if p in sub.index else 0 for p in platform_order]
+        offsets = x + (i - (len(models) - 1) / 2) * width
+        label = model_labels.get(model, model)
+        bars = ax.bar(offsets, f1s, width=width, label=label, color=colors[i % len(colors)])
+        for bar, n_val, f1_val in zip(bars, ns, f1s):
+            if not np.isnan(f1_val):
+                ax.text(
+                    bar.get_x() + bar.get_width() / 2,
+                    bar.get_height() + 0.01,
+                    f"{f1_val:.3f}\n(n={n_val})",
+                    ha="center",
+                    va="bottom",
+                    fontsize=8,
+                )
+
+    ax.set_xticks(x)
+    ax.set_xticklabels([platform_labels[p] for p in platform_order])
+    ax.set_ylabel("F1-macro")
+    ax.set_xlabel("Plataforma")
+    ax.set_title("F1-macro por plataforma y modelo")
+    ax.set_ylim(0, 1.05)
+    if len(models) > 1:
+        ax.legend()
+    plt.tight_layout()
+    plt.savefig(out)
+    plt.close()
+    print("Generado: 08_platform_f1_grouped.png")
 
 
 def plot_dialect_bias_fpr():
@@ -396,6 +462,8 @@ def main():
     plot_benchmark()
     plot_model_comparison_bar(comparison)
     plot_slice_f1()
+    plot_slice_f1_xlmr()
+    plot_platform_f1_grouped()
     plot_dialect_bias_fpr()
     plot_lime_weights()
     plot_training_curve()

@@ -300,32 +300,30 @@ for baseline_name in ['logisticregression', 'linearsvc', 'multinomialnb']:
         mcn = mcnemar_test(y_true, y_pred, bl_pred)
         mcnemar_results.append({'baseline': baseline_name, **mcn})
 pd.DataFrame(mcnemar_results)"""),
-        code("""# Métricas por cortes
-from discurso_odio.evaluation.slices import (
-    dialect_bias_probe,
-    export_dialect_bias,
-    export_slice_metrics,
-    slice_metrics_to_rows,
-)
+        code("""# Métricas por cortes (mBERT + XLM-R si hay predicciones auditadas)
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path('scripts').resolve()))
+from compute_slice_metrics import compute_all
+from discurso_odio.evaluation.slices import dialect_bias_probe, export_dialect_bias
 from discurso_odio.paths import TEST_CSV
 
-slices = slice_metrics(test, y_true, y_pred, y_prob)
-slice_rows = slice_metrics_to_rows(
-    slices,
-    model='mbert',
-    checkpoint=str(model_dir),
-    split=TEST_CSV.name,
-    n_test=len(test),
+slice_summary = compute_all(model_dir=model_dir, include_xlmr=True)
+xlmr_status = slice_summary.attrs.get('xlmr_status', 'unknown')
+from discurso_odio.evaluation.slices import export_slice_metrics
+export_slice_metrics(
+    slice_summary,
+    REPORTS_METRICS,
+    extra_metadata={'xlmr_status': xlmr_status},
+    merge=True,
 )
-slice_summary = pd.DataFrame(slice_rows)
-export_slice_metrics(slice_summary, REPORTS_METRICS, extra_metadata={'xlmr_status': 'not_requested'})
 bias = dialect_bias_probe(
     test, y_true, y_pred,
     model='mbert',
     checkpoint=str(model_dir),
     split=TEST_CSV.name,
 )
-export_dialect_bias(bias, REPORTS_METRICS, extra_metadata={'xlmr_status': 'not_requested'})
+export_dialect_bias(bias, REPORTS_METRICS, extra_metadata={'xlmr_status': xlmr_status})
 print('Sonda sesgo dialectal:')
 print(bias[['group', 'n', 'fp', 'fpr', 'fpr_ci_lo', 'fpr_ci_hi']].to_string(index=False))
 slice_summary"""),

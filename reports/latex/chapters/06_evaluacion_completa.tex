@@ -100,6 +100,33 @@ por subconjunto. Destacan:
 \label{fig:slices}
 \end{figure}
 
+\section{Desempeño por plataforma}
+
+La Tabla~\ref{tab:platform} consolida F1-macro y accuracy por plataforma para
+cada modelo evaluado, con identificador de checkpoint y tamaño de subconjunto.
+Las cifras se generan desde \texttt{reports/metrics/slice\_metrics.csv}; no se
+transcriben manualmente.
+
+\input{generated/platform_prose_mbert}
+
+\subsection{XLM-RoBERTa}
+
+\input{generated/platform_prose_xlmr}
+
+\begin{table}[H]
+\centering
+\caption{Métricas por plataforma (modelo, checkpoint, $n$, F1-macro, accuracy).}
+\label{tab:platform}
+\input{generated/tab_platform}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{08_platform_f1_grouped.png}
+\caption{Comparación de F1-macro por plataforma entre modelos.}
+\label{fig:platform-grouped}
+\end{figure}
+
 \section{Sonda de sesgo dialectal}
 
 \input{generated/dialect_bias_prose}

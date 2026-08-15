@@ -275,16 +275,56 @@ def export_dialect_bias(
     return csv_path, json_path
 
 
+PLATFORM_SLICES = ("plataforma_X", "plataforma_Facebook")
+
+
+def platform_rows(slice_df: pd.DataFrame) -> pd.DataFrame:
+    """Filtra filas de cortes por plataforma (X y Facebook)."""
+    if slice_df.empty or "slice" not in slice_df.columns:
+        return slice_df.iloc[0:0].copy()
+    return slice_df[slice_df["slice"].isin(PLATFORM_SLICES)].copy()
+
+
+def _merge_slice_metrics(existing: pd.DataFrame, incoming: pd.DataFrame) -> pd.DataFrame:
+    """Fusiona por (model, slice) preservando filas de otros modelos."""
+    if existing.empty:
+        return incoming.copy()
+    if incoming.empty:
+        return existing.copy()
+    if "model" not in incoming.columns or "slice" not in incoming.columns:
+        return incoming.copy()
+
+    models_incoming = set(incoming["model"].dropna().unique())
+    if "model" in existing.columns:
+        keep = existing[~existing["model"].isin(models_incoming)]
+        merged = pd.concat([keep, incoming], ignore_index=True)
+    else:
+        merged = incoming.copy()
+
+    sort_cols = [c for c in ("model", "slice") if c in merged.columns]
+    if sort_cols:
+        merged = merged.sort_values(sort_cols).reset_index(drop=True)
+    return merged
+
+
 def export_slice_metrics(
     slice_df: pd.DataFrame,
     output_dir: Path,
     *,
     extra_metadata: dict[str, Any] | None = None,
+    merge: bool = True,
 ) -> tuple[Path, Path]:
     """Exporta métricas por cortes a CSV y JSON con metadatos de ejecución."""
     output_dir.mkdir(parents=True, exist_ok=True)
     csv_path = output_dir / "slice_metrics.csv"
     json_path = output_dir / "slice_metrics.json"
+
+    if merge and csv_path.exists():
+        try:
+            existing = pd.read_csv(csv_path)
+            slice_df = _merge_slice_metrics(existing, slice_df)
+        except (OSError, pd.errors.EmptyDataError, ValueError):
+            pass
 
     slice_df.to_csv(csv_path, index=False)
 

@@ -22,13 +22,7 @@ from discurso_odio.config import load_settings
 from discurso_odio.data.loaders import load_split
 from discurso_odio.evaluation.benchmark import run_benchmark
 from discurso_odio.evaluation.metrics import bootstrap_ci, compute_all_metrics, mcnemar_test
-from discurso_odio.evaluation.slices import (
-    dialect_bias_probe,
-    export_dialect_bias,
-    export_slice_metrics,
-    slice_metrics,
-    slice_metrics_to_rows,
-)
+from discurso_odio.evaluation.slices import dialect_bias_probe, export_dialect_bias, export_slice_metrics
 from discurso_odio.models.mbert import predict, train_mbert
 from discurso_odio.paths import MODELS_DIR, REPORTS_FIGURES, REPORTS_METRICS, TEST_CSV
 from discurso_odio.utils.plotting import setup_plot_style
@@ -89,18 +83,17 @@ def run_evaluation():
     metrics["f1_bootstrap_lo"] = f1_lo
     metrics["f1_bootstrap_hi"] = f1_hi
 
-    slices = slice_metrics(test, y_true, y_pred, y_prob)
-    slice_rows = slice_metrics_to_rows(
-        slices,
-        model="mbert",
-        checkpoint=str(model_dir),
-        split=TEST_CSV.name,
-        n_test=len(test),
-    )
+    scripts_dir = Path(__file__).resolve().parent
+    sys.path.insert(0, str(scripts_dir))
+    from compute_slice_metrics import compute_all
+
+    slice_df = compute_all(model_dir=model_dir, include_xlmr=True)
+    xlmr_status = slice_df.attrs.get("xlmr_status", "unknown")
     export_slice_metrics(
-        pd.DataFrame(slice_rows),
+        slice_df,
         REPORTS_METRICS,
-        extra_metadata={"xlmr_status": "not_requested"},
+        extra_metadata={"xlmr_status": xlmr_status},
+        merge=True,
     )
     bias = dialect_bias_probe(
         test,

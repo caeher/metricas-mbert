@@ -12,6 +12,8 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from discurso_odio.evaluation.report_consistency import assert_platform_consistency
+from discurso_odio.evaluation.slices import platform_rows
 from discurso_odio.paths import MODELS_DIR, PROJECT_ROOT, REPORTS_FIGURES, REPORTS_METRICS
 
 LATEX_DIR = PROJECT_ROOT / "reports" / "latex"
@@ -166,6 +168,16 @@ def gen_mbert_tables():
     write_tabular(out_p, ["Clase", "Precision", "Recall", "F1", "Support"], rows_p)
 
 
+def _model_label(model: str) -> str:
+    labels = {"mbert": "mBERT", "xlm-roberta": "XLM-RoBERTa"}
+    return labels.get(str(model), str(model))
+
+
+def _platform_label(slice_name: str) -> str:
+    labels = {"plataforma_X": "X", "plataforma_Facebook": "Facebook"}
+    return labels.get(slice_name, slice_name.replace("plataforma_", ""))
+
+
 def _slice_rows_for_report(df: pd.DataFrame, model: str | None = "mbert") -> pd.DataFrame:
     if df.empty:
         return df
@@ -192,27 +204,119 @@ def gen_slices():
     if not path.exists():
         placeholder(out)
         return
-    df = _slice_rows_for_report(pd.read_csv(path))
+    raw = pd.read_csv(path)
+    multi_model = "model" in raw.columns and raw["model"].nunique() > 1
+    df = _slice_rows_for_report(raw)
     rows = []
     for _, r in df.iterrows():
         ci = "---"
         if pd.notna(r.get("f1_ci_lo")) and pd.notna(r.get("f1_ci_hi")):
             ci = f"[{fmt_num(r['f1_ci_lo'])}, {fmt_num(r['f1_ci_hi'])}]"
+        row = [
+            latex_escape(r["slice"]),
+            fmt_num(r.get("n"), digits=0),
+            fmt_num(r["f1_macro"]),
+            ci,
+            fmt_num(r["accuracy"]),
+        ]
+        if multi_model:
+            row = [latex_escape(_model_label(r.get("model", "")))] + row
+        rows.append(row)
+    headers = ["Corte", "n", "F1-macro", "IC 95\\%", "Accuracy"]
+    col_spec = "lrrcc"
+    if multi_model:
+        headers = ["Modelo"] + headers
+        col_spec = "llrrcc"
+    write_tabular(out, headers, rows, col_spec=col_spec)
+
+
+def gen_platform_table():
+    path = REPORTS_METRICS / "slice_metrics.csv"
+    out = GENERATED_DIR / "tab_platform.tex"
+    if not path.exists():
+        placeholder(out, "slice_metrics.csv no disponible")
+        return
+    df = platform_rows(pd.read_csv(path))
+    if df.empty:
+        placeholder(out, "Sin métricas por plataforma")
+        return
+    rows = []
+    for _, r in df.sort_values(["model", "slice"]).iterrows():
         rows.append(
             [
-                latex_escape(r["slice"]),
+                latex_escape(_model_label(r["model"])),
+                latex_escape(_platform_label(r["slice"])),
+                latex_escape(str(r.get("checkpoint", ""))),
                 fmt_num(r.get("n"), digits=0),
                 fmt_num(r["f1_macro"]),
-                ci,
                 fmt_num(r["accuracy"]),
             ]
         )
     write_tabular(
         out,
-        ["Corte", "n", "F1-macro", "IC 95\\%", "Accuracy"],
+        ["Modelo", "Plataforma", "Checkpoint", "n", "F1-macro", "Accuracy"],
         rows,
-        col_spec="lrrcc",
+        col_spec="lllrrr",
     )
+
+
+def _platform_prose_lines(df: pd.DataFrame, model: str) -> list[str]:
+    sub = df[df["model"] == model] if "model" in df.columns else df
+    sub = platform_rows(sub)
+    if sub.empty:
+        return []
+    lines = ["\\begin{itemize}[leftmargin=*]"]
+    for _, r in sub.sort_values("slice").iterrows():
+        plat = _platform_label(r["slice"])
+        lines.append(
+            f"  \\item \\textbf{{{plat}}} ($n={int(r['n'])}$): F1-macro "
+            f"\\textbf{{{fmt_num(r['f1_macro'])}}}, accuracy {fmt_num(r['accuracy'])} "
+            f"(checkpoint: \\texttt{{{latex_escape(str(r.get('checkpoint', '')))}}})."
+        )
+    lines.append(
+        "  \\item Fuente: \\texttt{reports/metrics/slice\\_metrics.csv}."
+    )
+    lines.append("\\end{itemize}")
+    return lines
+
+
+def gen_platform_prose_mbert():
+    path = REPORTS_METRICS / "slice_metrics.csv"
+    out = GENERATED_DIR / "platform_prose_mbert.tex"
+    if not path.exists():
+        out.write_text("% slice_metrics.csv no disponible\n", encoding="utf-8")
+        return
+    df = pd.read_csv(path)
+    if "mbert" not in df.get("model", pd.Series(dtype=str)).values:
+        out.write_text("% métricas mBERT por plataforma no disponibles\n", encoding="utf-8")
+        return
+    lines = _platform_prose_lines(df, "mbert")
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
+def gen_platform_prose_xlmr():
+    path = REPORTS_METRICS / "slice_metrics.csv"
+    out = GENERATED_DIR / "platform_prose_xlmr.tex"
+    if not path.exists():
+        out.write_text(
+            "% slice_metrics.csv no disponible; "
+            "% predicciones XLM-R en reports/metrics/xlmr_test_predictions.csv no cargadas\n",
+            encoding="utf-8",
+        )
+        return
+    df = pd.read_csv(path)
+    if "xlm-roberta" not in df.get("model", pd.Series(dtype=str)).values:
+        out.write_text(
+            "% Métricas XLM-R por plataforma no disponibles: "
+            "% falta reports/metrics/xlmr_test_predictions.csv o no se ejecutó compute_slice_metrics.py. "
+            "% No se transcriben cifras de mBERT.\n",
+            encoding="utf-8",
+        )
+        return
+    lines = _platform_prose_lines(df, "xlm-roberta")
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
 
 
 def gen_slices_prose():
@@ -551,8 +655,11 @@ def copy_figures():
         return
     for png in REPORTS_FIGURES.glob("*.png"):
         dest = LATEX_FIGURES / png.name
-        shutil.copy2(png, dest)
-        print(f"Figura copiada: {png.name}")
+        try:
+            shutil.copy2(png, dest)
+            print(f"Figura copiada: {png.name}")
+        except OSError as exc:
+            print(f"Advertencia: no se pudo copiar {png.name}: {exc}")
 
 
 def main():
@@ -565,6 +672,9 @@ def main():
     gen_model_comparison()
     gen_mbert_tables()
     gen_slices()
+    gen_platform_table()
+    gen_platform_prose_mbert()
+    gen_platform_prose_xlmr()
     gen_slices_prose()
     gen_slices_intro()
     gen_mcnemar()
@@ -576,6 +686,7 @@ def main():
     gen_jaccard()
     gen_lime_weights()
     gen_val_metrics_note()
+    assert_platform_consistency(REPORTS_METRICS / "slice_metrics.csv", GENERATED_DIR)
     copy_figures()
     print("Tablas LaTeX generadas en", GENERATED_DIR)
 

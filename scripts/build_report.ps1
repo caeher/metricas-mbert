@@ -24,13 +24,22 @@ Write-Host "==> Generando tablas LaTeX..." -ForegroundColor Cyan
 & $Python scripts/generate_latex_report.py
 if ($LASTEXITCODE -ne 0) { throw "generate_latex_report.py falló" }
 
+Write-Host "==> Verificando consistencia de métricas por plataforma..." -ForegroundColor Cyan
+& $Python scripts/check_report_platform_metrics.py
+if ($LASTEXITCODE -ne 0) { throw "check_report_platform_metrics.py falló" }
+
 if (-not $SkipFigures) {
     Write-Host "==> Generando figuras..." -ForegroundColor Cyan
     $env:SKIP_CONFUSION_MATRIX = "1"
     & $Python scripts/generate_figures.py
     if ($LASTEXITCODE -ne 0) { throw "generate_figures.py falló" }
     & $Python scripts/generate_latex_report.py
+    if ($LASTEXITCODE -ne 0) { throw "generate_latex_report.py falló (post-figuras)" }
 }
+
+Write-Host "==> Verificación final de consistencia..." -ForegroundColor Cyan
+& $Python scripts/check_report_platform_metrics.py
+if ($LASTEXITCODE -ne 0) { throw "check_report_platform_metrics.py falló" }
 
 $LatexDir = Join-Path $Root "reports\latex"
 $MainTex = Join-Path $LatexDir "main.tex"
