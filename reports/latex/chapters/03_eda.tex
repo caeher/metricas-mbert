@@ -21,10 +21,16 @@ clase y la elección de F1-macro como métrica principal.
 
 \section{Baselines triviales}
 
-Antes de entrenar modelos, se estiman baselines triviales (Tabla~\ref{tab:trivial}):
-clase mayoritaria, azar uniforme y azar estratificado. El F1-macro de la clase
-mayoritaria es apenas $0{,}087$, y el azar se sitúa en $0{,}25$. Cualquier modelo
-útil debe superar claramente estos umbrales.
+Antes de entrenar modelos, se estiman baselines triviales sobre el
+\textbf{conjunto de test} ($n=460$; Tabla~\ref{tab:trivial}): clase mayoritaria,
+azar uniforme y azar estratificado. Para la clase mayoritaria se simula un
+clasificador que siempre predice la etiqueta más frecuente: precisión $p$
+(proporción en test), recall $1{,}0$; el F1 de las demás clases es $0$. El
+F1-macro es la media sobre $k=4$ clases. Los valores del CSV se redondean a
+tres decimales (\texttt{round}); la tabla generada muestra cuatro. El informe
+de preparación v1.1 reportaba $\approx 0{,}129$ por un redondeo intermedio de
+$p$; aquí $0{,}128$. El azar se sitúa en $0{,}25$. Cualquier modelo útil debe
+superar claramente estos umbrales.
 
 \begin{table}[H]
 \centering

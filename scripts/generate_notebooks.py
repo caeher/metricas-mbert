@@ -95,9 +95,14 @@ plt.tight_layout()
 plt.savefig(REPORTS_FIGURES / '01_distribucion_clases.png')
 plt.show()
 class_dist"""),
-        md("## 3.1 Pisos de referencia sin modelo"),
+        md(
+            "## 3.1 Pisos de referencia sin modelo\n\n"
+            "Se calculan sobre el **conjunto de test** ($n=460$), no sobre el corpus completo, "
+            "para alinearlos con la evaluación de modelos."
+        ),
         code("""from discurso_odio.evaluation.metrics import trivial_baselines
-counts = corpus['label'].value_counts().to_dict()
+test = splits['test']
+counts = test['label'].value_counts().to_dict()
 baselines = trivial_baselines(counts)
 pd.Series(baselines, name='F1-macro').to_frame()"""),
         md("## 4. Análisis cross-platform"),

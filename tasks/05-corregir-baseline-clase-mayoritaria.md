@@ -22,8 +22,8 @@ Corregir la fórmula del baseline, regenerar todos los derivados y proteger el r
 
 ## Criterios de aceptación
 
-- [ ] `trivial_baselines({0: ..., 1: 159, ...})` produce F1-macro 0.128 para la distribución de prueba auditada.
-- [ ] La prueba unitaria cubre el caso real y al menos una distribución adicional.
-- [ ] Todos los artefactos regenerados muestran el valor correcto; no permanece 0.087 como resultado publicado.
-- [ ] Los informes de EDA y evaluación indican la misma definición, fuente y regla de redondeo.
+- [x] `trivial_baselines({0: ..., 1: 159, ...})` produce F1-macro 0.128 para la distribución de prueba auditada.
+- [x] La prueba unitaria cubre el caso real y al menos una distribución adicional.
+- [x] Todos los artefactos regenerados muestran el valor correcto; no permanece 0.087 como resultado publicado.
+- [x] Los informes de EDA y evaluación indican la misma definición, fuente y regla de redondeo.
 

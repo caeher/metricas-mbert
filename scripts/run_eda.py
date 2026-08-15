@@ -25,7 +25,7 @@ set_seed(settings["project"]["seed"])
 setup_plot_style()
 
 splits = load_all_splits()
-corpus, train = splits["corpus"], splits["train"]
+corpus, train, test = splits["corpus"], splits["train"], splits["test"]
 
 # EDA figures
 class_dist = corpus["clase"].value_counts()
@@ -57,8 +57,8 @@ plt.tight_layout()
 plt.savefig(REPORTS_FIGURES / "03_token_lengths.png")
 plt.close()
 
-# Metrics exports
-counts = corpus["label"].value_counts().to_dict()
+# Metrics exports (pisos triviales sobre test, n=460, alineado con evaluación)
+counts = test["label"].value_counts().to_dict()
 pd.Series(trivial_baselines(counts), name="F1-macro").to_csv(REPORTS_METRICS / "trivial_baselines.csv")
 weights = get_class_weights(train)
 pd.DataFrame({"label": sorted(weights), "weight": [weights[i] for i in sorted(weights)]}).to_csv(

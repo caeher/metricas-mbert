@@ -34,7 +34,24 @@ def test_compute_all_metrics_keys():
     assert "mcc" in metrics
 
 
-def test_trivial_baselines():
+def test_trivial_baselines_audit_test_distribution():
+    """Distribución real de test: 159/460 en clase mayoritaria (label 1)."""
+    counts = {0: 123, 1: 159, 2: 95, 3: 83}
+    baselines = trivial_baselines(counts)
+    assert baselines["clase_mayoritaria"] == 0.128
+    assert baselines["azar_estratificado"] == 0.25
+    assert baselines["azar_uniforme"] == 0.25
+
+
+def test_trivial_baselines_second_distribution():
     counts = {0: 100, 1: 200, 2: 150, 3: 50}
     baselines = trivial_baselines(counts)
     assert baselines["azar_estratificado"] == 0.25
+    assert baselines["clase_mayoritaria"] == 0.143
+
+
+def test_trivial_baselines_divides_by_num_classes_not_present_labels():
+    """F1-macro usa k=4 aunque falten etiquetas en el dict de conteos."""
+    counts = {0: 100, 1: 200}
+    baselines = trivial_baselines(counts)
+    assert baselines["clase_mayoritaria"] == round((2 * (2 / 3) / (2 / 3 + 1)) / 4, 3)

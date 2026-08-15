@@ -173,24 +173,24 @@ def compute_all_metrics(
 
 
 def trivial_baselines(class_counts: dict[int, int]) -> dict[str, float]:
-    """Pisos de referencia sin modelo (informe v1.1)."""
+    """Pisos de referencia sin modelo (informe v1.1).
+
+    Baseline de clase mayoritaria: clasificador que siempre predice la clase
+    más frecuente. Precisión = p (proporción en el split), recall = 1.0; el F1
+    de las demás clases es 0. F1-macro = (1/k) * sum_i F1_i con k clases del
+    proyecto (``labels.num_classes``, actualmente 4). Valores publicados con
+    ``round(x, 3)``. Fuente canónica: distribución del conjunto de test.
+    """
+    settings = load_settings()
     total = sum(class_counts.values())
-    k = len(class_counts)
+    k = settings["labels"]["num_classes"]
     props = {c: n / total for c, n in class_counts.items()}
     majority_class = max(class_counts, key=class_counts.get)
+    p = props[majority_class]
 
     f1_stratified = 1.0 / k
     f1_uniform = sum(2 * (1 / k) * (1 / k) / (2 / k) for _ in range(k)) / k
-    f1_majority = sum(
-        2 * (props[majority_class] if c == majority_class else 0.0)
-        * (props[majority_class] if c == majority_class else 0.0)
-        / max(
-            (props[majority_class] if c == majority_class else 0.0)
-            + (props[majority_class] if c == majority_class else 0.0),
-            1e-9,
-        )
-        for c in class_counts
-    ) / k
+    f1_majority = (2 * p / (p + 1.0)) / k
 
     return {
         "azar_estratificado": round(f1_stratified, 3),

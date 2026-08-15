@@ -49,6 +49,15 @@ proyecto:
 La métrica de decisión principal es el \textbf{F1-macro}, que trata por igual
 las cuatro clases y es adecuada ante desbalance.
 
+\subsection{Pisos triviales sin modelo}
+
+Los baselines de referencia (clase mayoritaria, azar uniforme y azar
+estratificado) se calculan sobre la distribución del \textbf{test} ($n=460$) con
+$k=4$ clases fijas. El piso de clase mayoritaria asume precisión $p$ y recall
+$1{,}0$ en la etiqueta dominante y F1 cero en el resto; el F1-macro publicado
+en \texttt{trivial\_baselines.csv} usa \texttt{round(x, 3)} y las tablas LaTeX
+generadas muestran cuatro decimales.
+
 \section{Cortes (slices)}
 
 Además del desempeño global, se calculan métricas sobre subconjuntos:
