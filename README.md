@@ -48,6 +48,7 @@ jupyter notebook notebooks/
 
 ## Notebooks
 
+0. `00_colab_setup.ipynb` — Setup en Google Colab (subir ZIP, instalar deps)
 1. `01_eda.ipynb` — Análisis exploratorio
 2. `02_preprocesamiento_features.ipynb` — Pipeline de normalización
 3. `03_baselines_tfidf.ipynb` — Baselines TF-IDF
@@ -77,6 +78,63 @@ powershell -ExecutionPolicy Bypass -File scripts/build_report.ps1 -SkipFigures
 ```
 
 Salida: `reports/latex/main.docx` (y opcionalmente PDF con `-Pdf`).
+
+## Google Colab
+
+### 1. Generar el ZIP localmente
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/build_colab_zip.ps1
+```
+
+Esto crea `metricas-proyecto-ml-colab.zip` con la carpeta raíz `metricas-proyecto-ml/` (requerida por el setup de Colab).
+
+### 2. Subir y configurar en Colab
+
+1. Abre [Google Colab](https://colab.research.google.com/) y sube `notebooks/00_colab_setup.ipynb` o el ZIP completo.
+2. **Runtime → Cambiar tipo de entorno → GPU (T4)** antes del fine-tuning.
+3. Ejecuta las celdas de `00_colab_setup.ipynb` (sube el ZIP, instala dependencias, verifica datos).
+4. La celda de diagnóstico confirma `PROJECT_ROOT`, CUDA y si el modelo ya existe.
+
+### 3. Flujo A — Ejecución completa (primera vez, ~2–4 h con GPU)
+
+```
+00_colab_setup → 01 → 02 → 03 → 04 (GPU) → 05 → 06 → 07
+```
+
+Atajo desde la raíz del proyecto en Colab:
+
+```python
+!python scripts/run_notebooks_colab.py
+!python scripts/run_interpretability.py  # exporta CSVs LIME/SHAP
+```
+
+### 4. Flujo B — Solo métricas (modelo ya entrenado)
+
+Si ya tienes `models/mbert-sv/` y `models/baseline_*.joblib` (p. ej. en Google Drive):
+
+```python
+!python scripts/run_notebooks_colab.py --from 5 --to 7 --skip 4
+!python scripts/run_interpretability.py
+!python scripts/generate_figures.py
+```
+
+### 5. Artefactos a descargar al terminar
+
+| Carpeta / archivo | Contenido |
+|-------------------|-----------|
+| `reports/metrics/*.csv` | Métricas, slices, McNemar, benchmark |
+| `reports/figures/*.png` | Gráficos del informe |
+| `models/mbert-sv/` | Modelo fine-tuned (~700 MB) |
+
+### 6. Validar el ZIP antes de subir (solo estructura, sin entrenar)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/build_colab_zip.ps1
+pytest tests/test_colab_zip.py -v
+```
+
+Ver también [`docs/colab-run-log.md`](docs/colab-run-log.md) para el checklist paso a paso en Colab.
 
 ## Licencia
 
