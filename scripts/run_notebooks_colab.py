@@ -55,6 +55,26 @@ def main() -> int:
     os.chdir(root)
     os.environ.setdefault("RUN_PROFILE", "gpu")
 
+    # Verificar stack PyTorch antes de notebooks que usan transformers
+    try:
+        import torch
+        import torchaudio
+        import torchvision
+        from transformers import EarlyStoppingCallback
+
+        print(
+            f"torch={torch.__version__} | torchvision={torchvision.__version__} | "
+            f"torchaudio={torchaudio.__version__}"
+        )
+        print("CUDA:", torch.cuda.is_available())
+    except Exception as exc:
+        print(
+            "ERROR: dependencias PyTorch/transformers no listas. "
+            "Ejecuta: python scripts/colab_install_deps.py y reinicia el runtime.",
+            file=sys.stderr,
+        )
+        raise SystemExit(1) from exc
+
     selected = [
         NOTEBOOKS[i - 1]
         for i in range(args.from_nb, args.to_nb + 1)

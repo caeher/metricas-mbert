@@ -8,8 +8,12 @@ NOTEBOOKS_DIR.mkdir(exist_ok=True)
 
 COMMON_SETUP = """import sys
 from pathlib import Path
-ROOT = Path.cwd().parent if Path.cwd().name == 'notebooks' else Path.cwd()
-sys.path.insert(0, str(ROOT / 'src'))
+
+_bootstrap = Path.cwd().parent if Path.cwd().name == 'notebooks' else Path.cwd()
+if str(_bootstrap / 'src') not in sys.path:
+    sys.path.insert(0, str(_bootstrap / 'src'))
+
+from discurso_odio.paths import PROJECT_ROOT
 
 import warnings
 warnings.filterwarnings('ignore')
