@@ -21,7 +21,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 from discurso_odio.config import load_settings
 from discurso_odio.data.loaders import load_split
 from discurso_odio.evaluation.benchmark import run_benchmark
-from discurso_odio.evaluation.metrics import bootstrap_ci, compute_all_metrics, mcnemar_test
+from discurso_odio.evaluation.mcnemar import run_mcnemar_tests
+from discurso_odio.evaluation.metrics import bootstrap_ci, compute_all_metrics
 from discurso_odio.evaluation.slices import dialect_bias_probe, export_dialect_bias, export_slice_metrics
 from discurso_odio.models.mbert import predict, train_mbert
 from discurso_odio.paths import MODELS_DIR, REPORTS_FIGURES, REPORTS_METRICS, TEST_CSV
@@ -110,15 +111,7 @@ def run_evaluation():
         json.dump(export, f, indent=2)
     pd.DataFrame([export]).to_csv(REPORTS_METRICS / "mbert_test_metrics.csv", index=False)
 
-    mcnemar_rows = []
-    for name in ["logisticregression", "linearsvc", "multinomialnb"]:
-        path = MODELS_DIR / f"baseline_{name}.joblib"
-        if path.exists():
-            pipe = joblib.load(path)
-            bl_pred = pipe.predict(test["texto_modelo"])
-            mcn = mcnemar_test(y_true, y_pred, bl_pred)
-            mcnemar_rows.append({"baseline": name, **mcn})
-    pd.DataFrame(mcnemar_rows).to_csv(REPORTS_METRICS / "mcnemar_tests.csv", index=False)
+    run_mcnemar_tests(model_dir=model_dir, require_xlmr=False)
 
     logger.info("F1-macro: %.4f [%.4f, %.4f]", metrics["f1_macro"], f1_lo, f1_hi)
     return metrics

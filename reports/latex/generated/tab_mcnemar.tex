@@ -1,9 +1,10 @@
-\begin{tabular}{lcccc}
+\begin{tabular}{llcccccc}
 \toprule
-Baseline & Estadístico & p-valor & b & c \\
+Modelo A & Modelo B & Estadístico & p-valor & b & c & n & Sig. \\
 \midrule
-logisticregression & 0.5647 & 0.277999 & 48 & 37 \\
-linearsvc & 0.5402 & 0.520292 & 47 & 40 \\
-multinomialnb & 0.7063 & 0.000004 & 89 & 37 \\
+mBERT & LogisticRegression & 0.5647 & 0.277999 & 48 & 37 & 460 & No \\
+mBERT & LinearSVC & 0.5402 & 0.520292 & 47 & 40 & 460 & No \\
+mBERT & MultinomialNB & 0.7063 & 0.000004 & 89 & 37 & 460 & Sí \\
+mBERT & XLM-RoBERTa & 0.4098 & 0.200031 & 25 & 36 & 460 & No \\
 \bottomrule
 \end{tabular}

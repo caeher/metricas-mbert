@@ -168,6 +168,67 @@ def check_platform_metrics(
     return errors
 
 
+def check_mcnemar_metrics(
+    mcnemar_csv: Path,
+    generated_dir: Path,
+) -> list[ConsistencyError]:
+    """Compara mcnemar_tests.csv con tablas/prosa LaTeX de McNemar."""
+    errors: list[ConsistencyError] = []
+    if not mcnemar_csv.exists():
+        errors.append(ConsistencyError(f"Artefacto no encontrado: {mcnemar_csv}"))
+        return errors
+
+    tab_mcnemar = generated_dir / "tab_mcnemar.tex"
+    prose_mcnemar = generated_dir / "mcnemar_prose.tex"
+    for tex_path in (tab_mcnemar, prose_mcnemar):
+        if not tex_path.exists():
+            errors.append(ConsistencyError(f"LaTeX generado ausente: {tex_path.name}"))
+            return errors
+
+    df = pd.read_csv(mcnemar_csv)
+    if "model_b" not in df.columns:
+        return errors
+
+    tab_text = tab_mcnemar.read_text(encoding="utf-8")
+    prose_text = prose_mcnemar.read_text(encoding="utf-8")
+
+    xlmr_rows = df[df["model_b"] == "xlm-roberta"]
+    if xlmr_rows.empty:
+        errors.append(
+            ConsistencyError("mcnemar_tests.csv no contiene fila mbert vs xlm-roberta")
+        )
+        return errors
+
+    row = xlmr_rows.iloc[0]
+    p_fmt = fmt_num(row["p_value"], digits=6)
+    if p_fmt not in tab_text:
+        errors.append(
+            ConsistencyError(f"tab_mcnemar.tex no contiene p-valor XLM-R ({p_fmt})")
+        )
+    if p_fmt not in prose_text:
+        errors.append(
+            ConsistencyError(f"mcnemar_prose.tex no contiene p-valor XLM-R ({p_fmt})")
+        )
+
+    b_fmt = fmt_num(row["b"], digits=0)
+    c_fmt = fmt_num(row["c"], digits=0)
+    if b_fmt not in prose_text or c_fmt not in prose_text:
+        errors.append(
+            ConsistencyError(
+                f"mcnemar_prose.tex no contiene conteos discordantes b={b_fmt}, c={c_fmt}"
+            )
+        )
+
+    return errors
+
+
+def assert_mcnemar_consistency(mcnemar_csv: Path, generated_dir: Path) -> None:
+    errors = check_mcnemar_metrics(mcnemar_csv, generated_dir)
+    if errors:
+        messages = "\n".join(f"  - {e.message}" for e in errors)
+        raise AssertionError(f"Inconsistencias de McNemar:\n{messages}")
+
+
 def assert_platform_consistency(
     slice_csv: Path,
     generated_dir: Path,

@@ -22,9 +22,9 @@ Establecer si la diferencia entre mBERT y XLM-R es estadísticamente significati
 
 ## Criterios de aceptación
 
-- [ ] Existe un vector de predicciones XLM-R validado contra las 460 filas del test.
-- [ ] El resultado McNemar se exporta a `mcnemar_tests.csv` o a un artefacto equivalente con ambos modelos claramente identificados.
-- [ ] Se reportan estadístico, p-value, `b`, `c`, tamaño de muestra y la conclusión con el umbral de significancia definido.
-- [ ] El informe compara los modelos usando la prueba pareada, no solo la diferencia de F1.
-- [ ] Hay una prueba que rechaza vectores de longitud, orden o espacio de etiquetas incompatibles.
+- [x] Existe un vector de predicciones XLM-R validado contra las 460 filas del test.
+- [x] El resultado McNemar se exporta a `mcnemar_tests.csv` o a un artefacto equivalente con ambos modelos claramente identificados.
+- [x] Se reportan estadístico, p-value, `b`, `c`, tamaño de muestra y la conclusión con el umbral de significancia definido.
+- [x] El informe compara los modelos usando la prueba pareada, no solo la diferencia de F1.
+- [x] Hay una prueba que rechaza vectores de longitud, orden o espacio de etiquetas incompatibles.
 

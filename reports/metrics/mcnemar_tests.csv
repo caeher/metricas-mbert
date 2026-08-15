@@ -1,0 +1,5 @@
+model_a,model_b,statistic,p_value,b,c,n,alpha,significant,conclusion
+mbert,logisticregression,0.5647058823529412,0.2779992890805517,48,37,460,0.05,False,no se rechaza H0 (alpha=0.05)
+mbert,linearsvc,0.5402298850574713,0.5202915935750728,47,40,460,0.05,False,no se rechaza H0 (alpha=0.05)
+mbert,multinomialnb,0.7063492063492064,4.099291097200166e-06,89,37,460,0.05,True,diferencia significativa (alpha=0.05)
+mbert,xlm-roberta,0.4098360655737705,0.20003136851310313,25,36,460,0.05,False,no se rechaza H0 (alpha=0.05)

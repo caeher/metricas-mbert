@@ -15,6 +15,10 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from discurso_odio.data.loaders import load_split
+from discurso_odio.evaluation.predictions import (
+    XLMR_PREDICTIONS_PATH,
+    load_xlmr_predictions,
+)
 from discurso_odio.evaluation.slices import dialect_bias_probe, export_dialect_bias
 from discurso_odio.models.mbert import predict
 from discurso_odio.paths import MODELS_DIR, REPORTS_METRICS, TEST_CSV
@@ -22,52 +26,12 @@ from discurso_odio.paths import MODELS_DIR, REPORTS_METRICS, TEST_CSV
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
-XLMR_PREDICTIONS_PATH = REPORTS_METRICS / "xlmr_test_predictions.csv"
-
-
-def _validate_predictions(
-    test: pd.DataFrame,
-    preds: pd.DataFrame,
-    pred_col: str,
-    model_name: str,
-) -> np.ndarray:
-    if len(preds) != len(test):
-        raise ValueError(
-            f"{model_name}: se esperaban {len(test)} predicciones, se recibieron {len(preds)}"
-        )
-
-    if "id" in preds.columns and "ID" in test.columns:
-        merged = test[["ID"]].merge(preds, left_on="ID", right_on="id", how="left")
-        if merged[pred_col].isna().any():
-            raise ValueError(f"{model_name}: predicciones sin ID correspondiente en test")
-        y_pred = merged[pred_col].to_numpy()
-    else:
-        y_pred = preds[pred_col].to_numpy()
-
-    y_pred = np.asarray(y_pred, dtype=int)
-    if y_pred.min() < 0 or y_pred.max() > 3:
-        raise ValueError(f"{model_name}: etiquetas fuera del rango 0-3")
-    return y_pred
-
 
 def _load_mbert_predictions(test: pd.DataFrame, model_dir: Path) -> np.ndarray:
     if not model_dir.exists():
         raise FileNotFoundError(f"Checkpoint mBERT no encontrado: {model_dir}")
     y_pred, _ = predict(test["texto_modelo"].tolist(), model_dir)
     return np.asarray(y_pred, dtype=int)
-
-
-def _load_xlmr_predictions(test: pd.DataFrame) -> tuple[np.ndarray | None, str]:
-    if not XLMR_PREDICTIONS_PATH.exists():
-        return None, "predictions_not_found"
-
-    preds = pd.read_csv(XLMR_PREDICTIONS_PATH)
-    pred_col = "y_pred_xlmr"
-    if pred_col not in preds.columns:
-        raise ValueError(f"Columna requerida ausente en {XLMR_PREDICTIONS_PATH}: {pred_col}")
-
-    y_pred = _validate_predictions(test, preds, pred_col, "XLM-R")
-    return y_pred, "ok"
 
 
 def compute_all(
@@ -99,7 +63,7 @@ def compute_all(
 
     xlmr_status = "skipped"
     if include_xlmr:
-        y_pred_xlmr, xlmr_status = _load_xlmr_predictions(test)
+        y_pred_xlmr, xlmr_status = load_xlmr_predictions(test)
         if y_pred_xlmr is not None:
             frames.append(
                 dialect_bias_probe(

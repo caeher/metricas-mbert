@@ -290,16 +290,12 @@ acc_mean, acc_lo, acc_hi = bootstrap_ci(y_true, y_pred, lambda yt, yp: (yt==yp).
 print(f'F1-macro bootstrap: {f1_mean:.4f} [{f1_lo:.4f}, {f1_hi:.4f}]')
 print(f'Accuracy bootstrap: {acc_mean:.4f} [{acc_lo:.4f}, {acc_hi:.4f}]')
 print(f'Objetivo F1>0.80: {\"CUMPLE\" if f1_mean >= 0.80 else \"NO CUMPLE\"}')"""),
-        code("""# McNemar vs baselines
-mcnemar_results = []
-for baseline_name in ['logisticregression', 'linearsvc', 'multinomialnb']:
-    path = MODELS_DIR / f'baseline_{baseline_name}.joblib'
-    if path.exists():
-        pipe = joblib.load(path)
-        bl_pred = pipe.predict(test['texto_modelo'])
-        mcn = mcnemar_test(y_true, y_pred, bl_pred)
-        mcnemar_results.append({'baseline': baseline_name, **mcn})
-pd.DataFrame(mcnemar_results)"""),
+        code("""# McNemar vs baselines y XLM-R (pareado sobre las mismas instancias de test)
+from discurso_odio.evaluation.mcnemar import run_mcnemar_tests
+
+mcnemar_df = run_mcnemar_tests(model_dir=model_dir, require_xlmr=True)
+mcnemar_df.to_csv(REPORTS_METRICS / 'mcnemar_tests.csv', index=False)
+mcnemar_df"""),
         code("""# Métricas por cortes (mBERT + XLM-R si hay predicciones auditadas)
 import sys
 from pathlib import Path

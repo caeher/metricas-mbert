@@ -16,6 +16,9 @@ models/mbert-sv-agresivo/
 data/external/
 reports/figures/*.png
 reports/metrics/*.csv
+!reports/metrics/xlmr_test_predictions.csv
+!reports/metrics/xlmr_test_predictions.json
+!reports/metrics/mcnemar_tests.csv
 reports/tables/*.md
 reports/latex/figures/*.png
 reports/latex/main.docx

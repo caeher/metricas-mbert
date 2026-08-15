@@ -12,14 +12,21 @@ fi
 echo "==> Generando tablas LaTeX..."
 "$PYTHON" scripts/generate_latex_report.py
 
+echo "==> Verificando consistencia de métricas por plataforma..."
+"$PYTHON" scripts/check_report_platform_metrics.py
+
+echo "==> Verificando consistencia de McNemar..."
+"$PYTHON" scripts/check_report_mcnemar.py
+
 if [[ "${SKIP_FIGURES:-0}" != "1" ]]; then
   echo "==> Generando figuras..."
   "$PYTHON" scripts/generate_figures.py
   "$PYTHON" scripts/generate_latex_report.py
 fi
 
-echo "==> Verificando consistencia de métricas por plataforma..."
+echo "==> Verificación final de consistencia..."
 "$PYTHON" scripts/check_report_platform_metrics.py
+"$PYTHON" scripts/check_report_mcnemar.py
 
 LATEX_DIR="$ROOT/reports/latex"
 RESOURCE_PATH="$LATEX_DIR:$LATEX_DIR/figures:$ROOT/reports/figures"

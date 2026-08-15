@@ -42,7 +42,8 @@ proyecto:
   \item \textbf{Incertidumbre:} intervalo de confianza bootstrap del F1-macro
         (1000 remuestreos, $\alpha = 0{,}05$).
   \item \textbf{Comparación de modelos:} prueba de McNemar~\cite{mcnemar1947}
-        entre mBERT y cada baseline.
+        pareada entre mBERT y cada baseline, y entre mBERT y XLM-RoBERTa sobre
+        las mismas 460 instancias de test ($\alpha = 0{,}05$).
 \end{itemize}
 
 La métrica de decisión principal es el \textbf{F1-macro}, que trata por igual

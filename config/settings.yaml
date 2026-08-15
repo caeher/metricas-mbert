@@ -3,6 +3,9 @@ project:
   seed: 42
   target_f1_macro: 0.80
 
+evaluation:
+  mcnemar_alpha: 0.05
+
 paths:
   data_processed: data/processed
   data_external: data/external

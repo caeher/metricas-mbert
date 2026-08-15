@@ -23,10 +23,13 @@ $Python = if (Test-Path ".venv\Scripts\python.exe") {
 Write-Host "==> Generando tablas LaTeX..." -ForegroundColor Cyan
 & $Python scripts/generate_latex_report.py
 if ($LASTEXITCODE -ne 0) { throw "generate_latex_report.py falló" }
-
 Write-Host "==> Verificando consistencia de métricas por plataforma..." -ForegroundColor Cyan
 & $Python scripts/check_report_platform_metrics.py
 if ($LASTEXITCODE -ne 0) { throw "check_report_platform_metrics.py falló" }
+
+Write-Host "==> Verificando consistencia de McNemar..." -ForegroundColor Cyan
+& $Python scripts/check_report_mcnemar.py
+if ($LASTEXITCODE -ne 0) { throw "check_report_mcnemar.py falló" }
 
 if (-not $SkipFigures) {
     Write-Host "==> Generando figuras..." -ForegroundColor Cyan
@@ -40,6 +43,8 @@ if (-not $SkipFigures) {
 Write-Host "==> Verificación final de consistencia..." -ForegroundColor Cyan
 & $Python scripts/check_report_platform_metrics.py
 if ($LASTEXITCODE -ne 0) { throw "check_report_platform_metrics.py falló" }
+& $Python scripts/check_report_mcnemar.py
+if ($LASTEXITCODE -ne 0) { throw "check_report_mcnemar.py falló" }
 
 $LatexDir = Join-Path $Root "reports\latex"
 $MainTex = Join-Path $LatexDir "main.tex"

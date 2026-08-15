@@ -12,7 +12,10 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from discurso_odio.evaluation.report_consistency import assert_platform_consistency
+from discurso_odio.evaluation.report_consistency import (
+    assert_mcnemar_consistency,
+    assert_platform_consistency,
+)
 from discurso_odio.evaluation.slices import platform_rows
 from discurso_odio.paths import MODELS_DIR, PROJECT_ROOT, REPORTS_FIGURES, REPORTS_METRICS
 
@@ -414,6 +417,17 @@ def gen_slices_intro():
     print(f"Generado: {out.name}")
 
 
+def _mcnemar_model_label(name: str) -> str:
+    labels = {
+        "mbert": "mBERT",
+        "xlm-roberta": "XLM-RoBERTa",
+        "logisticregression": "LogisticRegression",
+        "linearsvc": "LinearSVC",
+        "multinomialnb": "MultinomialNB",
+    }
+    return labels.get(str(name).lower(), str(name))
+
+
 def gen_mcnemar():
     path = REPORTS_METRICS / "mcnemar_tests.csv"
     out = GENERATED_DIR / "tab_mcnemar.tex"
@@ -421,17 +435,88 @@ def gen_mcnemar():
         placeholder(out)
         return
     df = pd.read_csv(path)
-    rows = [
-        [
-            latex_escape(r["baseline"]),
-            fmt_num(r["statistic"]),
-            fmt_num(r["p_value"], digits=6),
-            fmt_num(r["b"], digits=0),
-            fmt_num(r["c"], digits=0),
-        ]
-        for _, r in df.iterrows()
-    ]
-    write_tabular(out, ["Baseline", "Estadístico", "p-valor", "b", "c"], rows)
+    rows = []
+    for _, r in df.iterrows():
+        if "model_b" in df.columns:
+            model_b = _mcnemar_model_label(r["model_b"])
+        else:
+            model_b = latex_escape(r.get("baseline", "---"))
+        sig = "Sí" if bool(r.get("significant", False)) else "No"
+        rows.append(
+            [
+                _mcnemar_model_label(r.get("model_a", "mbert")),
+                model_b,
+                fmt_num(r["statistic"]),
+                fmt_num(r["p_value"], digits=6),
+                fmt_num(r["b"], digits=0),
+                fmt_num(r["c"], digits=0),
+                fmt_num(r.get("n", 460), digits=0),
+                sig,
+            ]
+        )
+    write_tabular(
+        out,
+        ["Modelo A", "Modelo B", "Estadístico", "p-valor", "b", "c", "n", "Sig."],
+        rows,
+        col_spec="llcccccc",
+    )
+
+
+def gen_mcnemar_prose():
+    path = REPORTS_METRICS / "mcnemar_tests.csv"
+    out = GENERATED_DIR / "mcnemar_prose.tex"
+    if not path.exists():
+        out.write_text("% mcnemar_tests.csv no disponible\n", encoding="utf-8")
+        print(f"Generado: {out.name}")
+        return
+
+    df = pd.read_csv(path)
+    if "model_b" not in df.columns:
+        out.write_text("% esquema legacy de mcnemar_tests.csv\n", encoding="utf-8")
+        print(f"Generado: {out.name}")
+        return
+
+    xlmr = df[df["model_b"] == "xlm-roberta"]
+    lines: list[str] = []
+
+    if not xlmr.empty:
+        row = xlmr.iloc[0]
+        p_fmt = fmt_num(row["p_value"], digits=6)
+        b = int(row["b"])
+        c = int(row["c"])
+        n = int(row.get("n", 460))
+        alpha = float(row.get("alpha", 0.05))
+        if bool(row.get("significant", False)):
+            lines.append(
+                f"La comparación pareada mBERT vs.\\ XLM-RoBERTa sobre las mismas "
+                f"$n={n}$ instancias de test arroja $p={p_fmt}$ "
+                f"($b={b}$, $c={c}$; $\\alpha={alpha:.2f}$): la diferencia "
+                f"\\textbf{{es estadísticamente significativa}} bajo el umbral definido."
+            )
+        else:
+            lines.append(
+                f"La comparación pareada mBERT vs.\\ XLM-RoBERTa sobre las mismas "
+                f"$n={n}$ instancias de test arroja $p={p_fmt}$ "
+                f"($b={b}$, $c={c}$; $\\alpha={alpha:.2f}$): "
+                f"\\textbf{{no se rechaza la hipótesis nula}}; la diferencia puntual "
+                f"de F1-macro no es concluyente con este tamaño de muestra "
+                f"(intervalos bootstrap solapados)."
+            )
+
+    baselines = df[df["model_b"].isin(["logisticregression", "linearsvc", "multinomialnb"])]
+    sig_baselines = baselines[baselines.get("significant", False) == True]  # noqa: E712
+    if not sig_baselines.empty:
+        names = ", ".join(_mcnemar_model_label(b) for b in sig_baselines["model_b"])
+        lines.append(
+            f"Frente a {names} la superioridad de mBERT sí alcanza significancia "
+            f"estadística ($\\alpha={float(baselines.iloc[0].get('alpha', 0.05)):.2f}$)."
+        )
+
+    if lines:
+        out.write_text(" ".join(lines) + "\n", encoding="utf-8")
+    else:
+        out.write_text("% McNemar sin filas interpretables\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
 
 
 def _pct_latex(value: float, digits: int = 0) -> str:
@@ -678,6 +763,7 @@ def main():
     gen_slices_prose()
     gen_slices_intro()
     gen_mcnemar()
+    gen_mcnemar_prose()
     gen_dialect_bias()
     gen_dialect_bias_prose()
     gen_dialect_bias_conclusions()
@@ -687,6 +773,7 @@ def main():
     gen_lime_weights()
     gen_val_metrics_note()
     assert_platform_consistency(REPORTS_METRICS / "slice_metrics.csv", GENERATED_DIR)
+    assert_mcnemar_consistency(REPORTS_METRICS / "mcnemar_tests.csv", GENERATED_DIR)
     copy_figures()
     print("Tablas LaTeX generadas en", GENERATED_DIR)
 

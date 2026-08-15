@@ -84,6 +84,15 @@ def mcnemar_test(y_true: np.ndarray, pred_a: np.ndarray, pred_b: np.ndarray) -> 
     """Prueba de McNemar entre dos clasificadores."""
     from scipy import stats
 
+    y_true = np.asarray(y_true)
+    pred_a = np.asarray(pred_a)
+    pred_b = np.asarray(pred_b)
+    n = len(y_true)
+    if len(pred_a) != n or len(pred_b) != n:
+        raise ValueError(
+            f"Longitudes incompatibles: y_true={n}, pred_a={len(pred_a)}, pred_b={len(pred_b)}"
+        )
+
     correct_a = pred_a == y_true
     correct_b = pred_b == y_true
     b = int(np.sum(correct_a & ~correct_b))

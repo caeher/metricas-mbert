@@ -66,15 +66,20 @@ distancia ($0{,}765$). El margen sobre MultinomialNB es sustancial.
 \section{Pruebas de McNemar}
 
 La Tabla~\ref{tab:mcnemar} reporta la prueba de McNemar~\cite{mcnemar1947}
-entre mBERT y cada baseline. La diferencia frente a MultinomialNB es
-altamente significativa ($p \approx 4 \times 10^{-6}$). Frente a Logistic
-Regression ($p \approx 0{,}28$) y LinearSVC ($p \approx 0{,}52$) no se
-rechaza la hipótesis nula: el margen de mBERT sobre los mejores baselines
-lineales no es estadísticamente concluyente en este tamaño de test.
+entre mBERT y cada baseline, y la comparación pareada mBERT vs.\ XLM-RoBERTa
+sobre las mismas $n=460$ instancias de test ($\alpha = 0{,}05$).
+
+\input{generated/mcnemar_prose}
+
+La diferencia frente a MultinomialNB es altamente significativa
+($p \approx 4 \times 10^{-6}$). Frente a Logistic Regression
+($p \approx 0{,}28$) y LinearSVC ($p \approx 0{,}52$) no se rechaza la
+hipótesis nula: el margen de mBERT sobre los mejores baselines lineales no
+es estadísticamente concluyente en este tamaño de test.
 
 \begin{table}[H]
 \centering
-\caption{Pruebas de McNemar: mBERT vs.\ baselines.}
+\caption{Pruebas de McNemar pareadas (mBERT vs.\ baselines y XLM-RoBERTa).}
 \label{tab:mcnemar}
 \input{generated/tab_mcnemar}
 \end{table}
