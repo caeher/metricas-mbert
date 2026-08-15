@@ -1,0 +1,36 @@
+{
+  "created_at": "2026-08-15T22:26:05.496223+00:00",
+  "git_commit": "7f22c8631ff2ed88254ef5d8e859f170bd1e42b2",
+  "jerga_definition": "n_jerga > 0",
+  "rows": [
+    {
+      "run_id": "9c87ec9c-10e2-43dd-a2bf-9ffeb78cdd64",
+      "model": "mbert",
+      "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\models\\mbert-sv",
+      "split": "test.csv",
+      "n_test": 460,
+      "group": "con_jerga",
+      "n": 29,
+      "fp": 12,
+      "fpr": 0.41379310344827586,
+      "fpr_ci_lo": 0.25513177341322396,
+      "fpr_ci_hi": 0.5926216401212141,
+      "jerga_definition": "n_jerga > 0"
+    },
+    {
+      "run_id": "9c87ec9c-10e2-43dd-a2bf-9ffeb78cdd64",
+      "model": "mbert",
+      "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\models\\mbert-sv",
+      "split": "test.csv",
+      "n_test": 460,
+      "group": "sin_jerga",
+      "n": 94,
+      "fp": 15,
+      "fpr": 0.1595744680851064,
+      "fpr_ci_lo": 0.09915613688605258,
+      "fpr_ci_hi": 0.24672442569542474,
+      "jerga_definition": "n_jerga > 0"
+    }
+  ],
+  "xlmr_status": "predictions_not_found"
+}

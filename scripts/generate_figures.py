@@ -156,6 +156,69 @@ def plot_slice_f1():
     print("Generado: 07_slice_f1_heatmap.png")
 
 
+def plot_dialect_bias_fpr():
+    path = REPORTS_METRICS / "dialect_bias_probe.csv"
+    out = REPORTS_FIGURES / "10_dialect_bias_fpr.png"
+    if not path.exists():
+        _placeholder_figure(out, "dialect_bias_probe.csv\nno disponible")
+        return
+
+    df = pd.read_csv(path)
+    if df.empty or "group" not in df.columns:
+        _placeholder_figure(out, "dialect_bias_probe.csv\nformato inválido")
+        return
+
+    group_labels = {"con_jerga": "Con jerga", "sin_jerga": "Sin jerga"}
+    models = list(df["model"].unique())
+    groups = ["sin_jerga", "con_jerga"]
+    x = np.arange(len(groups))
+    width = 0.35 if len(models) > 1 else 0.5
+
+    fig, ax = plt.subplots(figsize=(8, 5))
+    colors = ["#219ebc", "#fb8500", "#8ecae6"]
+
+    for i, model in enumerate(models):
+        sub = df[df["model"] == model].set_index("group")
+        fprs = [sub.loc[g, "fpr"] if g in sub.index else np.nan for g in groups]
+        ci_lo = [sub.loc[g, "fpr_ci_lo"] if g in sub.index else np.nan for g in groups]
+        ci_hi = [sub.loc[g, "fpr_ci_hi"] if g in sub.index else np.nan for g in groups]
+        offsets = x + (i - (len(models) - 1) / 2) * width
+        label = "mBERT" if model == "mbert" else model
+        bars = ax.bar(offsets, fprs, width=width, label=label, color=colors[i % len(colors)])
+        yerr_lo = [f - lo if pd.notna(f) and pd.notna(lo) else 0 for f, lo in zip(fprs, ci_lo)]
+        yerr_hi = [hi - f if pd.notna(f) and pd.notna(hi) else 0 for f, hi in zip(fprs, ci_hi)]
+        ax.errorbar(
+            offsets,
+            fprs,
+            yerr=[yerr_lo, yerr_hi],
+            fmt="none",
+            ecolor="#333333",
+            capsize=4,
+        )
+        for bar, fpr in zip(bars, fprs):
+            if pd.notna(fpr):
+                ax.text(
+                    bar.get_x() + bar.get_width() / 2,
+                    bar.get_height() + 0.02,
+                    f"{fpr:.1%}",
+                    ha="center",
+                    va="bottom",
+                    fontsize=8,
+                )
+
+    ax.set_xticks(x)
+    ax.set_xticklabels([group_labels[g] for g in groups])
+    ax.set_ylabel("FPR (No Tóxico)")
+    ax.set_ylim(0, min(1.0, max(df["fpr_ci_hi"].max(skipna=True) * 1.2, 0.5)))
+    ax.set_title("Sonda de sesgo dialectal — FPR por grupo de jerga")
+    if len(models) > 1:
+        ax.legend()
+    plt.tight_layout()
+    plt.savefig(out)
+    plt.close()
+    print("Generado: 10_dialect_bias_fpr.png")
+
+
 def plot_lime_weights():
     path = REPORTS_METRICS / "lime_global_weights.csv"
     out = REPORTS_FIGURES / "08_lime_global_weights.png"
@@ -263,6 +326,7 @@ def main():
     plot_benchmark()
     plot_model_comparison_bar(comparison)
     plot_slice_f1()
+    plot_dialect_bias_fpr()
     plot_lime_weights()
     plot_training_curve()
     copy_to_latex_figures()

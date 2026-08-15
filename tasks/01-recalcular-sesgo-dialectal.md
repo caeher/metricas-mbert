@@ -22,9 +22,9 @@ Obtener y publicar las tasas de falsos positivos dialectales exclusivamente a pa
 
 ## Criterios de aceptación
 
-- [ ] No quedan valores literales de FPR dialectal usados como resultado en el flujo de evaluación de XLM-R.
-- [ ] Una ejecución reproducible sobre las predicciones auditadas produce 15/94 = 15.96 % sin jerga y 13/29 = 44.83 % con jerga, o documenta explícitamente por qué se evalúa otro checkpoint o split.
-- [ ] El CSV/JSON generado incluye numeradores, denominadores y metadatos de ejecución, no solo porcentajes.
-- [ ] La prueba unitaria valida el cálculo de FPR y los grupos vacíos.
-- [ ] El informe cita el artefacto generado y sus cifras coinciden con él al redondear.
+- [x] No quedan valores literales de FPR dialectal usados como resultado en el flujo de evaluación de XLM-R.
+- [x] Una ejecución reproducible sobre las predicciones auditadas produce 15/94 = 15.96 % sin jerga y 13/29 = 44.83 % con jerga, o documenta explícitamente por qué se evalúa otro checkpoint o split.
+- [x] El CSV/JSON generado incluye numeradores, denominadores y metadatos de ejecución, no solo porcentajes.
+- [x] La prueba unitaria valida el cálculo de FPR y los grupos vacíos.
+- [x] El informe cita el artefacto generado y sus cifras coinciden con él al redondear.
 

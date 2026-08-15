@@ -108,15 +108,18 @@ por subconjunto. Destacan:
 
 \section{Sonda de sesgo dialectal}
 
-La Tabla~\ref{tab:dialect} reporta la tasa de falsos positivos sobre No Tóxico.
-Con jerga local el FPR es \textbf{0{,}414} ($n=29$), frente a \textbf{0{,}160}
-sin jerga ($n=94$). Aunque el subconjunto con jerga es pequeño, el patrón
-sugiere que el modelo puede asociar léxico dialectal con toxicidad, un riesgo
-relevante para la equidad en el contexto salvadoreño.
+\input{generated/dialect_bias_prose}
 
 \begin{table}[H]
 \centering
-\caption{Sonda de sesgo dialectal (FP en No Tóxico).}
+\caption{Sonda de sesgo dialectal (FP en No Tóxico). Fuente: \texttt{reports/metrics/dialect\_bias\_probe.csv}.}
 \label{tab:dialect}
 \input{generated/tab_dialect_bias}
 \end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.75\textwidth]{10_dialect_bias_fpr.png}
+\caption{Tasa de falsos positivos dialectal por grupo de jerga.}
+\label{fig:dialect-fpr}
+\end{figure}

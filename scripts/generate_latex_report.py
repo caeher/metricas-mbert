@@ -200,26 +200,128 @@ def gen_mcnemar():
     write_tabular(out, ["Baseline", "Estadístico", "p-valor", "b", "c"], rows)
 
 
+def _pct_latex(value: float, digits: int = 0) -> str:
+    if value is None or (isinstance(value, float) and pd.isna(value)):
+        return "---"
+    pct = float(value) * 100
+    if digits == 0:
+        return f"{pct:.0f}\\,\\%"
+    return f"{pct:.{digits}f}\\,\\%"
+
+
+def _frac_latex(fp: float, n: float) -> str:
+    if pd.isna(fp) or pd.isna(n):
+        return "---"
+    return f"{int(fp)}/{int(n)}"
+
+
 def gen_dialect_bias():
     path = REPORTS_METRICS / "dialect_bias_probe.csv"
     out = GENERATED_DIR / "tab_dialect_bias.tex"
     if not path.exists():
         placeholder(out)
         return
-    df = pd.read_csv(path, index_col=0)
-    series = df.iloc[:, 0] if df.shape[1] else df.squeeze()
-    labels = {
-        "fpr_no_toxico_con_jerga": "FPR No Tóxico con jerga",
-        "fpr_no_toxico_sin_jerga": "FPR No Tóxico sin jerga",
-        "n_no_toxico_con_jerga": "n No Tóxico con jerga",
-        "n_no_toxico_sin_jerga": "n No Tóxico sin jerga",
-    }
+    df = pd.read_csv(path)
+    if df.empty or "group" not in df.columns:
+        placeholder(out, "Formato de dialect_bias_probe.csv no reconocido")
+        return
+
+    group_labels = {"con_jerga": "Con jerga", "sin_jerga": "Sin jerga"}
     rows = []
-    for key, val in series.items():
-        label = labels.get(str(key), str(key))
-        digits = 0 if str(key).startswith("n_") else 4
-        rows.append([latex_escape(label), fmt_num(val, digits=digits)])
-    write_tabular(out, ["Indicador", "Valor"], rows)
+    for _, r in df.iterrows():
+        model = str(r.get("model", "unknown"))
+        group = group_labels.get(str(r["group"]), str(r["group"]))
+        rows.append(
+            [
+                latex_escape(model),
+                latex_escape(group),
+                _frac_latex(r["fp"], r["n"]),
+                fmt_num(r["fpr"]),
+                fmt_num(r["fpr_ci_lo"]),
+                fmt_num(r["fpr_ci_hi"]),
+                fmt_num(r["n"], digits=0),
+            ]
+        )
+    write_tabular(
+        out,
+        ["Modelo", "Grupo", "FP/n", "FPR", "IC 95\\% lo", "IC 95\\% hi", "n"],
+        rows,
+        col_spec="llccccr",
+    )
+
+
+def gen_dialect_bias_prose():
+    """Genera párrafo LaTeX con cifras derivadas del artefacto (sin transcribir a mano)."""
+    path = REPORTS_METRICS / "dialect_bias_probe.csv"
+    out = GENERATED_DIR / "dialect_bias_prose.tex"
+    if not path.exists():
+        out.write_text(
+            "% dialect_bias_probe.csv no disponible\n",
+            encoding="utf-8",
+        )
+        return
+
+    df = pd.read_csv(path)
+    if df.empty:
+        out.write_text("% dialect_bias_probe.csv vacío\n", encoding="utf-8")
+        return
+
+    # Preferir mBERT para el informe principal; si solo hay XLM-R, usar ese.
+    model_order = ["mbert", "xlm-roberta"]
+    model = next((m for m in model_order if m in df["model"].values), df["model"].iloc[0])
+    sub = df[df["model"] == model]
+
+    def _row(group: str) -> pd.Series | None:
+        matches = sub[sub["group"] == group]
+        return matches.iloc[0] if len(matches) else None
+
+    con = _row("con_jerga")
+    sin = _row("sin_jerga")
+    if con is None or sin is None:
+        out.write_text("% grupos de jerga incompletos en dialect_bias_probe.csv\n", encoding="utf-8")
+        return
+
+    model_label = "mBERT" if model == "mbert" else "XLM-RoBERTa"
+    lines = [
+        f"La Tabla~\\ref{{tab:dialect}} reporta la tasa de falsos positivos sobre No Tóxico "
+        f"para {model_label}, calculada desde \\texttt{{reports/metrics/dialect\\_bias\\_probe.csv}}.",
+        f"Con jerga local el FPR es \\textbf{{{fmt_num(con['fpr'])}}} "
+        f"({_frac_latex(con['fp'], con['n'])}; $n={int(con['n'])}$), frente a "
+        f"\\textbf{{{fmt_num(sin['fpr'])}}} "
+        f"({_frac_latex(sin['fp'], sin['n'])}; $n={int(sin['n'])}$) sin jerga.",
+        "Aunque el subconjunto con jerga es pequeño, el patrón sugiere que el modelo "
+        "puede asociar léxico dialectal con toxicidad, un riesgo relevante para la equidad "
+        "en el contexto salvadoreño.",
+    ]
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
+def gen_dialect_bias_conclusions():
+    """Snippet breve para el capítulo de conclusiones."""
+    path = REPORTS_METRICS / "dialect_bias_probe.csv"
+    out = GENERATED_DIR / "dialect_bias_conclusions.tex"
+    if not path.exists():
+        out.write_text(
+            "% dialect_bias_probe.csv no disponible\n",
+            encoding="utf-8",
+        )
+        return
+
+    df = pd.read_csv(path)
+    model = "mbert" if "mbert" in df["model"].values else df["model"].iloc[0]
+    sub = df[df["model"] == model]
+    con = sub[sub["group"] == "con_jerga"].iloc[0]
+    sin = sub[sub["group"] == "sin_jerga"].iloc[0]
+
+    line = (
+        f"  \\item La sonda dialectal muestra FPR elevado en No Tóxico con jerga local "
+        f"({_pct_latex(con['fpr'])} vs.\\ {_pct_latex(sin['fpr'])}), "
+        f"señal de posible sesgo léxico (fuente: "
+        f"\\texttt{{reports/metrics/dialect\\_bias\\_probe.csv}})."
+    )
+    out.write_text(line + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
 
 
 def gen_benchmark():
@@ -335,6 +437,8 @@ def main():
     gen_slices()
     gen_mcnemar()
     gen_dialect_bias()
+    gen_dialect_bias_prose()
+    gen_dialect_bias_conclusions()
     gen_benchmark()
     gen_fp_jerga()
     gen_jaccard()
