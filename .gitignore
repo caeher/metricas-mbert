@@ -32,3 +32,5 @@ reports/latex/*.blg
 *.log
 .DS_Store
 Thumbs.db
+metricas-proyecto-ml-colab/
+metricas-proyecto-ml-colab.zip
