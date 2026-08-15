@@ -166,18 +166,148 @@ def gen_mbert_tables():
     write_tabular(out_p, ["Clase", "Precision", "Recall", "F1", "Support"], rows_p)
 
 
+def _slice_rows_for_report(df: pd.DataFrame, model: str | None = "mbert") -> pd.DataFrame:
+    if df.empty:
+        return df
+    if "model" in df.columns and model and model in df["model"].values:
+        return df[df["model"] == model].copy()
+    if "model" in df.columns:
+        return df[df["model"] == df["model"].iloc[0]].copy()
+    return df.copy()
+
+
+def _slice_value(df: pd.DataFrame, slice_name: str, column: str = "f1_macro") -> float | None:
+    matches = df[df["slice"] == slice_name]
+    if matches.empty:
+        return None
+    value = matches.iloc[0][column]
+    if pd.isna(value):
+        return None
+    return float(value)
+
+
 def gen_slices():
     path = REPORTS_METRICS / "slice_metrics.csv"
     out = GENERATED_DIR / "tab_slices.tex"
     if not path.exists():
         placeholder(out)
         return
-    df = pd.read_csv(path)
-    rows = [
-        [latex_escape(r["slice"]), fmt_num(r["f1_macro"]), fmt_num(r["accuracy"])]
-        for _, r in df.iterrows()
+    df = _slice_rows_for_report(pd.read_csv(path))
+    rows = []
+    for _, r in df.iterrows():
+        ci = "---"
+        if pd.notna(r.get("f1_ci_lo")) and pd.notna(r.get("f1_ci_hi")):
+            ci = f"[{fmt_num(r['f1_ci_lo'])}, {fmt_num(r['f1_ci_hi'])}]"
+        rows.append(
+            [
+                latex_escape(r["slice"]),
+                fmt_num(r.get("n"), digits=0),
+                fmt_num(r["f1_macro"]),
+                ci,
+                fmt_num(r["accuracy"]),
+            ]
+        )
+    write_tabular(
+        out,
+        ["Corte", "n", "F1-macro", "IC 95\\%", "Accuracy"],
+        rows,
+        col_spec="lrrcc",
+    )
+
+
+def gen_slices_prose():
+    """Genera párrafo LaTeX con cifras de cortes derivadas del artefacto."""
+    path = REPORTS_METRICS / "slice_metrics.csv"
+    out = GENERATED_DIR / "slices_prose.tex"
+    if not path.exists():
+        out.write_text("% slice_metrics.csv no disponible\n", encoding="utf-8")
+        return
+
+    df = _slice_rows_for_report(pd.read_csv(path))
+    if df.empty:
+        out.write_text("% slice_metrics.csv vacío\n", encoding="utf-8")
+        return
+
+    f1_x = _slice_value(df, "plataforma_X")
+    f1_fb = _slice_value(df, "plataforma_Facebook")
+    f1_ironia_si = _slice_value(df, "ironia_si")
+    f1_ironia_no = _slice_value(df, "ironia_no")
+    f1_sarcasmo_si = _slice_value(df, "sarcasmo_si")
+    f1_sarcasmo_no = _slice_value(df, "sarcasmo_no")
+    f1_pol_si = _slice_value(df, "contexto_politico_si")
+    f1_pol_no = _slice_value(df, "contexto_politico_no")
+
+    lines = [
+        "\\begin{itemize}[leftmargin=*]",
     ]
-    write_tabular(out, ["Corte", "F1-macro", "Accuracy"], rows)
+    if f1_x is not None and f1_fb is not None:
+        lines.append(
+            f"  \\item \\textbf{{Plataforma X}} (F1 \\textbf{{{fmt_num(f1_x)}}}) vs.\\ "
+            f"\\textbf{{Facebook}} (F1 \\textbf{{{fmt_num(f1_fb)}}}): brecha importante."
+        )
+    if f1_ironia_si is not None and f1_ironia_no is not None:
+        lines.append(
+            f"  \\item \\textbf{{Ironía}} (F1 \\textbf{{{fmt_num(f1_ironia_si)}}}) y "
+            f"\\textbf{{sarcasmo}} (F1 \\textbf{{{fmt_num(f1_sarcasmo_si)}}}) "
+            f"degradan el desempeño respecto a sus contrapartes sin figura retórica "
+            f"(F1 {fmt_num(f1_ironia_no)} e {fmt_num(f1_sarcasmo_no)})."
+        )
+    elif f1_ironia_si is not None:
+        lines.append(
+            f"  \\item \\textbf{{Ironía}} (F1 \\textbf{{{fmt_num(f1_ironia_si)}}}) "
+            f"degrada el desempeño respecto al subconjunto sin ironía."
+        )
+    if f1_pol_si is not None and f1_pol_no is not None:
+        if f1_pol_si >= f1_pol_no:
+            lines.append(
+                "  \\item Contexto político no perjudica; incluso mejora ligeramente "
+                f"(F1 {fmt_num(f1_pol_si)} vs.\\ {fmt_num(f1_pol_no)})."
+            )
+        else:
+            lines.append(
+                "  \\item Contexto político muestra peor desempeño "
+                f"(F1 {fmt_num(f1_pol_si)} vs.\\ {fmt_num(f1_pol_no)})."
+            )
+    lines.append(
+        "  \\item Fuente: \\texttt{reports/metrics/slice\\_metrics.csv}."
+    )
+    lines.append("\\end{itemize}")
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
+def gen_slices_intro():
+    """Snippet breve para la introducción con los cortes más difíciles."""
+    path = REPORTS_METRICS / "slice_metrics.csv"
+    out = GENERATED_DIR / "slices_intro.tex"
+    if not path.exists():
+        out.write_text("% slice_metrics.csv no disponible\n", encoding="utf-8")
+        return
+
+    df = _slice_rows_for_report(pd.read_csv(path))
+    f1_x = _slice_value(df, "plataforma_X")
+    f1_ironia = _slice_value(df, "ironia_si")
+    f1_sarcasmo = _slice_value(df, "sarcasmo_si")
+
+    parts = []
+    if f1_ironia is not None and f1_sarcasmo is not None:
+        parts.append(
+            f"Los cortes más difíciles son ironía (F1 $\\approx$ {fmt_num(f1_ironia, digits=2)}) "
+            f"y sarcasmo (F1 $\\approx$ {fmt_num(f1_sarcasmo, digits=2)})"
+        )
+    if f1_x is not None:
+        suffix = (
+            f", mientras que el desempeño en la plataforma X es sólido "
+            f"(F1 $\\approx$ {fmt_num(f1_x, digits=2)})"
+        )
+        parts[-1] = parts[-1] + suffix if parts else (
+            f"El desempeño en la plataforma X es sólido (F1 $\\approx$ {fmt_num(f1_x, digits=2)})"
+        )
+    if parts:
+        out.write_text(parts[0] + ".\n", encoding="utf-8")
+    else:
+        out.write_text("% slices sin datos suficientes\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
 
 
 def gen_mcnemar():
@@ -435,6 +565,8 @@ def main():
     gen_model_comparison()
     gen_mbert_tables()
     gen_slices()
+    gen_slices_prose()
+    gen_slices_intro()
     gen_mcnemar()
     gen_dialect_bias()
     gen_dialect_bias_prose()

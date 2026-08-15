@@ -137,16 +137,86 @@ def plot_model_comparison_bar(comparison: pd.DataFrame):
     print("Generado: 06_model_comparison_bar.png")
 
 
-def plot_slice_f1():
+def _slice_label(slice_name: str) -> str:
+    labels = {
+        "plataforma_X": "Plataforma X",
+        "plataforma_Facebook": "Plataforma Facebook",
+        "con_jerga": "Con jerga",
+        "sin_jerga": "Sin jerga",
+        "sarcasmo_si": "Sarcasmo sí",
+        "sarcasmo_no": "Sarcasmo no",
+        "ironia_si": "Ironía sí",
+        "ironia_no": "Ironía no",
+        "contexto_politico_si": "Contexto político sí",
+        "contexto_politico_no": "Contexto político no",
+    }
+    return labels.get(slice_name, slice_name.replace("_", " ").title())
+
+
+def _slice_sort_key(slice_name: str) -> tuple[int, str]:
+    order = [
+        "plataforma_X",
+        "plataforma_Facebook",
+        "con_jerga",
+        "sin_jerga",
+        "sarcasmo_si",
+        "sarcasmo_no",
+        "ironia_si",
+        "ironia_no",
+        "contexto_politico_si",
+        "contexto_politico_no",
+    ]
+    if slice_name in order:
+        return (order.index(slice_name), slice_name)
+    return (len(order), slice_name)
+
+
+def plot_slice_f1(model: str | None = "mbert"):
     path = REPORTS_METRICS / "slice_metrics.csv"
     if not path.exists():
         return
     df = pd.read_csv(path)
-    fig, ax = plt.subplots(figsize=(10, 5))
-    colors = plt.cm.Blues(0.4 + 0.5 * (df["f1_macro"] / df["f1_macro"].max()))
-    ax.barh(df["slice"], df["f1_macro"], color=colors)
+    if df.empty:
+        return
+    if "model" in df.columns:
+        if model and model in df["model"].values:
+            df = df[df["model"] == model]
+        elif "model" in df.columns:
+            df = df[df["model"] == df["model"].iloc[0]]
+
+    df = df.copy()
+    df["label"] = df["slice"].map(_slice_label)
+    if "n" in df.columns:
+        df["label"] = df.apply(
+            lambda r: f"{r['label']} (n={int(r['n'])})" if pd.notna(r.get("n")) else r["label"],
+            axis=1,
+        )
+    df = df.sort_values("slice", key=lambda s: s.map(lambda x: _slice_sort_key(x)[0]))
+
+    fig, ax = plt.subplots(figsize=(11, 6))
+    colors = plt.cm.Blues(0.35 + 0.5 * (df["f1_macro"] / max(df["f1_macro"].max(), 1e-6)))
+    y_pos = np.arange(len(df))
+    ax.barh(y_pos, df["f1_macro"], color=colors, xerr=None)
+
+    if {"f1_ci_lo", "f1_ci_hi"}.issubset(df.columns):
+        has_ci = df["f1_ci_lo"].notna() & df["f1_ci_hi"].notna()
+        if has_ci.any():
+            xerr_lo = df.loc[has_ci, "f1_macro"] - df.loc[has_ci, "f1_ci_lo"]
+            xerr_hi = df.loc[has_ci, "f1_ci_hi"] - df.loc[has_ci, "f1_macro"]
+            ax.errorbar(
+                df.loc[has_ci, "f1_macro"],
+                np.where(has_ci)[0],
+                xerr=[xerr_lo, xerr_hi],
+                fmt="none",
+                ecolor="#333333",
+                capsize=3,
+            )
+
+    ax.set_yticks(y_pos)
+    ax.set_yticklabels(df["label"])
     ax.set_xlabel("F1-macro")
-    ax.set_title("F1-macro por corte (slice)")
+    title_model = "mBERT" if model == "mbert" else (model or "")
+    ax.set_title(f"F1-macro por corte (slice){' — ' + title_model if title_model else ''}")
     ax.invert_yaxis()
     for i, v in enumerate(df["f1_macro"]):
         ax.text(v + 0.01, i, f"{v:.3f}", va="center", fontsize=8)

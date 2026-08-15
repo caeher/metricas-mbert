@@ -22,7 +22,13 @@ from discurso_odio.config import load_settings
 from discurso_odio.data.loaders import load_split
 from discurso_odio.evaluation.benchmark import run_benchmark
 from discurso_odio.evaluation.metrics import bootstrap_ci, compute_all_metrics, mcnemar_test
-from discurso_odio.evaluation.slices import dialect_bias_probe, export_dialect_bias, slice_metrics
+from discurso_odio.evaluation.slices import (
+    dialect_bias_probe,
+    export_dialect_bias,
+    export_slice_metrics,
+    slice_metrics,
+    slice_metrics_to_rows,
+)
 from discurso_odio.models.mbert import predict, train_mbert
 from discurso_odio.paths import MODELS_DIR, REPORTS_FIGURES, REPORTS_METRICS, TEST_CSV
 from discurso_odio.utils.plotting import setup_plot_style
@@ -84,6 +90,18 @@ def run_evaluation():
     metrics["f1_bootstrap_hi"] = f1_hi
 
     slices = slice_metrics(test, y_true, y_pred, y_prob)
+    slice_rows = slice_metrics_to_rows(
+        slices,
+        model="mbert",
+        checkpoint=str(model_dir),
+        split=TEST_CSV.name,
+        n_test=len(test),
+    )
+    export_slice_metrics(
+        pd.DataFrame(slice_rows),
+        REPORTS_METRICS,
+        extra_metadata={"xlmr_status": "not_requested"},
+    )
     bias = dialect_bias_probe(
         test,
         y_true,
@@ -98,9 +116,6 @@ def run_evaluation():
     with open(model_dir / "test_metrics.json", "w", encoding="utf-8") as f:
         json.dump(export, f, indent=2)
     pd.DataFrame([export]).to_csv(REPORTS_METRICS / "mbert_test_metrics.csv", index=False)
-
-    slice_rows = [{"slice": k, "f1_macro": v["f1_macro"], "accuracy": v["accuracy"]} for k, v in slices.items()]
-    pd.DataFrame(slice_rows).to_csv(REPORTS_METRICS / "slice_metrics.csv", index=False)
 
     mcnemar_rows = []
     for name in ["logisticregression", "linearsvc", "multinomialnb"]:

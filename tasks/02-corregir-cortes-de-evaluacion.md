@@ -22,9 +22,9 @@ Calcular de forma robusta los cortes por plataforma, jerga, sarcasmo, ironía y 
 
 ## Criterios de aceptación
 
-- [ ] Los tres nombres de columna se resuelven correctamente en el conjunto de prueba.
-- [ ] Los valores `SI` y `SÍ` se agrupan como positivos; `NO` como negativo.
-- [ ] La tabla de cortes contiene resultados y `n` para sarcasmo, ironía y contexto político cuando existan observaciones.
-- [ ] La figura y el texto del informe se regeneran desde la tabla exportada, sin barras o cifras manuales.
-- [ ] Las pruebas cubren los nombres de columna y las codificaciones de los indicadores.
+- [x] Los tres nombres de columna se resuelven correctamente en el conjunto de prueba.
+- [x] Los valores `SI` y `SÍ` se agrupan como positivos; `NO` como negativo.
+- [x] La tabla de cortes contiene resultados y `n` para sarcasmo, ironía y contexto político cuando existan observaciones.
+- [x] La figura y el texto del informe se regeneran desde la tabla exportada, sin barras o cifras manuales.
+- [x] Las pruebas cubren los nombres de columna y las codificaciones de los indicadores.
 

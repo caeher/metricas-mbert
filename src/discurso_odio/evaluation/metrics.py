@@ -154,7 +154,11 @@ def compute_all_metrics(
             metrics["brier_macro"] = None
 
     metrics["classification_report"] = classification_report(
-        y_true, y_pred, target_names=label_names, zero_division=0
+        y_true,
+        y_pred,
+        labels=list(range(n_classes)),
+        target_names=label_names,
+        zero_division=0,
     )
     return metrics
 

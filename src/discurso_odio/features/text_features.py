@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import pandas as pd
 
+from discurso_odio.evaluation.indicators import normalize_indicator, resolve_slice_columns
 from discurso_odio.features.normalization import (
     has_accents_or_enye,
     has_mention_literal,
@@ -11,10 +12,6 @@ from discurso_odio.features.normalization import (
     has_uppercase,
     has_url_literal,
 )
-
-
-def _to_bool(series: pd.Series) -> pd.Series:
-    return series.astype(str).str.upper().isin(["SI", "SÍ", "YES", "TRUE", "1"])
 
 
 def build_text_features(df: pd.DataFrame) -> pd.DataFrame:
@@ -41,13 +38,16 @@ def build_text_features(df: pd.DataFrame) -> pd.DataFrame:
     if "Plataforma" in out.columns:
         out["es_x"] = (out["Plataforma"].str.upper() == "X").astype(int)
 
-    for col, out_col in [
-        ("Presencia_Sarcasmo", "sarcasmo"),
-        ("Presencia_Ironia", "ironia"),
-        ("Contexto_Politico", "contexto_politico"),
-    ]:
-        if col in out.columns:
-            out[out_col] = _to_bool(out[col]).astype(int)
+    resolved = resolve_slice_columns(out)
+    feature_names = {
+        "Presencia_Sarcasmo": "sarcasmo",
+        "Presencia_Ironia": "ironia",
+        "Contexto_Politico": "contexto_politico",
+    }
+    for canonical, out_col in feature_names.items():
+        col = resolved.get(canonical)
+        if col is not None:
+            out[out_col] = normalize_indicator(out[col]).fillna(False).astype(int)
 
     if "n_jerga" in out.columns:
         out["dialecto_salvadoreno"] = (out["n_jerga"] > 0).astype(int)

@@ -301,10 +301,24 @@ for baseline_name in ['logisticregression', 'linearsvc', 'multinomialnb']:
         mcnemar_results.append({'baseline': baseline_name, **mcn})
 pd.DataFrame(mcnemar_results)"""),
         code("""# Métricas por cortes
-from discurso_odio.evaluation.slices import export_dialect_bias
+from discurso_odio.evaluation.slices import (
+    dialect_bias_probe,
+    export_dialect_bias,
+    export_slice_metrics,
+    slice_metrics_to_rows,
+)
 from discurso_odio.paths import TEST_CSV
 
 slices = slice_metrics(test, y_true, y_pred, y_prob)
+slice_rows = slice_metrics_to_rows(
+    slices,
+    model='mbert',
+    checkpoint=str(model_dir),
+    split=TEST_CSV.name,
+    n_test=len(test),
+)
+slice_summary = pd.DataFrame(slice_rows)
+export_slice_metrics(slice_summary, REPORTS_METRICS, extra_metadata={'xlmr_status': 'not_requested'})
 bias = dialect_bias_probe(
     test, y_true, y_pred,
     model='mbert',
@@ -314,7 +328,6 @@ bias = dialect_bias_probe(
 export_dialect_bias(bias, REPORTS_METRICS, extra_metadata={'xlmr_status': 'not_requested'})
 print('Sonda sesgo dialectal:')
 print(bias[['group', 'n', 'fp', 'fpr', 'fpr_ci_lo', 'fpr_ci_hi']].to_string(index=False))
-slice_summary = pd.DataFrame({k: {'f1_macro': v['f1_macro'], 'accuracy': v['accuracy']} for k,v in slices.items()}).T
 slice_summary"""),
         code("""# Matriz de confusión
 from sklearn.metrics import ConfusionMatrixDisplay

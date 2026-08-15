@@ -1,4 +1,4 @@
-"""Métricas por cortes (plataforma, jerga, sarcasmo, ironía)."""
+"""Métricas por cortes (plataforma, jerga, sarcasmo, ironía, contexto político)."""
 
 from __future__ import annotations
 
@@ -11,15 +11,63 @@ from uuid import uuid4
 
 import numpy as np
 import pandas as pd
+from sklearn.metrics import f1_score
 
-from discurso_odio.evaluation.metrics import compute_all_metrics
+from discurso_odio.evaluation.indicators import normalize_indicator, resolve_slice_columns
+from discurso_odio.evaluation.metrics import bootstrap_ci, compute_all_metrics
 
 JERGA_DEFINITION = "n_jerga > 0"
 DIALECT_BIAS_GROUPS = ("con_jerga", "sin_jerga")
+MIN_SLICE_N_FOR_CI = 30
+
+INDICATOR_SLICE_DEFS: tuple[tuple[str, str], ...] = (
+    ("Presencia_Sarcasmo", "sarcasmo"),
+    ("Presencia_Ironia", "ironia"),
+    ("Contexto_Politico", "contexto_politico"),
+)
 
 
-def _to_bool(series: pd.Series) -> pd.Series:
-    return series.astype(str).str.upper().isin(["SI", "SÍ", "YES", "TRUE", "1"])
+def _empty_slice_metrics() -> dict[str, Any]:
+    return {
+        "n": 0,
+        "f1_macro": float("nan"),
+        "accuracy": float("nan"),
+        "f1_ci_lo": float("nan"),
+        "f1_ci_hi": float("nan"),
+    }
+
+
+def _compute_slice_entry(
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+    y_prob: np.ndarray | None,
+    mask: np.ndarray,
+) -> dict[str, Any]:
+    n = int(mask.sum())
+    if n == 0:
+        return _empty_slice_metrics()
+
+    yt = y_true[mask]
+    yp = y_pred[mask]
+    prob_slice = y_prob[mask] if y_prob is not None else None
+    metrics = compute_all_metrics(yt, yp, prob_slice)
+
+    f1_ci_lo = float("nan")
+    f1_ci_hi = float("nan")
+    if n >= MIN_SLICE_N_FOR_CI and len(np.unique(yt)) >= 2:
+        _, f1_ci_lo, f1_ci_hi = bootstrap_ci(
+            yt,
+            yp,
+            lambda y_t, y_p: f1_score(y_t, y_p, average="macro", zero_division=0),
+        )
+
+    return {
+        "n": n,
+        "f1_macro": float(metrics["f1_macro"]),
+        "accuracy": float(metrics["accuracy"]),
+        "f1_ci_lo": f1_ci_lo,
+        "f1_ci_hi": f1_ci_hi,
+    }
 
 
 def slice_metrics(
@@ -27,45 +75,75 @@ def slice_metrics(
     y_true: np.ndarray,
     y_pred: np.ndarray,
     y_prob: np.ndarray | None = None,
+    *,
+    include_empty_slices: bool = True,
 ) -> dict[str, dict[str, Any]]:
     """Calcula métricas por subconjuntos relevantes."""
     results: dict[str, dict[str, Any]] = {}
     work = df.copy()
-    work["_y_true"] = y_true
-    work["_y_pred"] = y_pred
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
 
     if "Plataforma" in work.columns:
-        for platform in work["Plataforma"].unique():
-            mask = work["Plataforma"] == platform
-            idx = mask.values
-            prob_slice = y_prob[idx] if y_prob is not None else None
-            results[f"plataforma_{platform}"] = compute_all_metrics(
-                y_true[idx], y_pred[idx], prob_slice
-            )
+        for platform in sorted(work["Plataforma"].dropna().unique(), key=str):
+            mask = (work["Plataforma"] == platform).values
+            entry = _compute_slice_entry(y_true, y_pred, y_prob, mask)
+            if include_empty_slices or entry["n"] > 0:
+                results[f"plataforma_{platform}"] = entry
 
     if "n_jerga" in work.columns:
         for label, cond in [("con_jerga", work["n_jerga"] > 0), ("sin_jerga", work["n_jerga"] == 0)]:
-            idx = cond.values
-            prob_slice = y_prob[idx] if y_prob is not None else None
-            results[label] = compute_all_metrics(y_true[idx], y_pred[idx], prob_slice)
+            mask = cond.values
+            entry = _compute_slice_entry(y_true, y_pred, y_prob, mask)
+            if include_empty_slices or entry["n"] > 0:
+                results[label] = entry
 
-    for col, name in [
-        ("Presencia_Sarcasmo", "sarcasmo"),
-        ("Presencia_Ironia", "ironia"),
-        ("Contexto_Politico", "contexto_politico"),
-    ]:
-        if col in work.columns:
-            for val, flag in [("si", True), ("no", False)]:
-                mask = _to_bool(work[col]) == flag
-                idx = mask.values
-                if idx.sum() == 0:
-                    continue
-                prob_slice = y_prob[idx] if y_prob is not None else None
-                results[f"{name}_{val}"] = compute_all_metrics(
-                    y_true[idx], y_pred[idx], prob_slice
-                )
+    resolved = resolve_slice_columns(work)
+    for canonical, slice_name in INDICATOR_SLICE_DEFS:
+        col = resolved.get(canonical)
+        if col is None:
+            continue
+        normalized = normalize_indicator(work[col])
+        for suffix, flag in [("si", True), ("no", False)]:
+            mask = (normalized == flag).fillna(False).values
+            entry = _compute_slice_entry(y_true, y_pred, y_prob, mask)
+            if include_empty_slices or entry["n"] > 0:
+                results[f"{slice_name}_{suffix}"] = entry
 
     return results
+
+
+def slice_metrics_to_rows(
+    slices: dict[str, dict[str, Any]],
+    *,
+    model: str,
+    checkpoint: str,
+    split: str,
+    run_id: str | None = None,
+    n_test: int | None = None,
+) -> list[dict[str, Any]]:
+    """Convierte el dict de slice_metrics en filas tabulares exportables."""
+    run_id = run_id or str(uuid4())
+    rows: list[dict[str, Any]] = []
+    for slice_name, metrics in sorted(slices.items()):
+        if metrics.get("n", 0) == 0:
+            continue
+        rows.append(
+            {
+                "run_id": run_id,
+                "model": model,
+                "checkpoint": checkpoint,
+                "split": split,
+                "n_test": n_test,
+                "slice": slice_name,
+                "n": metrics["n"],
+                "f1_macro": metrics["f1_macro"],
+                "accuracy": metrics["accuracy"],
+                "f1_ci_lo": metrics.get("f1_ci_lo", float("nan")),
+                "f1_ci_hi": metrics.get("f1_ci_hi", float("nan")),
+            }
+        )
+    return rows
 
 
 def _wilson_ci(fp: int, n: int, alpha: float = 0.05) -> tuple[float, float]:
@@ -187,6 +265,34 @@ def export_dialect_bias(
         "git_commit": _git_commit(),
         "jerga_definition": JERGA_DEFINITION,
         "rows": probe_df.to_dict(orient="records"),
+    }
+    if extra_metadata:
+        metadata.update(extra_metadata)
+
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(metadata, f, indent=2, ensure_ascii=False)
+
+    return csv_path, json_path
+
+
+def export_slice_metrics(
+    slice_df: pd.DataFrame,
+    output_dir: Path,
+    *,
+    extra_metadata: dict[str, Any] | None = None,
+) -> tuple[Path, Path]:
+    """Exporta métricas por cortes a CSV y JSON con metadatos de ejecución."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    csv_path = output_dir / "slice_metrics.csv"
+    json_path = output_dir / "slice_metrics.json"
+
+    slice_df.to_csv(csv_path, index=False)
+
+    metadata: dict[str, Any] = {
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "git_commit": _git_commit(),
+        "min_n_for_ci": MIN_SLICE_N_FOR_CI,
+        "rows": slice_df.to_dict(orient="records"),
     }
     if extra_metadata:
         metadata.update(extra_metadata)

@@ -1,0 +1,18 @@
+{
+  "created_at": "2026-08-15T22:37:00+00:00",
+  "git_commit": null,
+  "min_n_for_ci": 30,
+  "xlmr_status": "predictions_not_found",
+  "rows": [
+    {"run_id": "legacy-regen", "model": "mbert", "checkpoint": "models/mbert-sv", "split": "test.csv", "n_test": 460, "slice": "plataforma_X", "n": 228, "f1_macro": 0.8386321195144724, "accuracy": 0.8421052631578947, "f1_ci_lo": null, "f1_ci_hi": null},
+    {"run_id": "legacy-regen", "model": "mbert", "checkpoint": "models/mbert-sv", "split": "test.csv", "n_test": 460, "slice": "plataforma_Facebook", "n": 232, "f1_macro": 0.6726629360019483, "accuracy": 0.7241379310344828, "f1_ci_lo": null, "f1_ci_hi": null},
+    {"run_id": "legacy-regen", "model": "mbert", "checkpoint": "models/mbert-sv", "split": "test.csv", "n_test": 460, "slice": "con_jerga", "n": 278, "f1_macro": 0.7631940137550643, "accuracy": 0.7949640287769785, "f1_ci_lo": null, "f1_ci_hi": null},
+    {"run_id": "legacy-regen", "model": "mbert", "checkpoint": "models/mbert-sv", "split": "test.csv", "n_test": 460, "slice": "sin_jerga", "n": 182, "f1_macro": 0.6893451171888357, "accuracy": 0.7637362637362637, "f1_ci_lo": null, "f1_ci_hi": null},
+    {"run_id": "legacy-regen", "model": "mbert", "checkpoint": "models/mbert-sv", "split": "test.csv", "n_test": 460, "slice": "sarcasmo_si", "n": 90, "f1_macro": 0.5881212933323406, "accuracy": 0.7444444444444445, "f1_ci_lo": null, "f1_ci_hi": null},
+    {"run_id": "legacy-regen", "model": "mbert", "checkpoint": "models/mbert-sv", "split": "test.csv", "n_test": 460, "slice": "sarcasmo_no", "n": 370, "f1_macro": 0.7922595201586449, "accuracy": 0.7918918918918919, "f1_ci_lo": null, "f1_ci_hi": null},
+    {"run_id": "legacy-regen", "model": "mbert", "checkpoint": "models/mbert-sv", "split": "test.csv", "n_test": 460, "slice": "ironia_si", "n": 59, "f1_macro": 0.5246621194897058, "accuracy": 0.7457627118644068, "f1_ci_lo": null, "f1_ci_hi": null},
+    {"run_id": "legacy-regen", "model": "mbert", "checkpoint": "models/mbert-sv", "split": "test.csv", "n_test": 460, "slice": "ironia_no", "n": 401, "f1_macro": 0.7871280251721098, "accuracy": 0.7880299251870324, "f1_ci_lo": null, "f1_ci_hi": null},
+    {"run_id": "legacy-regen", "model": "mbert", "checkpoint": "models/mbert-sv", "split": "test.csv", "n_test": 460, "slice": "contexto_politico_si", "n": 92, "f1_macro": 0.7874743767238697, "accuracy": 0.8695652173913043, "f1_ci_lo": null, "f1_ci_hi": null},
+    {"run_id": "legacy-regen", "model": "mbert", "checkpoint": "models/mbert-sv", "split": "test.csv", "n_test": 460, "slice": "contexto_politico_no", "n": 368, "f1_macro": 0.7608069901115098, "accuracy": 0.7608695652173914, "f1_ci_lo": null, "f1_ci_hi": null}
+  ]
+}
