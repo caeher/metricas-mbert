@@ -8,6 +8,8 @@ import logging
 import sys
 from pathlib import Path
 
+import pandas as pd
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from discurso_odio.data.loaders import load_split
@@ -18,9 +20,9 @@ from discurso_odio.evaluation.predictions import (
     export_predictions_csv,
     validate_prediction_vector,
 )
-from discurso_odio.models.inference_contract import get_inference_contract
-from discurso_odio.models.mbert import predict
-from discurso_odio.paths import MODELS_DIR, REPORTS_METRICS, TEST_CSV
+from discurso_odio.models.inference_contract import resolve_inference_contract
+from discurso_odio.models.mbert import default_mbert_model_dir, ensure_checkpoint_contract, predict
+from discurso_odio.paths import REPORTS_METRICS, TEST_CSV
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -33,18 +35,23 @@ def export_mbert_predictions(
     output_csv: Path | None = None,
     output_json: Path | None = None,
 ) -> tuple[Path, Path]:
-    contract = get_inference_contract()
-    model_dir = model_dir or MODELS_DIR / "mbert-sv"
+    model_dir = model_dir or default_mbert_model_dir()
+    contract = resolve_inference_contract(model_dir)
     max_length = contract.validate_max_length(max_length)
     output_csv = output_csv or MBERT_PREDICTIONS_PATH
     output_json = output_json or MBERT_PREDICTIONS_JSON
 
+    ensure_checkpoint_contract(model_dir)
     test = load_split("test")
     logger.info("Inferencia mBERT sobre %d instancias desde %s", len(test), model_dir)
 
-    y_pred, _ = predict(test["texto_modelo"].tolist(), model_dir)
-    import pandas as pd
-
+    text_col = contract.text_column
+    y_pred, _ = predict(
+        test[text_col].tolist(),
+        model_dir,
+        max_length=max_length,
+        normalize=True,
+    )
     pred_df = pd.DataFrame({"id": test["ID"].values, MBERT_PRED_COL: y_pred})
     validate_prediction_vector(test, pred_df, MBERT_PRED_COL, "mBERT")
 
@@ -70,13 +77,29 @@ def main():
     parser.add_argument(
         "--model-dir",
         type=Path,
-        default=MODELS_DIR / "mbert-sv",
-        help="Directorio del checkpoint mBERT",
+        default=None,
+        help="Directorio del checkpoint mBERT (default: models/mbert-sv)",
+    )
+    parser.add_argument(
+        "--max-length",
+        type=int,
+        default=None,
+        help="Longitud máxima de tokenización (debe coincidir con inference_contract)",
+    )
+    parser.add_argument(
+        "--output-csv",
+        type=Path,
+        default=MBERT_PREDICTIONS_PATH,
+        help="Ruta del CSV de salida",
     )
     args = parser.parse_args()
 
     REPORTS_METRICS.mkdir(parents=True, exist_ok=True)
-    export_mbert_predictions(model_dir=args.model_dir)
+    export_mbert_predictions(
+        model_dir=args.model_dir,
+        max_length=args.max_length,
+        output_csv=args.output_csv,
+    )
 
 
 if __name__ == "__main__":

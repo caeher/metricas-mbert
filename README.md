@@ -136,6 +136,25 @@ pytest tests/test_colab_zip.py -v
 
 Ver también [`docs/colab-run-log.md`](docs/colab-run-log.md) para el checklist paso a paso en Colab.
 
+## Checkpoint mBERT (auditoría)
+
+Los pesos fine-tuned **no** se versionan en Git (`models/mbert-sv/` está en `.gitignore`).
+El paquete de auditoría autocontenido es `artifacts/mbert-sv-audit.zip` (tokenizer,
+`model.safetensors`, `inference_contract.json` y `MANIFEST.json` con SHA-256).
+
+```powershell
+python scripts/package_mbert_checkpoint.py
+python scripts/export_mbert_predictions.py
+python scripts/verify_mbert_checkpoint.py --package artifacts/mbert-sv-audit.zip
+```
+
+Guía: [`docs/guia-inferencia-mbert.md`](docs/guia-inferencia-mbert.md).
+Distribución a revisores: Google Drive (mismo canal que Colab). Pegar la URL
+en el manifiesto con `--artifact-url` al publicar. F1-macro oficial del
+checkpoint: **0.7777** (tolerancia `1e-4`) sobre `data/processed/test.csv` (n = 460).
+El test B2 añade `origen`/`plantilla_id` sin cambiar IDs ni etiquetas; el
+checkpoint sigue siendo el de train v1 (`checkpoint-1072`).
+
 ## Licencia
 
 Investigación académica — UES ESI 2026.

@@ -49,4 +49,11 @@ cuando el historial del \texttt{Trainer} está disponible.
 
 El checkpoint final se guarda en \texttt{models/mbert-sv/} y se usa para todas
 las evaluaciones posteriores (test local, slices, benchmark e
-interpretabilidad).
+interpretabilidad). Los pesos no se versionan en Git: el paquete de auditoría
+(\texttt{artifacts/mbert-sv-audit.zip}) incluye \texttt{model.safetensors},
+tokenizer, \texttt{inference_contract.json} y un manifiesto SHA-256 con
+commit, semilla 42, \texttt{max\_length=128}, normalizador
+\texttt{normalize\_for\_model} y hash de \texttt{data/processed/test.csv}.
+Se obtiene por el canal de artefactos (Google Drive / tesina); la guía de
+carga está en \texttt{docs/guia-inferencia-mbert.md}. El F1-macro oficial
+ligado a este checkpoint es $0{,}7777$ (tolerancia $10^{-4}$).

@@ -1,10 +1,13 @@
 {
-  "created_at": "2026-08-15T23:15:03.943635+00:00",
-  "git_commit": "6ad2c70d0b561a1c1df577feb41b8e27cf89d6d2",
+  "created_at": "2026-08-16T01:44:27.664341+00:00",
+  "git_commit": "9ee042a6900a2c55d6ba9c122e63a422bd48089f",
   "model": "mbert",
   "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\models\\mbert-sv",
   "split": "test.csv",
   "n": 460,
   "max_length": 128,
-  "pred_column": "y_pred_mbert"
+  "pred_column": "y_pred_mbert",
+  "text_column": "texto_modelo",
+  "normalizer": "normalize_for_model",
+  "normalizer_version": "1.1"
 }

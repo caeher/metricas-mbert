@@ -13,12 +13,17 @@ dist/
 *.ipynb_checkpoints
 models/mbert-sv/
 models/mbert-sv-agresivo/
+artifacts/
 data/external/
 reports/figures/*.png
 reports/metrics/*.csv
 !reports/metrics/xlmr_test_predictions.csv
 !reports/metrics/xlmr_test_predictions.json
 !reports/metrics/mcnemar_tests.csv
+!reports/metrics/mbert_test_predictions.csv
+!reports/metrics/mbert_test_predictions.json
+!reports/metrics/mbert_checkpoint_manifest.json
+!reports/metrics/mbert_checkpoint_verify.json
 reports/tables/*.md
 reports/latex/figures/*.png
 reports/latex/main.docx

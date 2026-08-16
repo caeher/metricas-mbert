@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -23,8 +22,24 @@ from transformers import (
 
 from discurso_odio.config import get_max_steps, get_training_config, load_settings
 from discurso_odio.data.loaders import get_class_weights
-from discurso_odio.models.inference_contract import get_inference_contract, write_inference_contract
+from discurso_odio.models.inference_contract import (
+    apply_normalization,
+    get_inference_contract,
+    resolve_inference_contract,
+    write_inference_contract,
+)
+from discurso_odio.paths import MODELS_DIR
 from discurso_odio.utils.seed import set_seed
+
+
+def default_mbert_model_dir() -> Path:
+    return MODELS_DIR / "mbert-sv"
+
+
+def ensure_checkpoint_contract(model_dir: str | Path | None = None) -> Path:
+    """Escribe inference_contract.json en el directorio del checkpoint."""
+    model_dir = Path(model_dir) if model_dir else default_mbert_model_dir()
+    return write_inference_contract(model_dir, get_inference_contract())
 
 
 def get_device() -> torch.device:
@@ -174,24 +189,40 @@ def train_mbert(
 
 def predict(
     texts: list[str],
-    model_dir: str | Path,
+    model_dir: str | Path | None = None,
     batch_size: int = 16,
+    *,
+    max_length: int | None = None,
+    normalize: bool = True,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Devuelve (predicciones, probabilidades)."""
-    contract = get_inference_contract()
+    """Devuelve (predicciones, probabilidades) usando el contrato del checkpoint."""
+    model_dir = Path(model_dir) if model_dir else default_mbert_model_dir()
+    if not model_dir.exists():
+        raise FileNotFoundError(f"Checkpoint mBERT no encontrado: {model_dir}")
+
+    contract = resolve_inference_contract(model_dir)
+    max_length = contract.validate_max_length(max_length)
     device = get_device()
-    tokenizer = AutoTokenizer.from_pretrained(model_dir)
-    model = AutoModelForSequenceClassification.from_pretrained(model_dir)
+
+    if normalize:
+        texts = apply_normalization(texts, contract)
+
+    tokenizer = AutoTokenizer.from_pretrained(str(model_dir))
+    model = AutoModelForSequenceClassification.from_pretrained(str(model_dir))
     model.to(device)
     model.eval()
 
-    max_length = contract.max_length
-    all_preds, all_probs = [], []
+    all_preds: list[np.ndarray] = []
+    all_probs: list[np.ndarray] = []
 
     for i in range(0, len(texts), batch_size):
         batch = texts[i : i + batch_size]
         enc = tokenizer(
-            batch, truncation=True, padding=True, max_length=max_length, return_tensors="pt"
+            batch,
+            truncation=True,
+            padding=True,
+            max_length=max_length,
+            return_tensors="pt",
         )
         enc = {k: v.to(device) for k, v in enc.items()}
         with torch.no_grad():

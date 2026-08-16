@@ -23,9 +23,25 @@ Entregar el modelo mBERT exacto que produjo las métricas oficiales junto con lo
 
 ## Criterios de aceptación
 
-- [ ] El paquete permite cargar mBERT sin depender de archivos locales no declarados.
-- [ ] El manifiesto identifica de forma única el checkpoint, commit, hashes, semilla, normalización y `max_length`.
-- [ ] Una ejecución independiente sobre `data/processed/test.csv` reproduce el F1-macro oficial dentro de la tolerancia numérica declarada.
-- [ ] El paquete incluye o genera 460 predicciones alineadas con el test y con etiquetas de 0 a 3.
-- [ ] Los pesos siguen fuera del índice de Git, pero el informe registra dónde obtener el paquete de auditoría.
+- [x] El paquete permite cargar mBERT sin depender de archivos locales no declarados.
+- [x] El manifiesto identifica de forma única el checkpoint, commit, hashes, semilla, normalización y `max_length`.
+- [x] Una ejecución independiente sobre `data/processed/test.csv` reproduce el F1-macro oficial dentro de la tolerancia numérica declarada.
+- [x] El paquete incluye o genera 460 predicciones alineadas con el test y con etiquetas de 0 a 3.
+- [x] Los pesos siguen fuera del índice de Git, pero el informe registra dónde obtener el paquete de auditoría.
+
+## Evidencia T-02
+
+| Artefacto | Rol |
+|-----------|-----|
+| `artifacts/mbert-sv-audit.zip` | Paquete de auditoría (gitignored, ~630 MB) |
+| `reports/metrics/mbert_checkpoint_manifest.json` | Commit, semilla 42, `checkpoint-1072`, SHA-256, contrato |
+| `reports/metrics/mbert_test_predictions.csv` | 460 predicciones `id,y_pred_mbert` (etiquetas 0–3) |
+| `reports/metrics/mbert_checkpoint_verify.json` | F1-macro 0.777719 vs oficial 0.7777, `passed: true` |
+| `docs/guia-inferencia-mbert.md` | Guía de carga e inferencia |
+
+```powershell
+python scripts/package_mbert_checkpoint.py
+python scripts/export_mbert_predictions.py
+python scripts/verify_mbert_checkpoint.py --package artifacts/mbert-sv-audit.zip
+```
 

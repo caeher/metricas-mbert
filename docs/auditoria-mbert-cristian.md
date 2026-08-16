@@ -20,7 +20,7 @@
 - **Resultado global:** mBERT queda por debajo de XLM-R en el punto estimado (~2 pp de F1-macro), pero los intervalos de confianza al 95 % **se solapan**; con n = 460 la diferencia no es estadísticamente distinguible del ruido de muestreo.
 - **Hallazgo crítico compartido (#4):** falta la prueba de McNemar pareada mBERT vs XLM-R. Cristian ya tiene la función; depende de que Julio exporte el vector de predicciones de XLM-R.
 - **Hallazgo propio de Cristian (#5):** error en la fórmula del baseline trivial de clase mayoritaria (0.087 informado vs 0.128 correcto). Impacto práctico bajo, pero genera inconsistencia con el informe de preparación de datos v1.1 (0.129).
-- **Entrega pendiente (#8):** incluir los pesos de `models/mbert-sv/` en la entrega para permitir verificación independiente y pruebas de robustez.
+- **Entrega de pesos (#8):** paquete de auditoría `artifacts/mbert-sv-audit.zip` (T-02), con manifiesto SHA-256 y guía de inferencia. Los pesos siguen fuera de Git.
 
 ---
 
@@ -173,15 +173,15 @@ f1_majority = sum(f1_per_class) / k  # → 0.128 con test actual
 | **Responsable** | Cristian |
 | **Descripción** | Sin `model.safetensors` (y artefactos asociados) la auditoría no puede reproducir métricas ni correr robustez adversarial sobre mBERT. |
 | **Evidencia en repo** | Pesos en `resultados-metricas/models/mbert-sv/`; `models/mbert-sv/` en `.gitignore` (línea 14). |
-| **Estado** | Pendiente de entrega formal (ZIP/Drive/compartido con auditoría). |
+| **Estado** | Entrega formal T-02. Pesos fuera de Git; paquete `artifacts/mbert-sv-audit.zip` + manifiesto `reports/metrics/mbert_checkpoint_manifest.json`. |
 
 **Checklist de entrega mínima:**
 
-- [ ] `models/mbert-sv/model.safetensors`
-- [ ] `models/mbert-sv/config.json`
-- [ ] `models/mbert-sv/tokenizer.json` + `tokenizer_config.json`
-- [ ] `models/mbert-sv/test_metrics.json` (opcional, trazabilidad)
-- [ ] Instrucciones de inferencia (`texto_modelo`, `max_length=128`)
+- [x] `models/mbert-sv/model.safetensors`
+- [x] `models/mbert-sv/config.json`
+- [x] `models/mbert-sv/tokenizer.json` + `tokenizer_config.json`
+- [x] `models/mbert-sv/test_metrics.json` (opcional, trazabilidad)
+- [x] Instrucciones de inferencia (`texto_modelo`, `max_length=128`) — `docs/guia-inferencia-mbert.md`
 
 ---
 
@@ -193,7 +193,7 @@ f1_majority = sum(f1_per_class) / k  # → 0.128 con test actual
 |---|------------|-----------|-------------|-------------------|
 | 4 | Exportar predicciones XLM-R y ejecutar McNemar pareado vs mBERT | **Crítica** | Julio + Cristian | Fila `xlm-roberta` en `mcnemar_tests.csv`; párrafo en informe con estadístico y p-value |
 | 5 | Corregir fórmula baseline clase mayoritaria → **0.128**; alinear con informe v1.1 | **Alta** | Cristian | `trivial_baselines()` corregida; CSV/LaTeX regenerados; test unitario |
-| 8 | Entregar pesos `models/mbert-sv/` para verificación y robustez | **Alta** | Cristian | Auditoría confirma reproducción de F1-macro ± tolerancia numérica |
+| 8 | Entregar pesos `models/mbert-sv/` para verificación y robustez | **Alta** | Cristian | Auditoría confirma reproducción de F1-macro ± tolerancia numérica. **T-02:** ZIP `artifacts/mbert-sv-audit.zip`, manifiesto SHA-256, 460 predicciones, verificación en `reports/metrics/mbert_checkpoint_verify.json`. |
 
 ### Siguiente iteración (recomendaciones de la auditoría, aplicables a mBERT)
 
