@@ -1,12 +1,12 @@
 {
-  "created_at": "2026-08-16T00:13:07.089735+00:00",
-  "git_commit": "5c8931b9f81b1dc57307a7d441b9b6e681ae3823",
+  "created_at": "2026-08-16T02:36:37.423670+00:00",
+  "git_commit": "2a31768080ff23ea939d6b326a081115bbcee8ff",
   "jerga_definition": "n_jerga > 0",
   "rows": [
     {
-      "run_id": "1490df85-4cbd-4107-9472-bfdac0d9a2fb",
+      "run_id": "0f93eb01-69e5-4807-ac78-bbc1f7b66cbb",
       "model": "mbert",
-      "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\models\\mbert-sv",
+      "checkpoint": "checkpoint-1072",
       "split": "test.csv",
       "n_test": 460,
       "group": "con_jerga",
@@ -18,9 +18,9 @@
       "jerga_definition": "n_jerga > 0"
     },
     {
-      "run_id": "1490df85-4cbd-4107-9472-bfdac0d9a2fb",
+      "run_id": "0f93eb01-69e5-4807-ac78-bbc1f7b66cbb",
       "model": "mbert",
-      "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\models\\mbert-sv",
+      "checkpoint": "checkpoint-1072",
       "split": "test.csv",
       "n_test": 460,
       "group": "sin_jerga",
@@ -32,7 +32,7 @@
       "jerga_definition": "n_jerga > 0"
     },
     {
-      "run_id": "1490df85-4cbd-4107-9472-bfdac0d9a2fb",
+      "run_id": "0f93eb01-69e5-4807-ac78-bbc1f7b66cbb",
       "model": "xlm-roberta",
       "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\reports\\metrics\\xlmr_test_predictions.csv",
       "split": "test.csv",
@@ -41,12 +41,12 @@
       "n": 29,
       "fp": 13,
       "fpr": 0.4482758620689655,
-      "fpr_ci_lo": 0.28413168023037194,
+      "fpr_ci_lo": 0.2841316802303719,
       "fpr_ci_hi": 0.6245203678902908,
       "jerga_definition": "n_jerga > 0"
     },
     {
-      "run_id": "1490df85-4cbd-4107-9472-bfdac0d9a2fb",
+      "run_id": "0f93eb01-69e5-4807-ac78-bbc1f7b66cbb",
       "model": "xlm-roberta",
       "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\reports\\metrics\\xlmr_test_predictions.csv",
       "split": "test.csv",
@@ -55,12 +55,15 @@
       "n": 94,
       "fp": 15,
       "fpr": 0.1595744680851064,
-      "fpr_ci_lo": 0.09915613688605258,
-      "fpr_ci_hi": 0.24672442569542474,
+      "fpr_ci_lo": 0.0991561368860525,
+      "fpr_ci_hi": 0.2467244256954247,
       "jerga_definition": "n_jerga > 0"
     }
   ],
+  "run_id": "0f93eb01-69e5-4807-ac78-bbc1f7b66cbb",
+  "checkpoint": "checkpoint-1072",
   "xlmr_status": "ok",
+  "official_run_id": "0f93eb01-69e5-4807-ac78-bbc1f7b66cbb",
   "max_length": 128,
   "text_column": "texto_modelo",
   "normalizer": "normalize_for_model",

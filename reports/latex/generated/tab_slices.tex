@@ -1,16 +1,16 @@
-\begin{tabular}{llrrcc}
+\begin{tabular}{lllrrccc}
 \toprule
-Modelo & Corte & n & F1-macro & IC 95\% & Accuracy \\
+Modelo & Corte & Definición & n & Clases & F1-macro & IC / nota & Accuracy \\
 \midrule
-mBERT & con\_jerga & 278 & 0.7632 & [0.7028, 0.8171] & 0.7950 \\
-mBERT & contexto\_politico\_no & 368 & 0.7608 & [0.7201, 0.8036] & 0.7609 \\
-mBERT & contexto\_politico\_si & 92 & 0.7875 & [0.6221, 0.9109] & 0.8696 \\
-mBERT & ironia\_no & 401 & 0.7871 & [0.7469, 0.8258] & 0.7880 \\
-mBERT & ironia\_si & 59 & 0.5247 & [0.4063, 0.6279] & 0.7458 \\
-mBERT & plataforma\_Facebook & 232 & 0.6727 & [0.5978, 0.7370] & 0.7241 \\
-mBERT & plataforma\_X & 228 & 0.8386 & [0.7903, 0.8851] & 0.8421 \\
-mBERT & sarcasmo\_no & 370 & 0.7923 & [0.7496, 0.8296] & 0.7919 \\
-mBERT & sarcasmo\_si & 90 & 0.5881 & [0.4284, 0.7275] & 0.7444 \\
-mBERT & sin\_jerga & 182 & 0.6893 & [0.6059, 0.7647] & 0.7637 \\
+mBERT & con\_jerga & n\_jerga > 0 & 278 & 29/117/72/60 & 0.7632 & [0.7028, 0.8171] & 0.7950 \\
+mBERT & contexto\_politico\_no & Contexto\_Politico in \{NO/FALSE/0/N\} & 368 & 107/97/93/71 & 0.7608 & [0.7201, 0.8036] & 0.7609 \\
+mBERT & contexto\_politico\_si & Contexto\_Politico in \{SI/SÍ/YES/TRUE/1\} & 92 & 16/62/2/12 & 0.7875 & baja potencia: clase con n<5 & 0.8696 \\
+mBERT & ironia\_no & Presencia\_Ironia in \{NO/FALSE/0/N\} & 401 & 94/136/88/83 & 0.7871 & [0.7469, 0.8258] & 0.7880 \\
+mBERT & ironia\_si & Presencia\_Ironia in \{SI/SÍ/YES/TRUE/1\} & 59 & 29/23/7/0 & 0.5247 & baja potencia: faltan clases (n=59) & 0.7458 \\
+mBERT & plataforma\_Facebook & Plataforma == 'Facebook' & 232 & 75/88/30/39 & 0.6727 & [0.5978, 0.7370] & 0.7241 \\
+mBERT & plataforma\_X & Plataforma == 'X' & 228 & 48/71/65/44 & 0.8386 & [0.7903, 0.8851] & 0.8421 \\
+mBERT & sarcasmo\_no & Presencia\_Sarcasmo in \{NO/FALSE/0/N\} & 370 & 91/111/87/81 & 0.7923 & [0.7496, 0.8296] & 0.7919 \\
+mBERT & sarcasmo\_si & Presencia\_Sarcasmo in \{SI/SÍ/YES/TRUE/1\} & 90 & 32/48/8/2 & 0.5881 & baja potencia: clase con n<5 & 0.7444 \\
+mBERT & sin\_jerga & n\_jerga == 0 & 182 & 94/42/23/23 & 0.6893 & [0.6059, 0.7647] & 0.7637 \\
 \bottomrule
 \end{tabular}

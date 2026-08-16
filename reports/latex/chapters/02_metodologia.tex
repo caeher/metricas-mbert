@@ -60,7 +60,13 @@ generadas muestran cuatro decimales.
 
 \section{Cortes (slices)}
 
-Además del desempeño global, se calculan métricas sobre subconjuntos:
+Además del desempeño global, se calculan métricas sobre subconjuntos
+definidos en el test (plataforma, jerga, sarcasmo, ironía y contexto político).
+Los cortes de mBERT se derivan del mismo vector de predicciones oficial
+(T-04: \texttt{mbert\_test\_predictions.csv}) y se exportan en
+\texttt{reports/metrics/slice\_metrics.csv} con \texttt{run\_id}, checkpoint,
+distribución de clases, F1-macro, accuracy e intervalos de confianza o
+advertencia de baja potencia cuando $n < 30$.
 
 \begin{itemize}[leftmargin=*]
   \item Plataforma (X vs.\ Facebook).

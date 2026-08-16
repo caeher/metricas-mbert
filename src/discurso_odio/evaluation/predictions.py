@@ -111,6 +111,14 @@ def load_xlmr_predictions(test: pd.DataFrame) -> tuple[np.ndarray | None, str]:
     return y_pred, "ok"
 
 
+def load_mbert_predictions(test: pd.DataFrame) -> tuple[np.ndarray | None, str]:
+    """Carga predicciones mBERT alineadas al test (vector oficial T-04)."""
+    if not MBERT_PREDICTIONS_PATH.exists():
+        return None, "predictions_not_found"
+    y_pred = load_aligned_predictions(test, MBERT_PREDICTIONS_PATH, MBERT_PRED_COL, "mBERT")
+    return y_pred, "ok"
+
+
 def export_predictions_csv(
     test: pd.DataFrame,
     y_pred: np.ndarray,

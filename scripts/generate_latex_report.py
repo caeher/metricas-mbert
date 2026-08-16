@@ -16,8 +16,9 @@ from discurso_odio.evaluation.report_consistency import (
     assert_mbert_official_consistency,
     assert_mcnemar_consistency,
     assert_platform_consistency,
+    assert_slice_consistency,
 )
-from discurso_odio.evaluation.slices import platform_rows
+from discurso_odio.evaluation.slices import format_class_distribution, platform_rows
 from discurso_odio.paths import MODELS_DIR, PROJECT_ROOT, REPORTS_FIGURES, REPORTS_METRICS
 
 LATEX_DIR = PROJECT_ROOT / "reports" / "latex"
@@ -412,6 +413,34 @@ def _slice_value(df: pd.DataFrame, slice_name: str, column: str = "f1_macro") ->
     return float(value)
 
 
+def _short_checkpoint(value: str) -> str:
+    text = str(value)
+    if "checkpoint-" in text:
+        idx = text.find("checkpoint-")
+        return text[idx:]
+    if len(text) > 40:
+        return Path(text).name
+    return text
+
+
+def _format_ci_or_warning(row: pd.Series) -> str:
+    low_power = bool(row.get("low_power", False))
+    if low_power:
+        note = str(row.get("power_note", ""))
+        if note:
+            return latex_escape(note)
+        return f"baja potencia ($n={int(row['n'])}$)"
+    if pd.notna(row.get("f1_ci_lo")) and pd.notna(row.get("f1_ci_hi")):
+        return f"[{fmt_num(row['f1_ci_lo'])}, {fmt_num(row['f1_ci_hi'])}]"
+    return "---"
+
+
+def _format_distribution(row: pd.Series) -> str:
+    if any(f"n{i}" in row.index for i in range(4)):
+        return format_class_distribution(row)
+    return "---"
+
+
 def gen_slices():
     path = REPORTS_METRICS / "slice_metrics.csv"
     out = GENERATED_DIR / "tab_slices.tex"
@@ -423,25 +452,59 @@ def gen_slices():
     df = _slice_rows_for_report(raw)
     rows = []
     for _, r in df.iterrows():
-        ci = "---"
-        if pd.notna(r.get("f1_ci_lo")) and pd.notna(r.get("f1_ci_hi")):
-            ci = f"[{fmt_num(r['f1_ci_lo'])}, {fmt_num(r['f1_ci_hi'])}]"
+        definition = latex_escape(r.get("definition", r["slice"]))
         row = [
             latex_escape(r["slice"]),
+            definition,
             fmt_num(r.get("n"), digits=0),
+            _format_distribution(r),
             fmt_num(r["f1_macro"]),
-            ci,
+            _format_ci_or_warning(r),
             fmt_num(r["accuracy"]),
         ]
         if multi_model:
             row = [latex_escape(_model_label(r.get("model", "")))] + row
         rows.append(row)
-    headers = ["Corte", "n", "F1-macro", "IC 95\\%", "Accuracy"]
-    col_spec = "lrrcc"
+    headers = ["Corte", "Definición", "n", "Clases", "F1-macro", "IC / nota", "Accuracy"]
+    col_spec = "llrrccc"
     if multi_model:
         headers = ["Modelo"] + headers
-        col_spec = "llrrcc"
+        col_spec = "lllrrccc"
     write_tabular(out, headers, rows, col_spec=col_spec)
+
+
+def gen_slice_perclass_table():
+    path = REPORTS_METRICS / "slice_perclass_metrics.csv"
+    out = GENERATED_DIR / "tab_slice_perclass.tex"
+    if not path.exists():
+        out.write_text("% slice_perclass_metrics.csv no disponible\n", encoding="utf-8")
+        return
+    df = pd.read_csv(path)
+    if df.empty:
+        placeholder(out, "Sin métricas por clase en cortes")
+        return
+    mbert = df[df["model"] == "mbert"] if "model" in df.columns else df
+    if mbert.empty:
+        placeholder(out, "Sin métricas mBERT por clase en cortes")
+        return
+    rows = []
+    for _, r in mbert.sort_values(["slice", "class_label"]).iterrows():
+        rows.append(
+            [
+                latex_escape(r["slice"]),
+                latex_escape(r.get("class_name", r.get("class_label", ""))),
+                fmt_num(r.get("support"), digits=0),
+                fmt_num(r.get("precision")),
+                fmt_num(r.get("recall")),
+                fmt_num(r.get("f1")),
+            ]
+        )
+    write_tabular(
+        out,
+        ["Corte", "Clase", "Support", "Precision", "Recall", "F1"],
+        rows,
+        col_spec="llrrrr",
+    )
 
 
 def gen_platform_table():
@@ -460,17 +523,19 @@ def gen_platform_table():
             [
                 latex_escape(_model_label(r["model"])),
                 latex_escape(_platform_label(r["slice"])),
-                latex_escape(str(r.get("checkpoint", ""))),
+                latex_escape(_short_checkpoint(str(r.get("checkpoint", "")))),
                 fmt_num(r.get("n"), digits=0),
+                _format_distribution(r),
                 fmt_num(r["f1_macro"]),
                 fmt_num(r["accuracy"]),
+                _format_ci_or_warning(r),
             ]
         )
     write_tabular(
         out,
-        ["Modelo", "Plataforma", "Checkpoint", "n", "F1-macro", "Accuracy"],
+        ["Modelo", "Plataforma", "Checkpoint", "n", "Clases", "F1-macro", "Accuracy", "IC / nota"],
         rows,
-        col_spec="lllrrr",
+        col_spec="lllrrrrc",
     )
 
 
@@ -482,10 +547,13 @@ def _platform_prose_lines(df: pd.DataFrame, model: str) -> list[str]:
     lines = ["\\begin{itemize}[leftmargin=*]"]
     for _, r in sub.sort_values("slice").iterrows():
         plat = _platform_label(r["slice"])
+        dist = _format_distribution(r)
+        ci_note = _format_ci_or_warning(r)
+        ckpt = latex_escape(_short_checkpoint(str(r.get("checkpoint", ""))))
         lines.append(
-            f"  \\item \\textbf{{{plat}}} ($n={int(r['n'])}$): F1-macro "
+            f"  \\item \\textbf{{{plat}}} ($n={int(r['n'])}$, clases {dist}): F1-macro "
             f"\\textbf{{{fmt_num(r['f1_macro'])}}}, accuracy {fmt_num(r['accuracy'])} "
-            f"(checkpoint: \\texttt{{{latex_escape(str(r.get('checkpoint', '')))}}})."
+            f"({ci_note}; checkpoint \\texttt{{{ckpt}}})."
         )
     lines.append(
         "  \\item Fuente: \\texttt{reports/metrics/slice\\_metrics.csv}."
@@ -505,6 +573,16 @@ def gen_platform_prose_mbert():
         out.write_text("% métricas mBERT por plataforma no disponibles\n", encoding="utf-8")
         return
     lines = _platform_prose_lines(df, "mbert")
+    run_path = REPORTS_METRICS / "mbert_official_run.json"
+    if run_path.exists():
+        with open(run_path, encoding="utf-8") as handle:
+            run = json.load(handle)
+        lines.insert(
+            1,
+            f"  \\item Corrida oficial: \\texttt{{run\\_id={latex_escape(run.get('run_id', ''))}}}, "
+            f"checkpoint \\texttt{{{latex_escape(run.get('checkpoint', 'checkpoint-1072'))}}}, "
+            f"evaluado {latex_escape(str(run.get('evaluated_at', '')))}.",
+        )
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Generado: {out.name}")
 
@@ -531,6 +609,62 @@ def gen_platform_prose_xlmr():
     lines = _platform_prose_lines(df, "xlm-roberta")
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"Generado: {out.name}")
+
+
+def gen_platform_traceability():
+    path = REPORTS_METRICS / "mbert_platform_traceability.csv"
+    out_tab = GENERATED_DIR / "tab_mbert_platform_traceability.tex"
+    out_prose = GENERATED_DIR / "mbert_platform_traceability_prose.tex"
+    if not path.exists():
+        out_tab.write_text("% mbert_platform_traceability.csv no disponible\n", encoding="utf-8")
+        out_prose.write_text("% mbert_platform_traceability.csv no disponible\n", encoding="utf-8")
+        return
+    df = pd.read_csv(path)
+    if df.empty:
+        placeholder(out_tab, "Sin trazabilidad de plataforma")
+        return
+    rows = []
+    for _, r in df.iterrows():
+        rows.append(
+            [
+                latex_escape(r.get("platform", "")),
+                fmt_num(r.get("f1_macro_published")),
+                fmt_num(r.get("n"), digits=0) if pd.notna(r.get("n")) else "---",
+                latex_escape(r.get("status", "")),
+                latex_escape(r.get("checkpoint", "")),
+                latex_escape(str(r.get("source_file", ""))),
+            ]
+        )
+    write_tabular(
+        out_tab,
+        ["Plataforma", "F1-macro", "n", "Estado", "Checkpoint", "Fuente"],
+        rows,
+        col_spec="lrrlll",
+    )
+    official = df[df["status"] == "official"]
+    historical = df[df["status"] == "not_reproducible"]
+    prose_lines = [
+        "Las cifras oficiales por plataforma proceden de la misma evaluación T-04/T-05 "
+        "sobre \\texttt{mbert\\_test\\_predictions.csv}.",
+    ]
+    if not official.empty:
+        for _, r in official.iterrows():
+            prose_lines.append(
+                f"Oficial {latex_escape(r['platform'])}: F1-macro "
+                f"\\textbf{{{fmt_num(r['f1_macro_published'])}}} ($n={int(r['n'])}$)."
+            )
+    if not historical.empty:
+        hist_parts = [
+            f"{latex_escape(r['platform'])} ({fmt_num(r['f1_macro_published'])})"
+            for _, r in historical.iterrows()
+        ]
+        prose_lines.append(
+            "Cifras históricas del informe de Cristian ("
+            + ", ".join(hist_parts)
+            + ") se marcan como \\texttt{not\\_reproducible} y no se mezclan con la tabla oficial."
+        )
+    out_prose.write_text("\n".join(prose_lines) + "\n", encoding="utf-8")
+    print(f"Generado: {out_prose.name}")
 
 
 def gen_slices_prose():
@@ -564,8 +698,12 @@ def gen_slices_prose():
             f"\\textbf{{Facebook}} (F1 \\textbf{{{fmt_num(f1_fb)}}}): brecha importante."
         )
     if f1_ironia_si is not None and f1_ironia_no is not None:
+        ironia_row = df[df["slice"] == "ironia_si"]
+        ironia_note = ""
+        if not ironia_row.empty and bool(ironia_row.iloc[0].get("low_power", False)):
+            ironia_note = f" ({_format_ci_or_warning(ironia_row.iloc[0])})"
         lines.append(
-            f"  \\item \\textbf{{Ironía}} (F1 \\textbf{{{fmt_num(f1_ironia_si)}}}) y "
+            f"  \\item \\textbf{{Ironía}} (F1 \\textbf{{{fmt_num(f1_ironia_si)}}}{ironia_note}) y "
             f"\\textbf{{sarcasmo}} (F1 \\textbf{{{fmt_num(f1_sarcasmo_si)}}}) "
             f"degradan el desempeño respecto a sus contrapartes sin figura retórica "
             f"(F1 {fmt_num(f1_ironia_no)} e {fmt_num(f1_sarcasmo_no)})."
@@ -1022,9 +1160,11 @@ def main():
     gen_mbert_traceability()
     gen_mbert_traceability_prose()
     gen_slices()
+    gen_slice_perclass_table()
     gen_platform_table()
     gen_platform_prose_mbert()
     gen_platform_prose_xlmr()
+    gen_platform_traceability()
     gen_slices_prose()
     gen_slices_intro()
     gen_mcnemar()
@@ -1039,6 +1179,7 @@ def main():
     gen_val_metrics_note()
     gen_inference_contract_prose()
     assert_platform_consistency(REPORTS_METRICS / "slice_metrics.csv", GENERATED_DIR)
+    assert_slice_consistency(REPORTS_METRICS / "slice_metrics.csv", GENERATED_DIR)
     assert_mcnemar_consistency(REPORTS_METRICS / "mcnemar_tests.csv", GENERATED_DIR)
     assert_mbert_official_consistency(REPORTS_METRICS / "mbert_test_metrics.csv", GENERATED_DIR)
     copy_figures()

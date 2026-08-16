@@ -32,6 +32,14 @@ reports/metrics/*.csv
 !reports/metrics/mbert_f1_traceability.json
 !reports/metrics/mbert_checkpoint_manifest.json
 !reports/metrics/mbert_checkpoint_verify.json
+!reports/metrics/slice_metrics.csv
+!reports/metrics/slice_metrics.json
+!reports/metrics/slice_perclass_metrics.csv
+!reports/metrics/slice_perclass_metrics.json
+!reports/metrics/dialect_bias_probe.csv
+!reports/metrics/dialect_bias_probe.json
+!reports/metrics/mbert_platform_traceability.csv
+!reports/metrics/mbert_platform_traceability.json
 reports/tables/*.md
 reports/latex/figures/*.png
 reports/latex/main.docx

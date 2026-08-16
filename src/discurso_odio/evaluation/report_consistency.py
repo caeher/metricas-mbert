@@ -14,18 +14,15 @@ from discurso_odio.evaluation.official_mbert import (
     MBERT_OFFICIAL_RUN_PATH,
     MBERT_TRACEABILITY_CSV,
 )
-from discurso_odio.evaluation.slices import platform_rows
+from discurso_odio.evaluation.slices import HISTORICAL_PLATFORM_F1, platform_rows
 from discurso_odio.models.mbert_artifacts import OFFICIAL_F1_MACRO
-
-MBERT_PLATFORM_F1 = {
-    "plataforma_X": 0.8386,
-    "plataforma_Facebook": 0.6727,
-}
 
 XLMR_AUDIT_F1 = {
     "plataforma_X": 0.867,
     "plataforma_Facebook": 0.715,
 }
+
+BANNED_HISTORICAL_PLATFORM_F1 = sorted(set(HISTORICAL_PLATFORM_F1.values()))
 
 FLOAT_PATTERN = re.compile(r"\b0\.\d{2,4}\b")
 
@@ -125,8 +122,9 @@ def check_platform_metrics(
                         f"platform_prose_xlmr.tex no contiene F1 {f1_fmt} ({slice_name})"
                     )
                 )
-        for slice_name, mbert_f1 in MBERT_PLATFORM_F1.items():
-            mbert_fmt = fmt_num(mbert_f1)
+        mbert_metrics = _slice_platform_metrics(slice_df, "mbert")
+        for slice_name, expected in mbert_metrics.items():
+            mbert_fmt = fmt_num(expected["f1_macro"])
             if mbert_fmt in xlmr_text:
                 errors.append(
                     ConsistencyError(
@@ -178,6 +176,157 @@ def check_platform_metrics(
         _ = acc_fmt  # accuracy checked via tab row presence
 
     return errors
+
+
+def _banned_historical_in_text(text: str, *, allow_traceability: bool = False) -> list[str]:
+    found: list[str] = []
+    for value in BANNED_HISTORICAL_PLATFORM_F1:
+        fmt = fmt_num(value)
+        if fmt in text:
+            if allow_traceability and "not_reproducible" in text.lower():
+                continue
+            found.append(fmt)
+    return found
+
+
+def check_slice_metrics(
+    slice_csv: Path,
+    generated_dir: Path,
+) -> list[ConsistencyError]:
+    """Compara slice_metrics.csv con tablas/prosa LaTeX de cortes mBERT."""
+    errors: list[ConsistencyError] = []
+    if not slice_csv.exists():
+        errors.append(ConsistencyError(f"Artefacto no encontrado: {slice_csv}"))
+        return errors
+
+    slice_df = pd.read_csv(slice_csv)
+    mbert = slice_df[slice_df["model"] == "mbert"] if "model" in slice_df.columns else slice_df
+    if mbert.empty:
+        errors.append(ConsistencyError("slice_metrics.csv sin filas mBERT"))
+        return errors
+
+    tex_files = [
+        "tab_slices.tex",
+        "slices_prose.tex",
+        "slices_intro.tex",
+        "platform_prose_mbert.tex",
+        "tab_platform.tex",
+    ]
+
+    texts: dict[str, str] = {}
+    for name in tex_files:
+        path = generated_dir / name
+        if not path.exists():
+            errors.append(ConsistencyError(f"LaTeX generado ausente: {name}"))
+            continue
+        texts[name] = path.read_text(encoding="utf-8")
+
+    if errors:
+        return errors
+
+    official_run_id = None
+    if MBERT_OFFICIAL_RUN_PATH.exists():
+        with open(MBERT_OFFICIAL_RUN_PATH, encoding="utf-8") as handle:
+            official_run_id = json.load(handle).get("run_id")
+
+    if official_run_id and "run_id" in mbert.columns:
+        mbert_run_ids = set(mbert["run_id"].dropna().unique())
+        if official_run_id not in mbert_run_ids:
+            errors.append(
+                ConsistencyError(
+                    f"run_id mBERT en slice_metrics ({mbert_run_ids}) "
+                    f"no coincide con oficial ({official_run_id})"
+                )
+            )
+
+    for _, row in mbert.iterrows():
+        f1_fmt = fmt_num(row["f1_macro"])
+        n_fmt = fmt_num(row["n"], digits=0)
+        slice_name = str(row["slice"])
+
+        if "tab_slices.tex" in texts:
+            text = texts["tab_slices.tex"]
+            if f1_fmt not in text:
+                errors.append(
+                    ConsistencyError(f"tab_slices.tex no contiene F1 {f1_fmt} ({slice_name})")
+                )
+            if n_fmt not in text:
+                errors.append(
+                    ConsistencyError(f"tab_slices.tex no contiene n={n_fmt} ({slice_name})")
+                )
+
+        if slice_name.startswith("plataforma_") and "tab_platform.tex" in texts:
+            text = texts["tab_platform.tex"]
+            if f1_fmt not in text:
+                errors.append(
+                    ConsistencyError(
+                        f"tab_platform.tex no contiene F1 {f1_fmt} ({slice_name})"
+                    )
+                )
+            if n_fmt not in text:
+                errors.append(
+                    ConsistencyError(
+                        f"tab_platform.tex no contiene n={n_fmt} ({slice_name})"
+                    )
+                )
+
+        prose_slices = {
+            "plataforma_X",
+            "plataforma_Facebook",
+            "ironia_si",
+            "ironia_no",
+            "sarcasmo_si",
+            "sarcasmo_no",
+            "contexto_politico_si",
+            "contexto_politico_no",
+        }
+        if slice_name in prose_slices and "slices_prose.tex" in texts:
+            if f1_fmt not in texts["slices_prose.tex"]:
+                errors.append(
+                    ConsistencyError(
+                        f"slices_prose.tex no contiene F1 {f1_fmt} ({slice_name})"
+                    )
+                )
+
+        intro_slices = {"plataforma_X", "ironia_si", "sarcasmo_si"}
+        if slice_name in intro_slices and "slices_intro.tex" in texts:
+            intro_fmt = fmt_num(row["f1_macro"], digits=2)
+            if intro_fmt not in texts["slices_intro.tex"]:
+                errors.append(
+                    ConsistencyError(
+                        f"slices_intro.tex no contiene F1 {intro_fmt} ({slice_name})"
+                    )
+                )
+
+    for name, text in texts.items():
+        if name == "mbert_platform_traceability_prose.tex":
+            continue
+        banned = _banned_historical_in_text(text)
+        for fmt in banned:
+            errors.append(
+                ConsistencyError(
+                    f"{name} contiene F1 histórico prohibido {fmt} (usar CSV oficial)"
+                )
+            )
+
+    trace_path = generated_dir / "mbert_platform_traceability_prose.tex"
+    if trace_path.exists():
+        trace_text = trace_path.read_text(encoding="utf-8")
+        if "not_reproducible" not in trace_text and _banned_historical_in_text(trace_text):
+            errors.append(
+                ConsistencyError(
+                    "mbert_platform_traceability_prose.tex cita históricos sin marcar not_reproducible"
+                )
+            )
+
+    return errors
+
+
+def assert_slice_consistency(slice_csv: Path, generated_dir: Path) -> None:
+    errors = check_slice_metrics(slice_csv, generated_dir)
+    if errors:
+        messages = "\n".join(f"  - {e.message}" for e in errors)
+        raise AssertionError(f"Inconsistencias de cortes mBERT:\n{messages}")
 
 
 def check_mcnemar_metrics(

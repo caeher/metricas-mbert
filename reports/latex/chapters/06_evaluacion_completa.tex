@@ -95,15 +95,24 @@ es estadísticamente concluyente en este tamaño de test.
 \section{Métricas por cortes (slices)}
 
 La Tabla~\ref{tab:slices} y la Figura~\ref{fig:slices} muestran el F1-macro
-por subconjunto. Destacan:
+por subconjunto. Las filas mBERT comparten \texttt{run\_id} y checkpoint con la
+evaluación oficial (T-04); la Tabla~\ref{tab:slice-perclass} detalla métricas por
+clase en cortes con $n \geq 30$. Destacan:
 
 \input{generated/slices_prose}
 
 \begin{table}[H]
 \centering
-\caption{F1-macro y accuracy por cortes.}
+\caption{F1-macro y accuracy por cortes (definición, $n$, distribución de clases).}
 \label{tab:slices}
 \input{generated/tab_slices}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Métricas por clase en cortes mBERT con muestra suficiente ($n \geq 30$).}
+\label{tab:slice-perclass}
+\input{generated/tab_slice_perclass}
 \end{table}
 
 \begin{figure}[H]
@@ -118,7 +127,10 @@ por subconjunto. Destacan:
 La Tabla~\ref{tab:platform} consolida F1-macro y accuracy por plataforma para
 cada modelo evaluado, con identificador de checkpoint y tamaño de subconjunto.
 Las cifras se generan desde \texttt{reports/metrics/slice\_metrics.csv}; no se
-transcriben manualmente.
+transcriben manualmente. La Tabla~\ref{tab:mbert-platform-traceability} documenta
+cifras históricas no reproducibles frente a la línea oficial.
+
+\input{generated/mbert_platform_traceability_prose}
 
 \input{generated/platform_prose_mbert}
 
@@ -131,6 +143,13 @@ transcriben manualmente.
 \caption{Métricas por plataforma (modelo, checkpoint, $n$, F1-macro, accuracy).}
 \label{tab:platform}
 \input{generated/tab_platform}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Trazabilidad de F1-macro por plataforma (oficial vs.\ histórico).}
+\label{tab:mbert-platform-traceability}
+\input{generated/tab_mbert_platform_traceability}
 \end{table}
 
 \begin{figure}[H]

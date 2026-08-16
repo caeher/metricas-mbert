@@ -23,6 +23,11 @@ from discurso_odio.evaluation.predictions import (
     git_commit,
     validate_prediction_vector,
 )
+from discurso_odio.evaluation.slices import (
+    HISTORICAL_PLATFORM_F1,
+    export_mbert_slice_artifacts,
+    platform_rows,
+)
 from discurso_odio.models.mbert import default_mbert_model_dir, ensure_checkpoint_contract, predict
 from discurso_odio.models.mbert_artifacts import (
     F1_TOLERANCE,
@@ -41,6 +46,8 @@ MBERT_CALIBRATION_PATH = REPORTS_METRICS / "mbert_calibration.csv"
 MBERT_OFFICIAL_RUN_PATH = REPORTS_METRICS / "mbert_official_run.json"
 MBERT_TRACEABILITY_CSV = REPORTS_METRICS / "mbert_f1_traceability.csv"
 MBERT_TRACEABILITY_JSON = REPORTS_METRICS / "mbert_f1_traceability.json"
+MBERT_PLATFORM_TRACEABILITY_CSV = REPORTS_METRICS / "mbert_platform_traceability.csv"
+MBERT_PLATFORM_TRACEABILITY_JSON = REPORTS_METRICS / "mbert_platform_traceability.json"
 MODEL_COMPARISON_PATH = REPORTS_METRICS / "model_comparison.csv"
 
 LABEL_NAMES = [
@@ -313,6 +320,117 @@ def _refresh_model_comparison(mbert_f1: float) -> None:
         df.to_csv(MODEL_COMPARISON_PATH, index=False)
 
 
+def load_official_run_metadata() -> dict[str, Any] | None:
+    """Lee metadatos de la corrida oficial T-04 si existen."""
+    if not MBERT_OFFICIAL_RUN_PATH.exists():
+        return None
+    with open(MBERT_OFFICIAL_RUN_PATH, encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def official_checkpoint_label(
+    official: dict[str, Any] | None = None,
+    model_dir: Path | None = None,
+) -> str:
+    """Identificador corto de checkpoint para artefactos (no ruta absoluta)."""
+    official = official or load_official_run_metadata()
+    if official and official.get("checkpoint"):
+        return str(official["checkpoint"])
+    model_dir = model_dir or default_mbert_model_dir()
+    identity = read_checkpoint_identity(model_dir)
+    if identity.get("checkpoint"):
+        return str(identity["checkpoint"])
+    return "checkpoint-1072"
+
+
+def build_platform_traceability_rows(
+    *,
+    slice_df: pd.DataFrame | None = None,
+    official: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    """Inventario de F1 por plataforma: oficial vs cifras históricas no reproducibles."""
+    official = official or load_official_run_metadata()
+    settings = load_settings()
+    checkpoint = official_checkpoint_label(official)
+    commit = (official or {}).get("git_commit") or git_commit()
+    seed = (official or {}).get("seed", settings["project"]["seed"])
+    test_sha = (official or {}).get("test_sha256") or sha256_file(TEST_CSV)
+    evaluated_at = (official or {}).get("evaluated_at")
+
+    rows: list[dict[str, Any]] = []
+
+    if slice_df is None and (REPORTS_METRICS / "slice_metrics.csv").exists():
+        slice_df = pd.read_csv(REPORTS_METRICS / "slice_metrics.csv")
+
+    if slice_df is not None and not slice_df.empty:
+        mbert_platform = platform_rows(slice_df[slice_df["model"] == "mbert"])
+        for _, row in mbert_platform.iterrows():
+            rows.append(
+                {
+                    "platform": str(row["slice"]).replace("plataforma_", ""),
+                    "f1_macro_published": round(float(row["f1_macro"]), 4),
+                    "n": int(row["n"]),
+                    "accuracy": round(float(row["accuracy"]), 4),
+                    "source_file": "reports/metrics/slice_metrics.csv",
+                    "checkpoint": checkpoint,
+                    "git_commit": commit,
+                    "seed": seed,
+                    "split": "test",
+                    "test_sha256": test_sha,
+                    "evaluated_at": evaluated_at,
+                    "status": "official",
+                    "notes": (
+                        "Corte por plataforma de la evaluación oficial T-04/T-05; "
+                        f"run_id={(official or {}).get('run_id')}"
+                    ),
+                }
+            )
+
+    for slice_name, historical_f1 in HISTORICAL_PLATFORM_F1.items():
+        platform = slice_name.replace("plataforma_", "")
+        rows.append(
+            {
+                "platform": platform,
+                "f1_macro_published": round(historical_f1, 4),
+                "n": None,
+                "accuracy": None,
+                "source_file": "Informe de Cristian / auditoría (Tabla plataforma)",
+                "checkpoint": "desconocido",
+                "git_commit": None,
+                "seed": None,
+                "split": "test",
+                "test_sha256": None,
+                "evaluated_at": "2026-08-14",
+                "status": "not_reproducible",
+                "notes": (
+                    "Cifra histórica citada por la auditoría; no reproducible con "
+                    f"checkpoint oficial {checkpoint}"
+                ),
+            }
+        )
+
+    return rows
+
+
+def export_platform_traceability(
+    *,
+    slice_df: pd.DataFrame | None = None,
+    official: dict[str, Any] | None = None,
+) -> tuple[Path, Path]:
+    rows = build_platform_traceability_rows(slice_df=slice_df, official=official)
+    REPORTS_METRICS.mkdir(parents=True, exist_ok=True)
+    df = pd.DataFrame(rows)
+    df.to_csv(MBERT_PLATFORM_TRACEABILITY_CSV, index=False)
+    payload = {
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "rows": rows,
+    }
+    with open(MBERT_PLATFORM_TRACEABILITY_JSON, "w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2, ensure_ascii=False)
+        handle.write("\n")
+    return MBERT_PLATFORM_TRACEABILITY_CSV, MBERT_PLATFORM_TRACEABILITY_JSON
+
+
 def evaluate_mbert_official(
     *,
     model_dir: Path | None = None,
@@ -360,6 +478,9 @@ def evaluate_mbert_official(
     test_sha = sha256_file(TEST_CSV)
     f1_raw = float(metrics["f1_macro"])
     f1_official = round(f1_raw, 4)
+    checkpoint_label = (
+        identity.get("checkpoint") or manifest.get("checkpoint", "checkpoint-1072")
+    )
 
     run_metadata = {
         "run_id": run_id,
@@ -367,7 +488,7 @@ def evaluate_mbert_official(
         "git_commit": commit,
         "seed": settings["project"]["seed"],
         "base_model": settings["model"]["name"],
-        "checkpoint": identity.get("checkpoint") or manifest.get("checkpoint", "checkpoint-1072"),
+        "checkpoint": checkpoint_label,
         "best_model_checkpoint": identity.get("best_model_checkpoint"),
         "best_metric_val_f1_macro": identity.get("best_metric_val_f1_macro"),
         "model_dir": str(model_dir.resolve()),
@@ -391,6 +512,10 @@ def evaluate_mbert_official(
             "confusion_csv": str(MBERT_CONFUSION_PATH.relative_to(PROJECT_ROOT)).replace("\\", "/"),
             "calibration_csv": str(MBERT_CALIBRATION_PATH.relative_to(PROJECT_ROOT)).replace("\\", "/"),
             "traceability_csv": str(MBERT_TRACEABILITY_CSV.relative_to(PROJECT_ROOT)).replace("\\", "/"),
+            "slice_metrics_csv": "reports/metrics/slice_metrics.csv",
+            "slice_perclass_csv": "reports/metrics/slice_perclass_metrics.csv",
+            "dialect_bias_csv": "reports/metrics/dialect_bias_probe.csv",
+            "platform_traceability_csv": "reports/metrics/mbert_platform_traceability.csv",
         },
     }
 
@@ -403,7 +528,7 @@ def evaluate_mbert_official(
         json_path=MBERT_PREDICTIONS_JSON,
         pred_col=MBERT_PRED_COL,
         model="mbert",
-        checkpoint=str(model_dir.resolve()),
+        checkpoint=checkpoint_label,
         max_length=max_length,
         split=TEST_CSV.name,
         extra_metadata={
@@ -414,6 +539,25 @@ def evaluate_mbert_official(
         },
     )
     export_probabilities_csv(test, y_prob, MBERT_PROBABILITIES_PATH)
+
+    slice_artifacts = export_mbert_slice_artifacts(
+        test,
+        y_true,
+        y_pred,
+        y_prob,
+        REPORTS_METRICS,
+        run_id=run_id,
+        checkpoint=checkpoint_label,
+        split=TEST_CSV.name,
+        extra_metadata={
+            "evaluated_at": evaluated_at,
+            "git_commit": commit,
+            "official_f1_macro": f1_official,
+        },
+        merge=True,
+    )
+    slice_df = pd.read_csv(slice_artifacts["slice_metrics_csv"])
+    export_platform_traceability(slice_df=slice_df, official=run_metadata)
 
     export_row = {k: v for k, v in metrics.items() if not isinstance(v, (list, dict))}
     pd.DataFrame([export_row]).to_csv(MBERT_METRICS_PATH, index=False)
