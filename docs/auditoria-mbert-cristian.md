@@ -141,14 +141,14 @@ En test (n = 460): label 1 (Lenguaje Ofensivo) = 159/460 → p ≈ 0.3457 → **
 
 El informe de preparación de datos v1.1 reporta **0.129** para la misma cantidad; la discrepancia 0.087 vs 0.128/0.129 es el problema señalado.
 
-**Artefactos afectados hoy (valor incorrecto 0.087):**
+**Artefactos afectados (valor incorrecto 0.087 — corregido):**
 
-| Archivo | Valor actual |
-|---------|--------------|
-| `reports/metrics/trivial_baselines.csv` | `clase_mayoritaria,0.087` |
-| `reports/metrics/model_comparison.csv` | `trivial_clase_mayoritaria,0.087` |
-| `reports/latex/generated/tab_trivial_baselines.tex` | `0.0870` |
-| `reports/latex/chapters/04_baselines.tex` | Referencia al capítulo EDA con pisos triviales |
+| Archivo | Valor anterior | Valor actual |
+|---------|----------------|--------------|
+| `reports/metrics/trivial_baselines.csv` | `clase_mayoritaria,0.087` | `0.128` |
+| `reports/metrics/model_comparison.csv` | `trivial_clase_mayoritaria,0.087` | `0.128` |
+| `reports/latex/generated/tab_trivial_baselines.tex` | `0.0870` | `0.1280` |
+| `reports/latex/chapters/04_baselines.tex` | Referencia al capítulo EDA con pisos triviales | Sin cambio (referencia válida) |
 
 **Corrección de código (referencia, no aplicada en este documento):**
 
@@ -159,9 +159,9 @@ f1_per_class = [2 * p * 1 / (p + 1) if c == majority_class else 0.0 for c in cla
 f1_majority = sum(f1_per_class) / k  # → 0.128 con test actual
 ```
 
-**Tests:** añadir aserción en `tests/test_metrics.py` con counts del test real (159/460 mayoritaria → 0.128).
+**Tests:** aserción en `tests/test_metrics.py` con counts del test real (`data/processed/test.csv`, 159/460 mayoritaria → 0.128).
 
-**Estado:** Pendiente.
+**Estado:** Resuelto (T-01). Los artefactos publican `0.128`; el `0.087` queda solo como evidencia histórica en este documento.
 
 ---
 
@@ -233,7 +233,7 @@ Aunque la batería adversarial no se corrió sobre mBERT, el informe recomienda 
 | Informe mBERT (incorrecto) | 0.087 | Bug en `trivial_baselines()` |
 | Auditoría / fórmula correcta | **0.128** | Con p = 159/460 en test |
 | Informe preparación datos v1.1 | 0.129 | Referencia de alineación |
-| Repo actual (`trivial_baselines.csv`) | 0.087 | **Pendiente corrección #5** |
+| Repo actual (`trivial_baselines.csv`) | **0.128** | Corregido (T-01) |
 
 ### Sonda dialectal mBERT (repo — calculada, no hardcodeada)
 

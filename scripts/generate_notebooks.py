@@ -98,7 +98,13 @@ class_dist"""),
         md(
             "## 3.1 Pisos de referencia sin modelo\n\n"
             "Se calculan sobre el **conjunto de test** ($n=460$), no sobre el corpus completo, "
-            "para alinearlos con la evaluación de modelos."
+            "para alinearlos con la evaluación de modelos.\n\n"
+            "Para la clase mayoritaria se simula un clasificador que siempre predice la etiqueta "
+            "más frecuente: precisión $p$ (proporción en test), recall $1{,}0$; el F1 de las demás "
+            "clases es $0$. El F1-macro es la media sobre $k=4$ clases fijas.\n\n"
+            "Los valores del CSV usan `round(x, 3)`; las tablas LaTeX generadas muestran cuatro "
+            "decimales (ej. `0.1280`). El informe de preparación v1.1 reportaba $\\approx 0{,}129$ "
+            "por un redondeo intermedio de $p$; el valor canónico del repo es `0.128`."
         ),
         code("""from discurso_odio.evaluation.metrics import trivial_baselines
 test = splits['test']

@@ -7,6 +7,7 @@ import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
+from discurso_odio.data.loaders import load_split
 from discurso_odio.evaluation.metrics import (
     compute_all_metrics,
     ordinal_mae,
@@ -35,8 +36,12 @@ def test_compute_all_metrics_keys():
 
 
 def test_trivial_baselines_audit_test_distribution():
-    """Distribución real de test: 159/460 en clase mayoritaria (label 1)."""
-    counts = {0: 123, 1: 159, 2: 95, 3: 83}
+    """Distribución real de data/processed/test.csv: 159/460 en clase mayoritaria."""
+    test = load_split("test")
+    assert len(test) == 460
+    counts = test["label"].value_counts().to_dict()
+    majority_label = max(counts, key=counts.get)
+    assert counts[majority_label] == 159
     baselines = trivial_baselines(counts)
     assert baselines["clase_mayoritaria"] == 0.128
     assert baselines["azar_estratificado"] == 0.25

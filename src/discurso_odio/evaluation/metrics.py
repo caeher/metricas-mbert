@@ -190,7 +190,13 @@ def trivial_baselines(class_counts: dict[int, int]) -> dict[str, float]:
 
     f1_stratified = 1.0 / k
     f1_uniform = sum(2 * (1 / k) * (1 / k) / (2 / k) for _ in range(k)) / k
-    f1_majority = (2 * p / (p + 1.0)) / k
+
+    # F1 por clase: mayoritaria con precisión p y recall 1.0; resto F1 = 0.
+    # F1-macro = (1/k) * sum_i F1_i sobre k clases fijas del proyecto.
+    f1_per_class = [
+        (2 * p / (p + 1.0)) if c == majority_class else 0.0 for c in range(k)
+    ]
+    f1_majority = sum(f1_per_class) / k
 
     return {
         "azar_estratificado": round(f1_stratified, 3),
