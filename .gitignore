@@ -20,6 +20,7 @@ reports/metrics/*.csv
 !reports/metrics/xlmr_test_predictions.csv
 !reports/metrics/xlmr_test_predictions.json
 !reports/metrics/mcnemar_tests.csv
+!reports/metrics/mcnemar_tests.json
 !reports/metrics/mbert_test_predictions.csv
 !reports/metrics/mbert_test_predictions.json
 !reports/metrics/mbert_checkpoint_manifest.json

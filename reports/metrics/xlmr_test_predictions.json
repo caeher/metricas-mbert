@@ -1,6 +1,6 @@
 {
-  "created_at": "2026-08-16T00:01:27.554019+00:00",
-  "git_commit": "5c8931b9f81b1dc57307a7d441b9b6e681ae3823",
+  "created_at": "2026-08-16T01:56:45.866964+00:00",
+  "git_commit": "32b390f8a8280af87fabc25d1f8b115bdc0e72ee",
   "model": "xlm-roberta",
   "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\XLMR\\02_modelo_prototipo\\modelo_entrenado",
   "split": "test.csv",

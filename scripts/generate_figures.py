@@ -42,6 +42,18 @@ def build_comparison_df() -> pd.DataFrame:
         m = pd.read_csv(m_path).iloc[0]
         rows.append({"model": "mBERT", "f1_macro": m["f1_macro"]})
 
+    xlmr_pred_path = REPORTS_METRICS / "xlmr_test_predictions.csv"
+    if xlmr_pred_path.exists():
+        from sklearn.metrics import f1_score
+
+        from discurso_odio.data.loaders import load_split
+        from discurso_odio.evaluation.predictions import XLMR_PRED_COL, load_aligned_predictions
+
+        test = load_split("test")
+        y_pred = load_aligned_predictions(test, xlmr_pred_path, XLMR_PRED_COL, "XLM-R")
+        f1 = f1_score(test["label"].values, y_pred, average="macro")
+        rows.append({"model": "XLM-RoBERTa", "f1_macro": f1})
+
     tb_path = REPORTS_METRICS / "trivial_baselines.csv"
     if tb_path.exists():
         tb = pd.read_csv(tb_path, index_col=0)

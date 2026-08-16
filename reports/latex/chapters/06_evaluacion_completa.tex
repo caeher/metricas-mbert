@@ -45,9 +45,13 @@ $\leftrightarrow$ odio), coherente con el MAE ordinal de $0{,}324$.
 
 \section{Comparación de modelos}
 
-La Tabla~\ref{tab:comparison} y la Figura~\ref{fig:comparison} ordenan todos
-los modelos por F1-macro. mBERT lidera ($0{,}778$), con LinearSVC a poca
-distancia ($0{,}765$). El margen sobre MultinomialNB es sustancial.
+La Tabla~\ref{tab:comparison} y la Figura~\ref{fig:comparison} ordenan los
+modelos por F1-macro de forma \textbf{descriptiva}. El ranking puntual no
+establece por sí solo superioridad estadística entre arquitecturas
+transformer: la comparación pareada mBERT vs.\ XLM-RoBERTa se evalúa con
+McNemar en la sección siguiente sobre las mismas $n=460$ instancias.
+Entre baselines TF-IDF, mBERT obtiene el mejor F1-macro puntual
+($0{,}778$), con LinearSVC a poca distancia ($0{,}765$).
 
 \begin{table}[H]
 \centering

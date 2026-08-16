@@ -10,9 +10,12 @@
         intervalo bootstrap superior ($0{,}814$) incluye el objetivo, lo que
         sugiere que con más datos o calibración podría lograrse.
   \item La prueba de McNemar confirma superioridad significativa de mBERT solo
-        frente a MultinomialNB; frente a LinearSVC/LogReg y frente a
+        frente a MultinomialNB. Frente a LinearSVC/LogReg y frente a
         XLM-RoBERTa (comparación pareada sobre $n=460$) no se rechaza la
-        hipótesis nula: la diferencia puntual de F1-macro no es concluyente.
+        hipótesis nula ($\alpha=0{,}05$): bajo este test, la diferencia
+        puntual de F1-macro no es concluyente y equivale a equivalencia
+        estadística de aciertos, no a ausencia de trabajo ni de diferencia
+        descriptiva entre modelos.
   \item Los cortes revelan fragilidad ante ironía y sarcasmo, y peor desempeño
         en Facebook respecto a X.
   \input{generated/dialect_bias_conclusions}

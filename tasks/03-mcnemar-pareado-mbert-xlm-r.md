@@ -24,9 +24,43 @@ Determinar si la diferencia de aciertos entre mBERT y XLM-R es estadísticamente
 
 ## Criterios de aceptación
 
-- [ ] Las predicciones mBERT y XLM-R tienen 460 filas y se validan contra el mismo `test.csv` antes de calcular McNemar.
-- [ ] Existe un resultado exportado de McNemar que identifica ambos checkpoints y contiene estadístico, p-value, `b`, `c` y `n`.
-- [ ] El informe deja de concluir superioridad de un modelo basándose solo en la diferencia de F1-macro.
-- [ ] Una prueba o validación rechaza vectores desalineados, longitudes distintas o etiquetas fuera de 0–3.
-- [ ] Si Julio aún no entrega el vector, la tarea queda marcada como bloqueada por esa dependencia y no se fabrican resultados.
+- [x] Las predicciones mBERT y XLM-R tienen 460 filas y se validan contra el mismo `test.csv` antes de calcular McNemar.
+- [x] Existe un resultado exportado de McNemar que identifica ambos checkpoints y contiene estadístico, p-value, `b`, `c` y `n`.
+- [x] El informe deja de concluir superioridad de un modelo basándose solo en la diferencia de F1-macro.
+- [x] Una prueba o validación rechaza vectores desalineados, longitudes distintas o etiquetas fuera de 0–3.
+- [x] Si Julio aún no entrega el vector, la tarea queda marcada como bloqueada por esa dependencia y no se fabrican resultados.
 
+## Evidencia T-03
+
+| Artefacto | Rol |
+|-----------|-----|
+| `reports/metrics/mbert_test_predictions.csv` | 460 predicciones `id,y_pred_mbert` desde `models/mbert-sv` |
+| `reports/metrics/xlmr_test_predictions.csv` | 460 predicciones `id,y_pred_xlmr` desde `XLMR/02_modelo_prototipo/modelo_entrenado` |
+| `reports/metrics/mcnemar_tests.csv` | McNemar pareado + baselines; fila `xlm-roberta` con checkpoints |
+| `reports/metrics/mcnemar_tests.json` | Sidecar con metadatos, rutas de predicciones y resultado mBERT vs XLM-R |
+| `reports/latex/generated/tab_mcnemar.tex` | Tabla LaTeX regenerada desde CSV |
+| `reports/latex/generated/mcnemar_prose.tex` | Párrafo interpretativo (no rechazo de H0) |
+| `tests/test_mcnemar.py` | Validación de vectores desalineados y esquema de exportación |
+
+**Resultado mBERT vs XLM-RoBERTa** (`n=460`, `α=0.05`):
+
+| Campo | Valor |
+|-------|-------|
+| `checkpoint_a` | `models/mbert-sv` |
+| `checkpoint_b` | `XLMR/02_modelo_prototipo/modelo_entrenado` |
+| `statistic` | 0.4098 |
+| `p_value` | 0.200031 |
+| `b` | 25 (mBERT acierto, XLM-R error) |
+| `c` | 36 (mBERT error, XLM-R acierto) |
+| `significant` | No |
+| `conclusion` | No se rechaza H0: equivalencia estadística de aciertos bajo este test |
+
+**Dependencia Julio:** checkpoint XLM-R entregado en `XLMR/02_modelo_prototipo/modelo_entrenado`. El vector se exportó con `scripts/export_xlmr_predictions.py` sobre `data/processed/test.csv`; no se fabricaron conteos.
+
+```powershell
+python scripts/export_mbert_predictions.py
+python scripts/export_xlmr_predictions.py
+python scripts/run_mcnemar.py
+python scripts/check_report_mcnemar.py
+python -m pytest tests/test_mcnemar.py -q
+```

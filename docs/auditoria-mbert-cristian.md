@@ -92,8 +92,8 @@ La auditoría cita valores redondeados ~0.8503 (X) y ~0.6896 (Facebook) en el in
 | **Severidad** | Crítica |
 | **Responsable** | Julio y Cristian |
 | **Descripción** | El objetivo del proyecto incluye comparar mBERT y XLM-R, pero hoy solo se comparan dos números sin prueba de hipótesis pareada. |
-| **Evidencia en repo** | `mcnemar_test()` existe en `src/discurso_odio/evaluation/metrics.py` (líneas 83–94). `scripts/run_pipeline.py` solo compara mBERT vs baselines TF-IDF (líneas 98–106). No hay fila `xlm-roberta` en `reports/metrics/mcnemar_tests.csv`. |
-| **Estado** | Pendiente |
+| **Evidencia en repo** | `mcnemar_test()` en `src/discurso_odio/evaluation/metrics.py`; fila `xlm-roberta` en `reports/metrics/mcnemar_tests.csv`; prosa en `reports/latex/generated/mcnemar_prose.tex`. |
+| **Estado** | Resuelto (T-03). Predicciones desde checkpoints oficiales; `p=0.200031`, `b=25`, `c=36`, `n=460`; no se rechaza H0 (`α=0.05`). |
 
 **Contrato del vector de predicciones XLM-R (para Julio):**
 
@@ -191,7 +191,7 @@ f1_majority = sum(f1_per_class) / k  # → 0.128 con test actual
 
 | # | Corrección | Prioridad | Responsable | Criterio de cierre |
 |---|------------|-----------|-------------|-------------------|
-| 4 | Exportar predicciones XLM-R y ejecutar McNemar pareado vs mBERT | **Crítica** | Julio + Cristian | Fila `xlm-roberta` en `mcnemar_tests.csv`; párrafo en informe con estadístico y p-value |
+| 4 | Exportar predicciones XLM-R y ejecutar McNemar pareado vs mBERT | **Crítica** | Julio + Cristian | **T-03:** fila `xlm-roberta` en `mcnemar_tests.csv`; `mcnemar_tests.json`; párrafo en `mcnemar_prose.tex` |
 | 5 | Corregir fórmula baseline clase mayoritaria → **0.128**; alinear con informe v1.1 | **Alta** | Cristian | `trivial_baselines()` corregida; CSV/LaTeX regenerados; test unitario |
 | 8 | Entregar pesos `models/mbert-sv/` para verificación y robustez | **Alta** | Cristian | Auditoría confirma reproducción de F1-macro ± tolerancia numérica. **T-02:** ZIP `artifacts/mbert-sv-audit.zip`, manifiesto SHA-256, 460 predicciones, verificación en `reports/metrics/mbert_checkpoint_verify.json`. |
 
@@ -257,7 +257,8 @@ Los valores de mBERT provienen de `dialect_bias_probe()` sobre predicciones real
 | `data/processed/test.csv` | Conjunto de prueba (n = 460) |
 | `models/mbert-sv/` | Pesos fine-tuned (gitignored; ver `resultados-metricas/`) |
 | `reports/metrics/mbert_test_metrics.csv` | Métricas globales actuales |
-| `reports/metrics/mcnemar_tests.csv` | McNemar vs baselines (falta XLM-R) |
+| `reports/metrics/mcnemar_tests.csv` | McNemar vs baselines y XLM-R (`xlm-roberta`) |
+| `reports/metrics/mcnemar_tests.json` | Metadatos de comparación pareada mBERT vs XLM-R |
 | `reports/metrics/trivial_baselines.csv` | Pisos triviales (bug #5) |
 | `reports/metrics/slice_metrics.csv` | F1 por plataforma y cortes |
 | `reports/latex/chapters/06_evaluacion_completa.tex` | Capítulo de evaluación en informe |

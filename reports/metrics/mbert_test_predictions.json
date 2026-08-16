@@ -1,6 +1,6 @@
 {
-  "created_at": "2026-08-16T01:44:27.664341+00:00",
-  "git_commit": "9ee042a6900a2c55d6ba9c122e63a422bd48089f",
+  "created_at": "2026-08-16T01:54:35.551667+00:00",
+  "git_commit": "32b390f8a8280af87fabc25d1f8b115bdc0e72ee",
   "model": "mbert",
   "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\models\\mbert-sv",
   "split": "test.csv",

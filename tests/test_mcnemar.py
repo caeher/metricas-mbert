@@ -126,6 +126,8 @@ def test_run_mcnemar_export_schema(tmp_path, monkeypatch):
     assert int(xlmr_row["n"]) == n
     assert float(xlmr_row["alpha"]) == 0.05
     assert "conclusion" in xlmr_row
+    assert "checkpoint_a" in xlmr_row
+    assert "checkpoint_b" in xlmr_row
     assert xlmr_row["p_value"] == 1.0
 
 
@@ -136,6 +138,8 @@ def test_mcnemar_latex_consistency(tmp_path):
             {
                 "model_a": "mbert",
                 "model_b": "xlm-roberta",
+                "checkpoint_a": "models/mbert-sv",
+                "checkpoint_b": "XLMR/02_modelo_prototipo/modelo_entrenado",
                 "statistic": 0.4098,
                 "p_value": 0.200031,
                 "b": 25,
@@ -168,4 +172,6 @@ def test_real_mcnemar_has_xlmr_row():
     row = xlmr.iloc[0]
     assert int(row["n"]) == 460
     assert float(row["alpha"]) == 0.05
-    assert {"statistic", "p_value", "b", "c", "conclusion"} <= set(row.index)
+    assert {"statistic", "p_value", "b", "c", "conclusion", "checkpoint_a", "checkpoint_b"} <= set(
+        row.index
+    )
