@@ -1,10 +1,10 @@
 {
-  "created_at": "2026-08-15T22:26:05.496223+00:00",
-  "git_commit": "7f22c8631ff2ed88254ef5d8e859f170bd1e42b2",
+  "created_at": "2026-08-16T00:13:07.089735+00:00",
+  "git_commit": "5c8931b9f81b1dc57307a7d441b9b6e681ae3823",
   "jerga_definition": "n_jerga > 0",
   "rows": [
     {
-      "run_id": "9c87ec9c-10e2-43dd-a2bf-9ffeb78cdd64",
+      "run_id": "1490df85-4cbd-4107-9472-bfdac0d9a2fb",
       "model": "mbert",
       "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\models\\mbert-sv",
       "split": "test.csv",
@@ -18,7 +18,7 @@
       "jerga_definition": "n_jerga > 0"
     },
     {
-      "run_id": "9c87ec9c-10e2-43dd-a2bf-9ffeb78cdd64",
+      "run_id": "1490df85-4cbd-4107-9472-bfdac0d9a2fb",
       "model": "mbert",
       "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\models\\mbert-sv",
       "split": "test.csv",
@@ -30,7 +30,39 @@
       "fpr_ci_lo": 0.09915613688605258,
       "fpr_ci_hi": 0.24672442569542474,
       "jerga_definition": "n_jerga > 0"
+    },
+    {
+      "run_id": "1490df85-4cbd-4107-9472-bfdac0d9a2fb",
+      "model": "xlm-roberta",
+      "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\reports\\metrics\\xlmr_test_predictions.csv",
+      "split": "test.csv",
+      "n_test": 460,
+      "group": "con_jerga",
+      "n": 29,
+      "fp": 13,
+      "fpr": 0.4482758620689655,
+      "fpr_ci_lo": 0.28413168023037194,
+      "fpr_ci_hi": 0.6245203678902908,
+      "jerga_definition": "n_jerga > 0"
+    },
+    {
+      "run_id": "1490df85-4cbd-4107-9472-bfdac0d9a2fb",
+      "model": "xlm-roberta",
+      "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\reports\\metrics\\xlmr_test_predictions.csv",
+      "split": "test.csv",
+      "n_test": 460,
+      "group": "sin_jerga",
+      "n": 94,
+      "fp": 15,
+      "fpr": 0.1595744680851064,
+      "fpr_ci_lo": 0.09915613688605258,
+      "fpr_ci_hi": 0.24672442569542474,
+      "jerga_definition": "n_jerga > 0"
     }
   ],
-  "xlmr_status": "predictions_not_found"
+  "xlmr_status": "ok",
+  "max_length": 128,
+  "text_column": "texto_modelo",
+  "normalizer": "normalize_for_model",
+  "normalizer_version": "1.1"
 }

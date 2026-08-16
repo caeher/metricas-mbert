@@ -31,8 +31,14 @@ model:
   name: bert-base-multilingual-cased
   text_column: texto_modelo
   label_column: label
-  max_length: 128
   output_dir: models/mbert-sv
+
+# Contrato único entrenamiento / evaluación / inferencia (T-06)
+inference_contract:
+  max_length: 128
+  text_column: texto_modelo
+  normalizer: normalize_for_model
+  normalizer_version: "1.1"
 
 training:
   cpu:

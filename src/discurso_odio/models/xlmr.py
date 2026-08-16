@@ -3,17 +3,38 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import Any
 
 import numpy as np
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-from discurso_odio.config import load_settings
+from discurso_odio.models.inference_contract import (
+    InferenceContract,
+    apply_normalization,
+    get_inference_contract,
+    resolve_inference_contract,
+    write_inference_contract,
+)
 from discurso_odio.paths import PROJECT_ROOT
 
 
 def default_xlmr_model_dir() -> Path:
     return PROJECT_ROOT / "XLMR" / "02_modelo_prototipo" / "modelo_entrenado"
+
+
+def make_tokenize_function(tokenizer, contract: InferenceContract):
+    """Devuelve una función de tokenización compatible con Hugging Face datasets."""
+
+    def tokenize_function(examples: dict[str, Any]) -> dict[str, Any]:
+        col = contract.text_column
+        return tokenizer(
+            examples[col],
+            truncation=True,
+            max_length=contract.max_length,
+        )
+
+    return tokenize_function
 
 
 def predict(
@@ -22,15 +43,19 @@ def predict(
     *,
     max_length: int | None = None,
     batch_size: int = 16,
+    normalize: bool = True,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Predice etiquetas y probabilidades para una lista de textos."""
-    settings = load_settings()
     model_dir = Path(model_dir) if model_dir else default_xlmr_model_dir()
     if not model_dir.exists():
         raise FileNotFoundError(f"Checkpoint XLM-R no encontrado: {model_dir}")
 
-    max_length = max_length or settings["model"]["max_length"]
+    contract = resolve_inference_contract(model_dir)
+    max_length = contract.validate_max_length(max_length)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    if normalize:
+        texts = apply_normalization(texts, contract)
 
     tokenizer = AutoTokenizer.from_pretrained(str(model_dir))
     model = AutoModelForSequenceClassification.from_pretrained(str(model_dir))
@@ -57,3 +82,9 @@ def predict(
         all_preds.append(np.argmax(probs, axis=-1))
 
     return np.concatenate(all_preds), np.concatenate(all_probs)
+
+
+def ensure_checkpoint_contract(model_dir: Path | str | None = None) -> Path:
+    """Escribe inference_contract.json en el directorio del checkpoint."""
+    model_dir = Path(model_dir) if model_dir else default_xlmr_model_dir()
+    return write_inference_contract(model_dir, get_inference_contract())

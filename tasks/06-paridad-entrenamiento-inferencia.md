@@ -22,9 +22,9 @@ Convertir la normalización y la longitud máxima de secuencia en un contrato ú
 
 ## Criterios de aceptación
 
-- [ ] No existe un `max_length` de 256 en la ruta de evaluación o inferencia de XLM-R si el entrenamiento usa 128.
-- [ ] Los cuatro contextos (entrenamiento, evaluación, lote y endpoint) consumen una única fuente de configuración.
-- [ ] Cada reporte de métricas registra versión de normalizador y `max_length`.
-- [ ] La prueba de paridad verifica resultados idénticos para entradas compartidas.
-- [ ] Las métricas y el informe se regeneran después del cambio de contrato.
+- [x] No existe un `max_length` de 256 en la ruta de evaluación o inferencia de XLM-R si el entrenamiento usa 128.
+- [x] Los cuatro contextos (entrenamiento, evaluación, lote y endpoint) consumen una única fuente de configuración.
+- [x] Cada reporte de métricas registra versión de normalizador y `max_length`.
+- [x] La prueba de paridad verifica resultados idénticos para entradas compartidas.
+- [x] Las métricas y el informe se regeneran después del cambio de contrato.
 

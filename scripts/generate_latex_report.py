@@ -734,6 +734,52 @@ def gen_val_metrics_note():
     write_tabular(out, ["Métrica", "Valor"], rows)
 
 
+def gen_inference_contract_prose():
+    """Genera párrafo sobre el contrato de inferencia y delta vs auditoría."""
+    contract_path = REPORTS_METRICS / "inference_contract.json"
+    delta_path = REPORTS_METRICS / "parity_audit_delta.json"
+    out = GENERATED_DIR / "inference_contract_prose.tex"
+
+    if not contract_path.exists():
+        out.write_text("% inference_contract.json no disponible\n", encoding="utf-8")
+        return
+
+    with open(contract_path, encoding="utf-8") as f:
+        contract = json.load(f)
+
+    delta_block = ""
+    if delta_path.exists():
+        with open(delta_path, encoding="utf-8") as f:
+            delta = json.load(f)
+        f1_off = delta.get("official_contract", {}).get("f1_macro", "---")
+        f1_256 = delta.get("diagnostic_audit_path", {}).get("f1_macro", "---")
+        pct_256 = delta.get("vs_audit_256", {}).get("pct_changed", "---")
+        pct_raw = delta.get("vs_raw_no_normalization", {}).get("pct_changed", "---")
+        audit_f1 = delta.get("audit_reference", {}).get("f1_macro_reported", 0.8058)
+        delta_block = (
+            f" La auditoría reportó F1-macro {audit_f1:.4f} con evaluación a "
+            f"\\texttt{{max\\_length}}=256; bajo el contrato oficial "
+            f"(\\texttt{{max\\_length}}={contract['max_length']}, "
+            f"normalizador {latex_escape(contract['normalizer'])} v"
+            f"{latex_escape(contract['normalizer_version'])}), el F1-macro es "
+            f"{f1_off} ({pct_256}\\% de predicciones distintas frente a la ruta "
+            f"diagnóstica a 256, F1={f1_256}). Sin normalización sobre texto crudo, "
+            f"{pct_raw}\\% de las predicciones cambian respecto al contrato."
+        )
+
+    text = (
+        f"Entrenamiento, evaluación por lote e inferencia del prototipo XLM-R comparten "
+        f"un contrato versionado (\\texttt{{inference\\_contract.json}}): "
+        f"\\texttt{{max\\_length}}={contract['max_length']}, columna "
+        f"\\texttt{{{latex_escape(contract['text_column'])}}} y normalizador "
+        f"\\texttt{{{latex_escape(contract['normalizer'])}}} "
+        f"v{latex_escape(contract['normalizer_version'])}."
+        f"{delta_block}\n"
+    )
+    out.write_text(text, encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
 def copy_figures():
     LATEX_FIGURES.mkdir(parents=True, exist_ok=True)
     if not REPORTS_FIGURES.exists():
@@ -772,6 +818,7 @@ def main():
     gen_jaccard()
     gen_lime_weights()
     gen_val_metrics_note()
+    gen_inference_contract_prose()
     assert_platform_consistency(REPORTS_METRICS / "slice_metrics.csv", GENERATED_DIR)
     assert_mcnemar_consistency(REPORTS_METRICS / "mcnemar_tests.csv", GENERATED_DIR)
     copy_figures()

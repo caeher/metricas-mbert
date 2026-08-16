@@ -14,6 +14,7 @@ from transformers import AutoModelForSequenceClassification
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from discurso_odio.config import load_settings
+from discurso_odio.models.inference_contract import get_inference_contract
 from discurso_odio.data.loaders import load_split
 from discurso_odio.interpretability.lime_explainer import (
     aggregate_lime_weights,
@@ -45,7 +46,8 @@ class CachedPredictor:
         self.model = AutoModelForSequenceClassification.from_pretrained(model_dir)
         self.model.to(self.device)
         self.model.eval()
-        self.max_length = settings["model"]["max_length"]
+        contract = get_inference_contract()
+        self.max_length = contract.max_length
         self.batch_size = 16
 
     @torch.no_grad()

@@ -1,0 +1,42 @@
+{
+  "created_at": "2026-08-16T00:07:04.777293+00:00",
+  "git_commit": "5c8931b9f81b1dc57307a7d441b9b6e681ae3823",
+  "split": "test.csv",
+  "checkpoint": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\XLMR\\02_modelo_prototipo\\modelo_entrenado",
+  "contract": {
+    "max_length": 128,
+    "text_column": "texto_modelo",
+    "normalizer": "normalize_for_model",
+    "normalizer_version": "1.1"
+  },
+  "audit_reference": {
+    "f1_macro_reported": 0.8058,
+    "max_length_reported": 256,
+    "note": "Cifra del informe de auditoría con evaluación a max_length=256"
+  },
+  "official_contract": {
+    "max_length": 128,
+    "normalize": true,
+    "text_column": "texto_modelo",
+    "f1_macro": 0.8058
+  },
+  "diagnostic_audit_path": {
+    "max_length": 256,
+    "normalize": false,
+    "text_column": "texto_modelo",
+    "f1_macro": 0.8058,
+    "delta_f1_vs_official": 0.0
+  },
+  "vs_audit_256": {
+    "n_changed": 0,
+    "pct_changed": 0.0
+  },
+  "vs_raw_no_normalization": {
+    "n_changed": 8,
+    "pct_changed": 1.74
+  },
+  "normalization_pipeline": {
+    "texto_original_vs_texto_modelo_mismatch": 30,
+    "pct_mismatch": 6.52
+  }
+}

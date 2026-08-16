@@ -23,6 +23,7 @@ from transformers import (
 
 from discurso_odio.config import get_max_steps, get_training_config, load_settings
 from discurso_odio.data.loaders import get_class_weights
+from discurso_odio.models.inference_contract import get_inference_contract, write_inference_contract
 from discurso_odio.utils.seed import set_seed
 
 
@@ -92,7 +93,8 @@ def build_trainer(
     text_col = text_col or settings["model"]["text_column"]
     label_col = label_col or settings["model"]["label_column"]
     model_name = model_name or settings["model"]["name"]
-    max_length = settings["model"]["max_length"]
+    contract = get_inference_contract()
+    max_length = contract.max_length
     device = get_device()
 
     tokenizer = build_tokenizer(model_name)
@@ -161,6 +163,7 @@ def train_mbert(
     trainer.train()
     trainer.save_model(str(output_dir))
     tokenizer.save_pretrained(str(output_dir))
+    write_inference_contract(output_dir)
 
     eval_metrics = trainer.evaluate()
     with open(output_dir / "train_metrics.json", "w", encoding="utf-8") as f:
@@ -175,14 +178,14 @@ def predict(
     batch_size: int = 16,
 ) -> tuple[np.ndarray, np.ndarray]:
     """Devuelve (predicciones, probabilidades)."""
-    settings = load_settings()
+    contract = get_inference_contract()
     device = get_device()
     tokenizer = AutoTokenizer.from_pretrained(model_dir)
     model = AutoModelForSequenceClassification.from_pretrained(model_dir)
     model.to(device)
     model.eval()
 
-    max_length = settings["model"]["max_length"]
+    max_length = contract.max_length
     all_preds, all_probs = [], []
 
     for i in range(0, len(texts), batch_size):

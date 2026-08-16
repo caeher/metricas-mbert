@@ -144,12 +144,14 @@ plt.show()"""),
 pd.Series(dialect_stats, name='valor')"""),
         md("## 7. Tokenización mBERT — cobertura max_length"),
         code("""from transformers import AutoTokenizer
+from discurso_odio.models.inference_contract import get_inference_contract
+contract = get_inference_contract()
 tokenizer = AutoTokenizer.from_pretrained(settings['model']['name'])
 lengths = [len(tokenizer.encode(t, add_special_tokens=True)) for t in corpus['texto_modelo'].head(500)]
 p99 = np.percentile(lengths, 99)
-print(f'Percentil 99 tokens: {p99:.0f} | max_length configurado: {settings[\"model\"][\"max_length\"]}')
+print(f'Percentil 99 tokens: {p99:.0f} | max_length configurado: {contract.max_length}')
 plt.hist(lengths, bins=30, color='#3498db', edgecolor='white')
-plt.axvline(settings['model']['max_length'], color='red', linestyle='--', label='max_length=128')
+plt.axvline(contract.max_length, color='red', linestyle='--', label=f'max_length={contract.max_length}')
 plt.title('Distribución de longitud en tokens (muestra 500)')
 plt.xlabel('Tokens')
 plt.legend()
@@ -378,6 +380,7 @@ from discurso_odio.interpretability.lime_explainer import (
 from discurso_odio.interpretability.shap_explainer import (
     make_shap_predict_fn, explain_texts_shap, extract_top_tokens,
 )
+from discurso_odio.models.inference_contract import get_inference_contract
 from discurso_odio.models.mbert import predict, get_device, build_model, build_tokenizer
 from discurso_odio.paths import MODELS_DIR
 from transformers import AutoModelForSequenceClassification
@@ -392,7 +395,8 @@ class CachedPredictor:
         self.model = AutoModelForSequenceClassification.from_pretrained(model_dir)
         self.model.to(self.device)
         self.model.eval()
-        self.max_length = settings['model']['max_length']
+        contract = get_inference_contract()
+        self.max_length = contract.max_length
 
     @torch.no_grad()
     def predict_proba(self, texts):

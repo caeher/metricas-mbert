@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 
 from discurso_odio.config import load_settings
+from discurso_odio.models.inference_contract import get_inference_contract
 from discurso_odio.paths import REPORTS_METRICS, TEST_CSV
 
 XLMR_PREDICTIONS_PATH = REPORTS_METRICS / "xlmr_test_predictions.csv"
@@ -142,6 +143,7 @@ def export_predictions_csv(
         "n": len(test),
         "max_length": max_length,
         "pred_column": pred_col,
+        **get_inference_contract().metadata(),
     }
     if extra_metadata:
         metadata.update(extra_metadata)

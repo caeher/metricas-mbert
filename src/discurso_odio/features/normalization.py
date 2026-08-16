@@ -49,8 +49,7 @@ def replace_urls(text: str, marker: str = "http://url") -> str:
 
 
 def replace_emojis(text: str) -> str:
-    def _demojize(match: re.Match) -> str:
-        char = match.group(0)
+    def _demojize(char: str, _data=None) -> str:
         desc = emoji.demojize(char, delimiters=("", "")).replace("_", " ")
         return f" {desc} " if desc else " "
 

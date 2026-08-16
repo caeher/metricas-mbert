@@ -24,6 +24,7 @@ from discurso_odio.evaluation.slices import (
     slice_metrics,
     slice_metrics_to_rows,
 )
+from discurso_odio.models.inference_contract import get_inference_contract
 from discurso_odio.models.mbert import predict
 from discurso_odio.paths import MODELS_DIR, REPORTS_METRICS, TEST_CSV
 
@@ -113,7 +114,10 @@ def main():
         run_id=args.run_id,
     )
 
-    extra = {"xlmr_status": slice_df.attrs.get("xlmr_status", "unknown")}
+    extra = {
+        "xlmr_status": slice_df.attrs.get("xlmr_status", "unknown"),
+        **get_inference_contract().metadata(),
+    }
     csv_path, json_path = export_slice_metrics(slice_df, REPORTS_METRICS, extra_metadata=extra)
 
     logger.info("Exportado: %s", csv_path)

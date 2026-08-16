@@ -10,7 +10,6 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from discurso_odio.config import load_settings
 from discurso_odio.data.loaders import load_split
 from discurso_odio.evaluation.predictions import (
     MBERT_PRED_COL,
@@ -19,6 +18,7 @@ from discurso_odio.evaluation.predictions import (
     export_predictions_csv,
     validate_prediction_vector,
 )
+from discurso_odio.models.inference_contract import get_inference_contract
 from discurso_odio.models.mbert import predict
 from discurso_odio.paths import MODELS_DIR, REPORTS_METRICS, TEST_CSV
 
@@ -33,9 +33,9 @@ def export_mbert_predictions(
     output_csv: Path | None = None,
     output_json: Path | None = None,
 ) -> tuple[Path, Path]:
-    settings = load_settings()
+    contract = get_inference_contract()
     model_dir = model_dir or MODELS_DIR / "mbert-sv"
-    max_length = max_length or settings["model"]["max_length"]
+    max_length = contract.validate_max_length(max_length)
     output_csv = output_csv or MBERT_PREDICTIONS_PATH
     output_json = output_json or MBERT_PREDICTIONS_JSON
 
@@ -58,6 +58,7 @@ def export_mbert_predictions(
         checkpoint=str(model_dir.resolve()),
         max_length=max_length,
         split=TEST_CSV.name,
+        extra_metadata=contract.metadata(),
     )
     logger.info("Exportado: %s", csv_path)
     logger.info("Exportado: %s", json_path)

@@ -7,7 +7,7 @@ from typing import Callable
 import numpy as np
 import shap
 
-from discurso_odio.config import load_settings
+from discurso_odio.models.inference_contract import get_inference_contract
 
 
 def _normalize_text_batch(texts) -> list[str]:
@@ -30,8 +30,12 @@ def make_shap_predict_fn(
     device,
     max_length: int | None = None,
 ) -> Callable:
-    settings = load_settings()
-    max_length = max_length or settings["model"]["max_length"]
+    contract = get_inference_contract()
+    max_length = max_length or contract.max_length
+    if max_length != contract.max_length:
+        raise ValueError(
+            f"max_length={max_length} no coincide con el contrato ({contract.max_length})"
+        )
     import torch
 
     def _predict(texts) -> np.ndarray:

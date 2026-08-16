@@ -20,6 +20,7 @@ from discurso_odio.evaluation.predictions import (
     load_xlmr_predictions,
 )
 from discurso_odio.evaluation.slices import dialect_bias_probe, export_dialect_bias
+from discurso_odio.models.inference_contract import get_inference_contract
 from discurso_odio.models.mbert import predict
 from discurso_odio.paths import MODELS_DIR, REPORTS_METRICS, TEST_CSV
 
@@ -105,7 +106,10 @@ def main():
         run_id=args.run_id,
     )
 
-    extra = {"xlmr_status": probe_df.attrs.get("xlmr_status", "unknown")}
+    extra = {
+        "xlmr_status": probe_df.attrs.get("xlmr_status", "unknown"),
+        **get_inference_contract().metadata(),
+    }
     csv_path, json_path = export_dialect_bias(probe_df, REPORTS_METRICS, extra_metadata=extra)
 
     logger.info("Exportado: %s", csv_path)
