@@ -208,23 +208,20 @@ Aunque la batería adversarial no se corrió sobre mBERT, el informe recomienda 
 
 ## Consistencia: cifras de la auditoría vs este repositorio
 
-> **No mezclar columnas.** Usar una fuente por documento; esta tabla explica por qué difieren.
+> **No mezclar columnas.** Usar una fuente por documento. El inventario canónico
+> está en `reports/metrics/mbert_f1_traceability.csv` (T-04).
 
 ### F1-macro global mBERT
 
-| Fuente | F1-macro | IC 95 % bootstrap | Notas |
-|--------|----------|-------------------|-------|
-| Informe de auditoría (Tabla 7) | **0.7862** | [0.7473, 0.8220] | Cifras citadas en la revisión independiente |
-| Repo actual (`reports/metrics/mbert_test_metrics.csv`) | **0.7777** | [0.7358, 0.8144] | Pipeline local / Colab; redondeo informe LaTeX: 0.778 |
-| Informe LaTeX (`reports/latex/chapters/06_evaluacion_completa.tex`) | **0.778** | [0.736, 0.814] | Versión redondeada del CSV |
+| Fuente | F1-macro | IC 95 % bootstrap | Estado |
+|--------|----------|-------------------|--------|
+| **Oficial (T-04)** — `mbert_test_metrics.csv` | **0.7777** | [0.7358, 0.8144] | Checkpoint `checkpoint-1072`, semilla 42, hash test verificado |
+| Informe LaTeX generado | **0.7777** | [0.7358, 0.8144] | Prosa y tablas desde la misma corrida (`mbert_official_run.json`) |
+| Informe de auditoría (Tabla 7) | 0.7862 | [0.7473, 0.8220] | **No reproducible** — sin pesos en entrega auditada |
+| Redondeo legacy a 3 dp | 0.778 | — | Archivado en trazabilidad; retirado del informe |
 
-**Posibles causas de la brecha auditoría (0.786) vs repo (0.778):**
-
-- Pesos o checkpoint distinto en la entrega auditada vs `resultados-metricas/models/mbert-sv/`.
-- Semilla, época de checkpoint o split no idéntico.
-- La auditoría no pudo verificar mBERT; el 0.7862 proviene del informe de Cristian, no de reproducción independiente.
-
-**Acción:** al entregar pesos (#8), documentar commit/checkpoint y regenerar métricas una sola vez; usar **una** cifra oficial en la tesina.
+**Resolución T-04:** la cifra `0.7862` queda archivada como histórica y **no**
+se usa en comparaciones. La única métrica publicada es **0.7777** (4 decimales).
 
 ### Baseline trivial clase mayoritaria
 
@@ -256,7 +253,9 @@ Los valores de mBERT provienen de `dialect_bias_probe()` sobre predicciones real
 | `scripts/train_mbert.py` | Entrenamiento mBERT |
 | `data/processed/test.csv` | Conjunto de prueba (n = 460) |
 | `models/mbert-sv/` | Pesos fine-tuned (gitignored; ver `resultados-metricas/`) |
-| `reports/metrics/mbert_test_metrics.csv` | Métricas globales actuales |
+| `reports/metrics/mbert_test_metrics.csv` | Métricas globales oficiales (T-04) |
+| `reports/metrics/mbert_f1_traceability.csv` | Inventario F1 histórico vs oficial |
+| `reports/metrics/mbert_official_run.json` | Metadatos de la corrida única |
 | `reports/metrics/mcnemar_tests.csv` | McNemar vs baselines y XLM-R (`xlm-roberta`) |
 | `reports/metrics/mcnemar_tests.json` | Metadatos de comparación pareada mBERT vs XLM-R |
 | `reports/metrics/trivial_baselines.csv` | Pisos triviales (bug #5) |

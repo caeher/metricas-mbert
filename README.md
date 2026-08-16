@@ -144,16 +144,21 @@ El paquete de auditoría autocontenido es `artifacts/mbert-sv-audit.zip` (tokeni
 
 ```powershell
 python scripts/package_mbert_checkpoint.py
-python scripts/export_mbert_predictions.py
 python scripts/verify_mbert_checkpoint.py --package artifacts/mbert-sv-audit.zip
+python scripts/evaluate_mbert_official.py
+python scripts/generate_latex_report.py
+python scripts/check_report_mbert_official.py
 ```
 
 Guía: [`docs/guia-inferencia-mbert.md`](docs/guia-inferencia-mbert.md).
 Distribución a revisores: Google Drive (mismo canal que Colab). Pegar la URL
-en el manifiesto con `--artifact-url` al publicar. F1-macro oficial del
-checkpoint: **0.7777** (tolerancia `1e-4`) sobre `data/processed/test.csv` (n = 460).
-El test B2 añade `origen`/`plantilla_id` sin cambiar IDs ni etiquetas; el
-checkpoint sigue siendo el de train v1 (`checkpoint-1072`).
+en el manifiesto con `--artifact-url` al publicar.
+
+**Métrica oficial (T-04):** F1-macro **0.7777** (tolerancia `1e-4`) sobre
+`data/processed/test.csv` (n = 460), checkpoint `checkpoint-1072`, semilla 42.
+Trazabilidad: `reports/metrics/mbert_f1_traceability.csv`. Una sola corrida
+genera predicciones, métricas, matriz de confusión y calibración
+(`reports/metrics/mbert_official_run.json`).
 
 ## Licencia
 

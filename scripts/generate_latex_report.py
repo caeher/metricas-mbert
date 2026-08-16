@@ -13,6 +13,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from discurso_odio.evaluation.report_consistency import (
+    assert_mbert_official_consistency,
     assert_mcnemar_consistency,
     assert_platform_consistency,
 )
@@ -92,6 +93,9 @@ def gen_class_weights():
         placeholder(out)
         return
     df = pd.read_csv(path)
+    if not {"clase", "peso_calculado", "peso_informe"}.issubset(df.columns):
+        placeholder(out, "class_weights.csv sin columnas esperadas")
+        return
     rows = [
         [latex_escape(r["clase"]), fmt_num(r["peso_calculado"]), fmt_num(r["peso_informe"])]
         for _, r in df.iterrows()
@@ -124,6 +128,213 @@ def gen_model_comparison():
     df = pd.read_csv(path).sort_values("f1_macro", ascending=False)
     rows = [[latex_escape(r["model"]), fmt_num(r["f1_macro"])] for _, r in df.iterrows()]
     write_tabular(out, ["Modelo", "F1-macro"], rows)
+
+
+def _mbert_metrics_row() -> pd.Series | None:
+    path = REPORTS_METRICS / "mbert_test_metrics.csv"
+    if not path.exists():
+        return None
+    return pd.read_csv(path).iloc[0]
+
+
+def _latex_num(value, digits: int = 4) -> str:
+    """Número para prosa LaTeX con coma decimal."""
+    return fmt_num(value, digits=digits).replace(".", "{,}")
+
+
+def gen_mbert_official_prose():
+    """Párrafo global de evaluación mBERT (cap. 06)."""
+    out = GENERATED_DIR / "mbert_official_prose.tex"
+    row = _mbert_metrics_row()
+    if row is None:
+        out.write_text("% mbert_test_metrics.csv no disponible\n", encoding="utf-8")
+        return
+    text = (
+        f"El F1-macro es \\textbf{{{_latex_num(row['f1_macro'])}}}, con intervalo bootstrap "
+        f"95\\,\\% $[{_latex_num(row['f1_bootstrap_lo'])},\\ {_latex_num(row['f1_bootstrap_hi'])}]$. "
+        f"La accuracy es ${_latex_num(row['accuracy'])}$ y el MCC ${_latex_num(row['mcc'])}$. "
+        f"El QWK de ${_latex_num(row['qwk'])}$ indica buen acuerdo ordinal. "
+        f"El ECE de ${_latex_num(row['ece'])}$ sugiere margen de mejora en calibración."
+    )
+    out.write_text(text + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
+def gen_mbert_intro_prose():
+    """Resumen ejecutivo de mBERT para la introducción."""
+    out = GENERATED_DIR / "mbert_intro_prose.tex"
+    row = _mbert_metrics_row()
+    if row is None:
+        out.write_text("% mbert_test_metrics.csv no disponible\n", encoding="utf-8")
+        return
+    baselines_path = REPORTS_METRICS / "baselines_tfidf.csv"
+    linear_f1 = "---"
+    if baselines_path.exists():
+        bl = pd.read_csv(baselines_path)
+        svc = bl[bl["model"].astype(str).str.lower() == "linearsvc"]
+        if not svc.empty:
+            linear_f1 = _latex_num(svc.iloc[0]["f1_macro"])
+    text = (
+        f"Sobre el conjunto de prueba ($n = 460$), el modelo mBERT alcanza un "
+        f"\\textbf{{F1-macro de {_latex_num(row['f1_macro'])}}} "
+        f"(intervalo bootstrap 95\\,\\%: $[{_latex_num(row['f1_bootstrap_lo'])},\\ "
+        f"{_latex_num(row['f1_bootstrap_hi'])}]$), superando al mejor baseline TF-IDF "
+        f"(LinearSVC, F1-macro ${linear_f1}$). El objetivo de $0{{,}}80$ no se alcanza, "
+        f"aunque el intervalo de confianza superior lo incluye."
+    )
+    out.write_text(text + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
+def gen_mbert_conclusions_prose():
+    """Ítem de conclusiones con F1 oficial."""
+    out = GENERATED_DIR / "mbert_conclusions_prose.tex"
+    row = _mbert_metrics_row()
+    if row is None:
+        out.write_text("% mbert_test_metrics.csv no disponible\n", encoding="utf-8")
+        return
+    baselines_path = REPORTS_METRICS / "baselines_tfidf.csv"
+    linear_f1 = _latex_num(0.7645)
+    if baselines_path.exists():
+        bl = pd.read_csv(baselines_path)
+        svc = bl[bl["model"].astype(str).str.lower() == "linearsvc"]
+        if not svc.empty:
+            linear_f1 = _latex_num(svc.iloc[0]["f1_macro"])
+    line = (
+        f"  \\item mBERT alcanza F1-macro \\textbf{{{_latex_num(row['f1_macro'])}}} en test "
+        f"($n=460$), superando a LinearSVC (${linear_f1}$) y al resto de baselines, pero "
+        f"\\textbf{{sin alcanzar}} la meta de $0{{,}}80$ definida en la configuración del "
+        f"proyecto. El intervalo bootstrap superior "
+        f"(${_latex_num(row['f1_bootstrap_hi'])}$) incluye el objetivo, lo que sugiere que "
+        f"con más datos o calibración podría lograrse."
+    )
+    out.write_text(line + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
+def gen_mbert_benchmark_prose():
+    """Referencia al F1 local en benchmark externo."""
+    out = GENERATED_DIR / "mbert_benchmark_prose.tex"
+    row = _mbert_metrics_row()
+    if row is None:
+        out.write_text("% mbert_test_metrics.csv no disponible\n", encoding="utf-8")
+        return
+    text = (
+        f"desempeño multiclase permanece lejos del F1-macro local de "
+        f"${_latex_num(row['f1_macro'])}$"
+    )
+    out.write_text(text + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
+def gen_mbert_comparison_prose():
+    """Párrafo de comparación descriptiva en cap. 06."""
+    out = GENERATED_DIR / "mbert_comparison_prose.tex"
+    row = _mbert_metrics_row()
+    if row is None:
+        out.write_text("% mbert_test_metrics.csv no disponible\n", encoding="utf-8")
+        return
+    baselines_path = REPORTS_METRICS / "baselines_tfidf.csv"
+    linear_f1 = _latex_num(0.7645)
+    if baselines_path.exists():
+        bl = pd.read_csv(baselines_path)
+        svc = bl[bl["model"].astype(str).str.lower() == "linearsvc"]
+        if not svc.empty:
+            linear_f1 = _latex_num(svc.iloc[0]["f1_macro"])
+    text = (
+        f"Entre baselines TF-IDF, mBERT obtiene el mejor F1-macro puntual "
+        f"(${_latex_num(row['f1_macro'])}$), con LinearSVC a poca distancia "
+        f"(${linear_f1}$)."
+    )
+    out.write_text(text + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
+def gen_mbert_perclass_prose():
+    """Desglose por clase para cap. 06."""
+    out = GENERATED_DIR / "mbert_perclass_prose.tex"
+    row = _mbert_metrics_row()
+    if row is None:
+        out.write_text("% mbert_test_metrics.csv no disponible\n", encoding="utf-8")
+        return
+    classes = [
+        ("Lenguaje Ofensivo", "f1_Lenguaje Ofensivo"),
+        ("No Tóxico", "f1_No Tóxico"),
+        ("Discurso de Odio", "f1_Discurso de Odio"),
+    ]
+    ranked = sorted(
+        ((name, float(row[col])) for name, col in classes if col in row.index),
+        key=lambda item: item[1],
+        reverse=True,
+    )
+    best_name, best_f1 = ranked[0]
+    second_name, second_f1 = ranked[1]
+    weakest_name, weakest_f1 = ranked[-1]
+    text = (
+        f"{latex_escape(best_name)} obtiene el mejor F1 (${_latex_num(best_f1)}$), seguido de "
+        f"{latex_escape(second_name)} (${_latex_num(second_f1)}$). "
+        f"{latex_escape(weakest_name)} es la clase más débil (${_latex_num(weakest_f1)}$), "
+        f"aunque el soporte es menor."
+    )
+    out.write_text(text + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
+def gen_mbert_traceability():
+    """Tabla de trazabilidad F1-macro histórico vs oficial."""
+    path = REPORTS_METRICS / "mbert_f1_traceability.csv"
+    out = GENERATED_DIR / "tab_mbert_traceability.tex"
+    if not path.exists():
+        placeholder(out, "mbert_f1_traceability.csv no disponible")
+        return
+    df = pd.read_csv(path)
+    status_labels = {
+        "official": "Oficial",
+        "same_run_rounded": "Mismo run (redondeo)",
+        "validation_only": "Solo validación",
+        "not_reproducible": "No reproducible",
+    }
+    rows = []
+    for _, r in df.iterrows():
+        rows.append(
+            [
+                fmt_num(r["f1_macro_published"]),
+                latex_escape(status_labels.get(str(r["status"]), str(r["status"]))),
+                latex_escape(str(r.get("source_file", ""))),
+                latex_escape(str(r.get("checkpoint", ""))),
+                latex_escape(str(r.get("split", ""))),
+            ]
+        )
+    write_tabular(
+        out,
+        ["F1-macro", "Estado", "Fuente", "Checkpoint", "Split"],
+        rows,
+        col_spec="lclll",
+    )
+
+
+def gen_mbert_traceability_prose():
+    """Párrafo que explica la tabla de trazabilidad."""
+    out = GENERATED_DIR / "mbert_traceability_prose.tex"
+    run_path = REPORTS_METRICS / "mbert_official_run.json"
+    if not run_path.exists():
+        out.write_text("% mbert_official_run.json no disponible\n", encoding="utf-8")
+        return
+    with open(run_path, encoding="utf-8") as handle:
+        run = json.load(handle)
+    text = (
+        f"La Tabla~\\ref{{tab:mbert-traceability}} documenta cada cifra histórica de "
+        f"F1-macro citada para mBERT. La métrica \\textbf{{oficial}} "
+        f"(${_latex_num(run['official_f1_macro'])}$) proviene del checkpoint "
+        f"\\texttt{{{latex_escape(run['checkpoint'])}}} "
+        f"(semilla {int(run['seed'])}, hash de test "
+        f"\\texttt{{{latex_escape(str(run['test_sha256'])[:16])}}}\\ldots, "
+        f"evaluación \\texttt{{{latex_escape(str(run['evaluated_at'])[:10])}}}). "
+        f"La cifra $0{{,}}7862$ del informe de auditoría queda archivada como "
+        f"\\emph{{no reproducible}} y no se usa en comparaciones."
+    )
+    out.write_text(text + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
 
 
 def gen_mbert_tables():
@@ -802,6 +1013,14 @@ def main():
     gen_baselines()
     gen_model_comparison()
     gen_mbert_tables()
+    gen_mbert_official_prose()
+    gen_mbert_intro_prose()
+    gen_mbert_conclusions_prose()
+    gen_mbert_benchmark_prose()
+    gen_mbert_comparison_prose()
+    gen_mbert_perclass_prose()
+    gen_mbert_traceability()
+    gen_mbert_traceability_prose()
     gen_slices()
     gen_platform_table()
     gen_platform_prose_mbert()
@@ -821,6 +1040,7 @@ def main():
     gen_inference_contract_prose()
     assert_platform_consistency(REPORTS_METRICS / "slice_metrics.csv", GENERATED_DIR)
     assert_mcnemar_consistency(REPORTS_METRICS / "mcnemar_tests.csv", GENERATED_DIR)
+    assert_mbert_official_consistency(REPORTS_METRICS / "mbert_test_metrics.csv", GENERATED_DIR)
     copy_figures()
     print("Tablas LaTeX generadas en", GENERATED_DIR)
 

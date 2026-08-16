@@ -6,10 +6,7 @@ resultados centrales del proyecto sobre el conjunto de prueba ($n = 460$).
 
 \section{Métricas globales de mBERT}
 
-La Tabla~\ref{tab:mbert-global} resume las métricas globales. El F1-macro es
-\textbf{0{,}778}, con intervalo bootstrap 95\,\% $[0{,}736,\ 0{,}814]$. La
-accuracy es $0{,}783$ y el MCC $0{,}704$. El QWK de $0{,}736$ indica buen
-acuerdo ordinal. El ECE de $0{,}157$ sugiere margen de mejora en calibración.
+\input{generated/mbert_official_prose}
 
 \begin{table}[H]
 \centering
@@ -20,10 +17,7 @@ acuerdo ordinal. El ECE de $0{,}157$ sugiere margen de mejora en calibración.
 
 \section{Desempeño por clase}
 
-La Tabla~\ref{tab:mbert-perclass} desglosa precision, recall y F1 por clase.
-Lenguaje Ofensivo obtiene el mejor F1 ($0{,}795$), seguido de No Tóxico
-($0{,}814$). Discurso de Odio es la clase más débil ($0{,}746$), aunque el
-soporte es menor.
+\input{generated/mbert_perclass_prose}
 
 \begin{table}[H]
 \centering
@@ -50,8 +44,7 @@ modelos por F1-macro de forma \textbf{descriptiva}. El ranking puntual no
 establece por sí solo superioridad estadística entre arquitecturas
 transformer: la comparación pareada mBERT vs.\ XLM-RoBERTa se evalúa con
 McNemar en la sección siguiente sobre las mismas $n=460$ instancias.
-Entre baselines TF-IDF, mBERT obtiene el mejor F1-macro puntual
-($0{,}778$), con LinearSVC a poca distancia ($0{,}765$).
+\input{generated/mbert_comparison_prose}
 
 \begin{table}[H]
 \centering
@@ -66,6 +59,17 @@ Entre baselines TF-IDF, mBERT obtiene el mejor F1-macro puntual
 \caption{Comparación de F1-macro entre modelos.}
 \label{fig:comparison}
 \end{figure}
+
+\section{Trazabilidad de la métrica oficial}
+
+\input{generated/mbert_traceability_prose}
+
+\begin{table}[H]
+\centering
+\caption{Trazabilidad de F1-macro mBERT (histórico vs.\ oficial).}
+\label{tab:mbert-traceability}
+\input{generated/tab_mbert_traceability}
+\end{table}
 
 \section{Pruebas de McNemar}
 

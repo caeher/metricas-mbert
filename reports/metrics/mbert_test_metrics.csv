@@ -1,0 +1,12 @@
+accuracy,balanced_accuracy,f1_macro,f1_weighted,precision_macro,recall_macro,ordinal_mae,ordinal_rmse,large_error_pct,qwk,kappa_linear,mcc,precision_No Tóxico,recall_No Tóxico,f1_No Tóxico,support_No Tóxico,precision_Lenguaje Ofensivo,recall_Lenguaje Ofensivo,f1_Lenguaje Ofensivo,support_Lenguaje Ofensivo,precision_Discurso de Odio,recall_Discurso de Odio,f1_Discurso de Odio,support_Discurso de Odio,precision_Amenazas/Violencia,recall_Amenazas/Violencia,f1_Amenazas/Violencia,support_Amenazas/Violencia,roc_auc_ovr_macro,log_loss,ece,brier_macro,classification_report,f1_bootstrap_mean,f1_bootstrap_lo,f1_bootstrap_hi
+0.782608695652174,0.7757451391051162,0.7777194765714894,0.7828842207289413,0.7808732555624674,0.7757451391051162,0.3239130434782609,0.7561343335907864,8.91304347826087,0.7361556982343499,0.7182345879992764,0.7035845189708845,0.8495575221238938,0.7804878048780488,0.8135593220338984,123,0.7738095238095238,0.8176100628930818,0.7951070336391437,159,0.7346938775510204,0.7578947368421053,0.7461139896373057,95,0.7654320987654321,0.7469879518072289,0.7560975609756098,83,0.9221629865233141,0.8721387005957749,0.15694192051887512,0.09395594522356987,"                    precision    recall  f1-score   support
+
+         No Tóxico       0.85      0.78      0.81       123
+ Lenguaje Ofensivo       0.77      0.82      0.80       159
+  Discurso de Odio       0.73      0.76      0.75        95
+Amenazas/Violencia       0.77      0.75      0.76        83
+
+          accuracy                           0.78       460
+         macro avg       0.78      0.78      0.78       460
+      weighted avg       0.78      0.78      0.78       460
+",0.7775980516278476,0.7357670523307825,0.8143980633933287

@@ -16,8 +16,8 @@ semilla 42). Los pesos **no** van en Git. El paquete de auditoría es
 
 **Corpus B2:** el test añade las columnas `origen` y `plantilla_id` respecto al
 v1; los IDs, textos y etiquetas son idénticos. El checkpoint empaquetado
-(`checkpoint-1072`) se entrenó sobre train v1 (2 144 reales); el F1 oficial
-0.7777 no cambia hasta un reentrenamiento explícito (T-04).
+(`checkpoint-1072`) se entrenó sobre train v1 (2 144 reales). La métrica oficial
+de test es F1-macro **0.7777** (T-04).
 
 `texto_modelo` ya está normalizado. Si el texto es crudo, aplicar
 `normalize_for_model` (el script de inferencia lo hace).
@@ -28,7 +28,10 @@ v1; los IDs, textos y etiquetas son idénticos. El checkpoint empaquetado
 # Empaquetar (genera ZIP + manifiesto SHA-256)
 python scripts/package_mbert_checkpoint.py
 
-# Vector de 460 predicciones alineadas al test
+# Vector de 460 predicciones alineadas al test (corrida oficial T-04)
+python scripts/evaluate_mbert_official.py --model-dir models/mbert-sv
+
+# Equivalente: export_mbert_predictions.py invoca la misma corrida completa
 python scripts/export_mbert_predictions.py --model-dir models/mbert-sv
 
 # Verificar el ZIP en un directorio temporal (no usa models/mbert-sv)
@@ -41,6 +44,12 @@ python scripts/inferencia_mbert.py --model-dir models/mbert-sv
 Salidas versionables:
 
 - `reports/metrics/mbert_test_predictions.csv` — columnas `id`, `y_pred_mbert`
+- `reports/metrics/mbert_test_probabilities.csv` — columnas `id`, `p0`…`p3`
+- `reports/metrics/mbert_test_metrics.csv` — métricas globales y bootstrap
+- `reports/metrics/mbert_confusion_matrix.csv` — matriz 4×4
+- `reports/metrics/mbert_calibration.csv` — bins de confiabilidad (ECE)
+- `reports/metrics/mbert_official_run.json` — metadatos de la corrida única
+- `reports/metrics/mbert_f1_traceability.csv` — inventario histórico vs oficial
 - `reports/metrics/mbert_checkpoint_manifest.json`
 - `reports/metrics/mbert_checkpoint_verify.json`
 

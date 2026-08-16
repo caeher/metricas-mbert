@@ -2,13 +2,20 @@
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
 
 import pandas as pd
 
-from discurso_odio.evaluation.slices import PLATFORM_SLICES, platform_rows
+from discurso_odio.evaluation.official_mbert import (
+    MBERT_METRICS_PATH,
+    MBERT_OFFICIAL_RUN_PATH,
+    MBERT_TRACEABILITY_CSV,
+)
+from discurso_odio.evaluation.slices import platform_rows
+from discurso_odio.models.mbert_artifacts import OFFICIAL_F1_MACRO
 
 MBERT_PLATFORM_F1 = {
     "plataforma_X": 0.8386,
@@ -32,6 +39,11 @@ def fmt_num(value, digits: int = 4) -> str:
     if value is None or (isinstance(value, float) and pd.isna(value)):
         return "---"
     return f"{float(value):.{digits}f}"
+
+
+def latex_fmt_num(value, digits: int = 4) -> str:
+    """Formato numérico usado en prosa LaTeX generada (coma decimal)."""
+    return fmt_num(value, digits=digits).replace(".", "{,}")
 
 
 def _model_label(model: str) -> str:
@@ -239,3 +251,104 @@ def assert_platform_consistency(
     if errors:
         messages = "\n".join(f"  - {e.message}" for e in errors)
         raise AssertionError(f"Inconsistencias de métricas por plataforma:\n{messages}")
+
+
+def check_mbert_official_metrics(
+    metrics_csv: Path,
+    generated_dir: Path,
+    *,
+    official_run_path: Path | None = None,
+) -> list[ConsistencyError]:
+    """Compara mbert_test_metrics.csv con tablas/prosa LaTeX oficiales."""
+    errors: list[ConsistencyError] = []
+    if not metrics_csv.exists():
+        errors.append(ConsistencyError(f"Artefacto no encontrado: {metrics_csv}"))
+        return errors
+
+    row = pd.read_csv(metrics_csv).iloc[0]
+    f1_fmt = fmt_num(row["f1_macro"])
+    f1_lo = fmt_num(row.get("f1_bootstrap_lo"))
+    f1_hi = fmt_num(row.get("f1_bootstrap_hi"))
+    f1_latex = latex_fmt_num(row["f1_macro"])
+    f1_lo_latex = latex_fmt_num(row.get("f1_bootstrap_lo"))
+    f1_hi_latex = latex_fmt_num(row.get("f1_bootstrap_hi"))
+
+    tex_files = {
+        "tab_mbert_global.tex": [f1_fmt],
+        "tab_model_comparison.tex": [f1_fmt],
+        "mbert_official_prose.tex": [f1_latex, f1_lo_latex, f1_hi_latex],
+        "mbert_intro_prose.tex": [f1_latex, f1_lo_latex, f1_hi_latex],
+        "mbert_conclusions_prose.tex": [f1_latex],
+        "mbert_benchmark_prose.tex": [f1_latex],
+    }
+
+    for name, expected_values in tex_files.items():
+        path = generated_dir / name
+        if not path.exists():
+            errors.append(ConsistencyError(f"LaTeX generado ausente: {name}"))
+            continue
+        text = path.read_text(encoding="utf-8")
+        for value in expected_values:
+            if value and value not in text:
+                errors.append(
+                    ConsistencyError(f"{name} no contiene el valor esperado {value}")
+                )
+        if "0.7862" in text or "0{,}7862" in text:
+            errors.append(ConsistencyError(f"{name} contiene F1 histórico 0.7862"))
+        if "0.778" in text or "0{,}778" in text:
+            errors.append(
+                ConsistencyError(
+                    f"{name} contiene redondeo legacy 0.778 en lugar del oficial"
+                )
+            )
+
+    official_run_path = official_run_path or MBERT_OFFICIAL_RUN_PATH
+    if official_run_path.exists():
+        with open(official_run_path, encoding="utf-8") as handle:
+            run = json.load(handle)
+        if fmt_num(run.get("official_f1_macro")) != f1_fmt:
+            errors.append(
+                ConsistencyError(
+                    "mbert_official_run.json y mbert_test_metrics.csv difieren en F1"
+                )
+            )
+    else:
+        errors.append(ConsistencyError(f"Artefacto no encontrado: {official_run_path}"))
+
+    trace_path = MBERT_TRACEABILITY_CSV
+    if trace_path.exists():
+        trace = pd.read_csv(trace_path)
+        official_rows = trace[trace["status"] == "official"]
+        if official_rows.empty:
+            errors.append(ConsistencyError("mbert_f1_traceability.csv sin fila official"))
+        elif fmt_num(official_rows.iloc[0]["f1_macro_published"]) != f1_fmt:
+            errors.append(
+                ConsistencyError("Trazabilidad official no coincide con métricas CSV")
+            )
+    else:
+        errors.append(ConsistencyError(f"Artefacto no encontrado: {trace_path}"))
+
+    if round(float(row["f1_macro"]), 4) != OFFICIAL_F1_MACRO:
+        errors.append(
+            ConsistencyError(
+                f"F1 en CSV ({f1_fmt}) no coincide con constante oficial {OFFICIAL_F1_MACRO}"
+            )
+        )
+
+    return errors
+
+
+def assert_mbert_official_consistency(
+    metrics_csv: Path,
+    generated_dir: Path,
+    *,
+    official_run_path: Path | None = None,
+) -> None:
+    errors = check_mbert_official_metrics(
+        metrics_csv,
+        generated_dir,
+        official_run_path=official_run_path,
+    )
+    if errors:
+        messages = "\n".join(f"  - {e.message}" for e in errors)
+        raise AssertionError(f"Inconsistencias de métrica oficial mBERT:\n{messages}")

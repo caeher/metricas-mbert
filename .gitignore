@@ -23,6 +23,13 @@ reports/metrics/*.csv
 !reports/metrics/mcnemar_tests.json
 !reports/metrics/mbert_test_predictions.csv
 !reports/metrics/mbert_test_predictions.json
+!reports/metrics/mbert_test_metrics.csv
+!reports/metrics/mbert_test_probabilities.csv
+!reports/metrics/mbert_confusion_matrix.csv
+!reports/metrics/mbert_calibration.csv
+!reports/metrics/mbert_official_run.json
+!reports/metrics/mbert_f1_traceability.csv
+!reports/metrics/mbert_f1_traceability.json
 !reports/metrics/mbert_checkpoint_manifest.json
 !reports/metrics/mbert_checkpoint_verify.json
 reports/tables/*.md

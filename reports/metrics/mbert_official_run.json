@@ -1,0 +1,32 @@
+{
+  "run_id": "0f93eb01-69e5-4807-ac78-bbc1f7b66cbb",
+  "evaluated_at": "2026-08-16T02:12:53.141907+00:00",
+  "git_commit": "b9606b06173a4a42aa403fa468586b790a8795fa",
+  "seed": 42,
+  "base_model": "bert-base-multilingual-cased",
+  "checkpoint": "checkpoint-1072",
+  "best_model_checkpoint": "checkpoint-1072",
+  "best_metric_val_f1_macro": 0.771461875533477,
+  "model_dir": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\models\\mbert-sv",
+  "split": "test.csv",
+  "test_csv": "data/processed/test.csv",
+  "test_n": 460,
+  "test_sha256": "5d1284efcc7df20f8a720318aed02dad7eb074e05d9428f646512d391aa9c471",
+  "max_length": 128,
+  "text_column": "texto_modelo",
+  "normalizer": "normalize_for_model",
+  "normalizer_version": "1.1",
+  "f1_macro_raw": 0.7777194765714894,
+  "official_f1_macro": 0.7777,
+  "f1_tolerance": 0.0001,
+  "f1_bootstrap_lo": 0.7357670523307825,
+  "f1_bootstrap_hi": 0.8143980633933287,
+  "artifacts": {
+    "predictions_csv": "reports/metrics/mbert_test_predictions.csv",
+    "probabilities_csv": "reports/metrics/mbert_test_probabilities.csv",
+    "metrics_csv": "reports/metrics/mbert_test_metrics.csv",
+    "confusion_csv": "reports/metrics/mbert_confusion_matrix.csv",
+    "calibration_csv": "reports/metrics/mbert_calibration.csv",
+    "traceability_csv": "reports/metrics/mbert_f1_traceability.csv"
+  }
+}
