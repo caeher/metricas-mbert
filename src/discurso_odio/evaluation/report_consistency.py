@@ -16,6 +16,7 @@ from discurso_odio.evaluation.official_mbert import (
 )
 from discurso_odio.evaluation.slices import HISTORICAL_PLATFORM_F1, platform_rows
 from discurso_odio.models.mbert_artifacts import OFFICIAL_F1_MACRO
+from discurso_odio.paths import PROJECT_ROOT
 
 XLMR_AUDIT_F1 = {
     "plataforma_X": 0.867,
@@ -501,3 +502,50 @@ def assert_mbert_official_consistency(
     if errors:
         messages = "\n".join(f"  - {e.message}" for e in errors)
         raise AssertionError(f"Inconsistencias de métrica oficial mBERT:\n{messages}")
+
+
+def check_adversarial_consistency(generated_dir: Path) -> list[ConsistencyError]:
+    errors: list[ConsistencyError] = []
+    summary_path = PROJECT_ROOT / "reports" / "metrics" / "mbert_adversarial_summary.json"
+    prose_path = generated_dir / "adversarial_prose.tex"
+    if not summary_path.exists():
+        return errors
+    with open(summary_path, encoding="utf-8") as handle:
+        summary = json.load(handle)
+    if not prose_path.exists():
+        errors.append(ConsistencyError("adversarial_prose.tex no generado"))
+        return errors
+    text = prose_path.read_text(encoding="utf-8")
+    checkpoint = str(summary.get("checkpoint", ""))
+    battery = str(summary.get("battery_version", ""))
+    if checkpoint and checkpoint not in text:
+        errors.append(ConsistencyError(f"adversarial_prose.tex no cita checkpoint {checkpoint}"))
+    if battery and battery not in text:
+        errors.append(ConsistencyError(f"adversarial_prose.tex no cita {battery}"))
+    if "métrica principal" not in text.lower() and "diagnóstic" not in text.lower():
+        errors.append(
+            ConsistencyError(
+                "adversarial_prose.tex debe aclarar que la batería es diagnóstica"
+            )
+        )
+    f1_diag = summary.get("f1_macro_diagnostic")
+    if f1_diag is not None and fmt_num(f1_diag) in text:
+        official_path = PROJECT_ROOT / "reports" / "metrics" / "mbert_test_metrics.csv"
+        if official_path.exists():
+            official = pd.read_csv(official_path)
+            if len(official):
+                off_f1 = fmt_num(official.iloc[0]["f1_macro"])
+                if off_f1 in text and "oficial" not in text.lower():
+                    errors.append(
+                        ConsistencyError(
+                            "No mezclar F1 diagnóstico adversarial con F1 oficial sin contexto"
+                        )
+                    )
+    return errors
+
+
+def assert_adversarial_consistency(generated_dir: Path) -> None:
+    errors = check_adversarial_consistency(generated_dir)
+    if errors:
+        messages = "\n".join(f"  - {e.message}" for e in errors)
+        raise AssertionError(f"Inconsistencias adversarial T-06:\n{messages}")

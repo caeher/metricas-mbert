@@ -77,6 +77,15 @@ advertencia de baja potencia cuando $n < 30$.
 Como sonda de sesgo dialectal se estima la tasa de falsos positivos sobre la
 clase No Tóxico, separando instancias con y sin jerga salvadoreña.
 
+\subsection{Batería adversarial diagnóstica}
+
+Además del test principal, existe un conjunto \texttt{test\_adversarial.csv}
+($n=75$, versión \texttt{adversarial\_v1}) con familias de ofuscación,
+emojis, amenazas encubiertas y pares dialectales semánticamente equivalentes.
+Este conjunto es \textbf{exclusivamente diagnóstico}: no se usa para entrenar,
+validar ni seleccionar el modelo, y sus métricas no sustituyen el F1-macro
+oficial sobre \texttt{test.csv}.
+
 \section{Contrato de inferencia XLM-R}
 
 \input{generated/inference_contract_prose}

@@ -176,3 +176,37 @@ cifras históricas no reproducibles frente a la línea oficial.
 \caption{Tasa de falsos positivos dialectal por grupo de jerga.}
 \label{fig:dialect-fpr}
 \end{figure}
+
+\section{Robustez adversarial y equidad dialectal (T-06)}
+
+\input{generated/adversarial_prose}
+
+\begin{table}[H]
+\centering
+\caption{Resultados por familia en la batería adversarial \texttt{test\_adversarial.csv} ($n=75$, diagnóstico). Fuente: \texttt{reports/metrics/mbert\_adversarial\_family\_metrics.csv}.}
+\label{tab:adversarial-families}
+\input{generated/tab_adversarial_families}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{FPR dialectal en pares controlados de la batería adversarial (grupos D vs.\ E).}
+\label{tab:adversarial-dialect}
+\input{generated/tab_adversarial_dialect}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{11_adversarial_families.png}
+\caption{Aciertos por familia adversarial: mBERT oficial vs.\ referencia XLM-R v1.}
+\label{fig:adversarial-families}
+\end{figure}
+
+\input{generated/adversarial_tradeoffs}
+
+\begin{table}[H]
+\centering
+\caption{Comparación antes/después de mitigación B2 (si aplica).}
+\label{tab:adversarial-before-after}
+\input{generated/tab_adversarial_before_after}
+\end{table}

@@ -1,0 +1,43 @@
+{
+  "created_at": "2026-08-16T04:30:12.598656+00:00",
+  "mitigation_adopted": false,
+  "adoption_notes": "F1-macro test cae >0.02; F1 Amenazas/Violencia en test empeora",
+  "rows": [
+    {
+      "stage": "baseline",
+      "model": "mbert",
+      "checkpoint": "checkpoint-1072",
+      "test_f1_macro": 0.7777194765714894,
+      "test_f1_amenazas": 0.7560975609756098,
+      "adv_global_correct": 45,
+      "adv_n": 75,
+      "adv_f1_macro_diagnostic": 0.531352375102375,
+      "adv_f1_amenazas": 0.5454545454545454,
+      "adv_threat_fn": 10,
+      "group_c_correct": 6.0,
+      "group_b_correct": 7.0,
+      "fpr_d": 0.8571428571428571,
+      "fpr_e": 0.0,
+      "fpr_gap": 0.8571428571428571,
+      "mitigation_adopted": false
+    },
+    {
+      "stage": "candidate_b2",
+      "model": "mbert-b2",
+      "checkpoint": "checkpoint-1072",
+      "test_f1_macro": 0.7161124654560727,
+      "test_f1_amenazas": 0.6575342465753424,
+      "adv_global_correct": 59,
+      "adv_n": 75,
+      "adv_f1_macro_diagnostic": 0.7489208999287387,
+      "adv_f1_amenazas": 1.0,
+      "adv_threat_fn": 0,
+      "group_c_correct": 11.0,
+      "group_b_correct": 15.0,
+      "fpr_d": 0.2857142857142857,
+      "fpr_e": 0.0,
+      "fpr_gap": 0.2857142857142857,
+      "mitigation_adopted": null
+    }
+  ]
+}

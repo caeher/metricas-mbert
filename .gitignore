@@ -13,6 +13,7 @@ dist/
 *.ipynb_checkpoints
 models/mbert-sv/
 models/mbert-sv-agresivo/
+models/mbert-sv-b2/
 artifacts/
 data/external/
 reports/figures/*.png
@@ -40,6 +41,9 @@ reports/metrics/*.csv
 !reports/metrics/dialect_bias_probe.json
 !reports/metrics/mbert_platform_traceability.csv
 !reports/metrics/mbert_platform_traceability.json
+!reports/metrics/adversarial_battery_manifest.json
+!reports/metrics/mbert_adversarial_summary.json
+!reports/metrics/mbert_adversarial_before_after.json
 reports/tables/*.md
 reports/latex/figures/*.png
 reports/latex/main.docx

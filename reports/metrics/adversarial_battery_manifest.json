@@ -1,0 +1,17 @@
+{
+  "battery_version": "adversarial_v1",
+  "created_at": "2026-08-16T04:30:21.240804+00:00",
+  "seed": 42,
+  "path": "data\\processed\\test_adversarial.csv",
+  "n_cases": 75,
+  "sha256": "fa0d02819800c9c6ce62f0a7f446d1b0d6b44b1471883a5d25e5e0e799c7f0d4",
+  "families": {
+    "A. Ofuscación de groserías": 20,
+    "B. Emojis": 18,
+    "C. Amenazas ofuscadas": 11,
+    "D. Jerga salvadoreña inofensiva": 14,
+    "E. Control sin jerga": 12
+  },
+  "rule": "diagnóstico: se reporta aparte, nunca como métrica principal",
+  "git_commit": "86c887e8147b639f7a457a29fdf6da9bd960811b"
+}

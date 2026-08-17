@@ -13,6 +13,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from discurso_odio.evaluation.report_consistency import (
+    assert_adversarial_consistency,
     assert_mbert_official_consistency,
     assert_mcnemar_consistency,
     assert_platform_consistency,
@@ -992,6 +993,190 @@ def gen_dialect_bias_conclusions():
     print(f"Generado: {out.name}")
 
 
+def _load_adversarial_summary() -> dict | None:
+    path = REPORTS_METRICS / "mbert_adversarial_summary.json"
+    if not path.exists():
+        return None
+    with open(path, encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def gen_adversarial_families():
+    path = REPORTS_METRICS / "mbert_adversarial_family_metrics.csv"
+    out = GENERATED_DIR / "tab_adversarial_families.tex"
+    if not path.exists():
+        placeholder(out, "mbert_adversarial_family_metrics.csv no disponible")
+        return
+    df = pd.read_csv(path)
+    if df.empty:
+        placeholder(out)
+        return
+    sub = df[df["model"] == "mbert"] if "mbert" in df["model"].values else df
+    rows = []
+    for _, r in sub.iterrows():
+        key = str(r.get("family_key", ""))
+        if r.get("metric_type") == "fpr":
+            metric = f"FPR {_frac_latex(r.get('fp', 0), r.get('n', 0))}"
+        else:
+            metric = f"{int(r.get('correct', 0))}/{int(r.get('n', 0))}"
+        rows.append(
+            [
+                latex_escape(key),
+                latex_escape(str(r.get("grupo", ""))[:40]),
+                metric,
+                fmt_num(r.get("conf_mean")),
+                fmt_num(r.get("n"), digits=0),
+            ]
+        )
+    write_tabular(
+        out,
+        ["Fam.", "Grupo", "Resultado", "Conf.", "n"],
+        rows,
+        col_spec="llccc",
+    )
+
+
+def gen_adversarial_dialect():
+    path = REPORTS_METRICS / "mbert_adversarial_family_metrics.csv"
+    out = GENERATED_DIR / "tab_adversarial_dialect.tex"
+    if not path.exists():
+        placeholder(out)
+        return
+    df = pd.read_csv(path)
+    sub = df[df["model"] == "mbert"] if "mbert" in df["model"].values else df
+    rows = []
+    for key in ("D", "E"):
+        part = sub[sub["family_key"] == key]
+        if part.empty:
+            continue
+        r = part.iloc[0]
+        rows.append(
+            [
+                "Jerga SV" if key == "D" else "Español estándar",
+                _frac_latex(r.get("fp", 0), r.get("n", 0)),
+                fmt_num(r.get("fpr")),
+                fmt_num(r.get("fpr_ci_lo")),
+                fmt_num(r.get("fpr_ci_hi")),
+                fmt_num(r.get("n"), digits=0),
+            ]
+        )
+    if not rows:
+        placeholder(out, "Grupos D/E no disponibles")
+        return
+    write_tabular(
+        out,
+        ["Grupo", "FP/n", "FPR", "IC lo", "IC hi", "n"],
+        rows,
+        col_spec="lccccr",
+    )
+
+
+def gen_adversarial_prose():
+    out = GENERATED_DIR / "adversarial_prose.tex"
+    summary = _load_adversarial_summary()
+    if not summary:
+        out.write_text("% mbert_adversarial_summary.json no disponible\n", encoding="utf-8")
+        return
+    lines = [
+        f"Se evaluó el checkpoint \\texttt{{{latex_escape(summary.get('checkpoint', ''))}}} "
+        f"(\\texttt{{run\\_id}}={latex_escape(str(summary.get('run_id', ''))[:8])}\\ldots) "
+        f"sobre la batería adversarial \\texttt{{{latex_escape(summary.get('battery_version', ''))}}} "
+        f"($n={summary.get('n_cases', 75)}$, SHA-256 verificado). "
+        f"Esta métrica es \\textbf{{diagnóstica}} y no sustituye el F1-macro oficial sobre "
+        f"\\texttt{{test.csv}}.",
+        f"El modelo acertó {summary.get('global_correct')}/{summary.get('n_cases')} casos "
+        f"(F1-macro diagnóstico={fmt_num(summary.get('f1_macro_diagnostic'))}). "
+        f"Sobre amenazas ofuscadas (grupo C): F1 Amenazas/Violencia="
+        f"{fmt_num(summary.get('f1_amenazas'))}, FN={summary.get('threat_fn')}/"
+        f"{summary.get('n_threats')}. "
+        f"La brecha FPR dialectal (D$-$E) es {fmt_num(summary.get('fpr_dialectal_gap'))}.",
+    ]
+    if summary.get("mitigation_required"):
+        reasons = ", ".join(summary.get("mitigation_reasons", []))
+        lines.append(
+            f"La puerta de mitigación se activó ({latex_escape(reasons)}); "
+            f"se entrenó un candidato B2 sin filas de train que coinciden con la batería."
+        )
+    else:
+        lines.append(
+            "No se activó la puerta de mitigación; se documentan riesgos residuales "
+            "(tamaño reducido de la batería y anchos IC en subconjuntos pequeños)."
+        )
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
+def gen_adversarial_before_after():
+    path = REPORTS_METRICS / "mbert_adversarial_before_after.csv"
+    out = GENERATED_DIR / "tab_adversarial_before_after.tex"
+    if not path.exists():
+        placeholder(out, "Comparación antes/después no disponible")
+        return
+    df = pd.read_csv(path)
+    rows = []
+    for _, r in df.iterrows():
+        rows.append(
+            [
+                latex_escape(str(r.get("stage", ""))),
+                latex_escape(str(r.get("checkpoint", ""))),
+                fmt_num(r.get("test_f1_macro")),
+                f"{int(r.get('group_c_correct', 0))}/11",
+                f"{int(r.get('group_b_correct', 0))}/18",
+                fmt_num(r.get("fpr_gap")),
+                fmt_num(r.get("adv_global_correct"), digits=0) + "/" + fmt_num(r.get("adv_n"), digits=0),
+            ]
+        )
+    write_tabular(
+        out,
+        ["Etapa", "Checkpoint", "F1 test", "C", "B", "FPR gap", "Adv."],
+        rows,
+        col_spec="llccccr",
+    )
+
+
+def gen_adversarial_tradeoffs():
+    out = GENERATED_DIR / "adversarial_tradeoffs.tex"
+    meta_path = REPORTS_METRICS / "mbert_adversarial_before_after.json"
+    if not meta_path.exists():
+        out.write_text(
+            "% Sin candidato B2: riesgos residuales documentados en adversarial_prose.tex\n",
+            encoding="utf-8",
+        )
+        return
+    with open(meta_path, encoding="utf-8") as handle:
+        meta = json.load(handle)
+    adopted = meta.get("mitigation_adopted")
+    notes = meta.get("adoption_notes", "")
+    if adopted:
+        line = (
+            f"El candidato B2 cumple los criterios de adopción documentados en T-06: "
+            f"{latex_escape(notes)}. El checkpoint oficial T-04 permanece como referencia "
+            f"de la métrica publicada."
+        )
+    else:
+        line = (
+            f"El candidato B2 no se adoptó como mitigación oficial: {latex_escape(notes)}. "
+            f"Se mantienen los riesgos residuales en amenazas ofuscadas, emojis y jerga dialectal."
+        )
+    out.write_text(line + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
+def gen_adversarial_conclusions():
+    out = GENERATED_DIR / "adversarial_conclusions.tex"
+    summary = _load_adversarial_summary()
+    if not summary:
+        out.write_text("% adversarial summary no disponible\n", encoding="utf-8")
+        return
+    line = (
+        f"  \\item La batería adversarial ({summary.get('global_correct')}/{summary.get('n_cases')} "
+        f"aciertos globales) confirma brechas en robustez retórica y equidad dialectal del "
+        f"checkpoint oficial; ver Tabla~\\ref{{tab:adversarial-families}}."
+    )
+    out.write_text(line + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
 def gen_benchmark():
     path = REPORTS_METRICS / "benchmark_externo.csv"
     out = GENERATED_DIR / "tab_benchmark.tex"
@@ -1172,6 +1357,12 @@ def main():
     gen_dialect_bias()
     gen_dialect_bias_prose()
     gen_dialect_bias_conclusions()
+    gen_adversarial_families()
+    gen_adversarial_dialect()
+    gen_adversarial_prose()
+    gen_adversarial_before_after()
+    gen_adversarial_tradeoffs()
+    gen_adversarial_conclusions()
     gen_benchmark()
     gen_fp_jerga()
     gen_jaccard()
@@ -1182,6 +1373,7 @@ def main():
     assert_slice_consistency(REPORTS_METRICS / "slice_metrics.csv", GENERATED_DIR)
     assert_mcnemar_consistency(REPORTS_METRICS / "mcnemar_tests.csv", GENERATED_DIR)
     assert_mbert_official_consistency(REPORTS_METRICS / "mbert_test_metrics.csv", GENERATED_DIR)
+    assert_adversarial_consistency(GENERATED_DIR)
     copy_figures()
     print("Tablas LaTeX generadas en", GENERATED_DIR)
 

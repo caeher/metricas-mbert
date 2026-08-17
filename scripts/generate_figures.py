@@ -468,6 +468,59 @@ def copy_to_latex_figures():
     print(f"Figuras copiadas a {LATEX_FIGURES}")
 
 
+def plot_adversarial_families():
+    path = REPORTS_METRICS / "mbert_adversarial_family_metrics.csv"
+    out = REPORTS_FIGURES / "11_adversarial_families.png"
+    if not path.exists():
+        _placeholder_figure(out, "mbert_adversarial_family_metrics.csv\nno disponible")
+        return
+
+    df = pd.read_csv(path)
+    sub = df[df["model"] == "mbert"] if "mbert" in df["model"].values else df
+    keys = ["A", "B", "C", "D", "E"]
+    labels = {
+        "A": "Ofuscación",
+        "B": "Emojis",
+        "C": "Amenazas",
+        "D": "Jerga SV",
+        "E": "Control",
+    }
+    mbert_scores = []
+    xlmr_scores = []
+    baseline = {
+        "A": 17 / 20,
+        "B": 6 / 18,
+        "C": 5 / 11,
+        "D": 1 - 6 / 14,
+        "E": 1 - 0 / 12,
+    }
+    for key in keys:
+        row = sub[sub["family_key"] == key]
+        if row.empty:
+            mbert_scores.append(np.nan)
+        elif row.iloc[0]["metric_type"] == "fpr":
+            mbert_scores.append(1 - float(row.iloc[0]["fpr"]))
+        else:
+            mbert_scores.append(float(row.iloc[0]["correct"]) / float(row.iloc[0]["n"]))
+        xlmr_scores.append(baseline.get(key, np.nan))
+
+    x = np.arange(len(keys))
+    width = 0.35
+    fig, ax = plt.subplots(figsize=(9, 5))
+    ax.bar(x - width / 2, mbert_scores, width, label="mBERT (oficial)", color="#219ebc")
+    ax.bar(x + width / 2, xlmr_scores, width, label="XLM-R v1 (ref.)", color="#fb8500", alpha=0.85)
+    ax.set_xticks(x)
+    ax.set_xticklabels([labels[k] for k in keys])
+    ax.set_ylabel("Tasa de acierto / (1 - FPR)")
+    ax.set_ylim(0, 1.05)
+    ax.set_title("Batería adversarial por familia (diagnóstico)")
+    ax.legend()
+    plt.tight_layout()
+    plt.savefig(out)
+    plt.close()
+    print("Generado: 11_adversarial_families.png")
+
+
 def main():
     comparison = build_comparison_df()
     plot_confusion_matrix()
@@ -477,6 +530,7 @@ def main():
     plot_slice_f1_xlmr()
     plot_platform_f1_grouped()
     plot_dialect_bias_fpr()
+    plot_adversarial_families()
     plot_lime_weights()
     plot_training_curve()
     copy_to_latex_figures()

@@ -1,0 +1,55 @@
+{
+  "evaluated_at": "2026-08-16T04:25:10.116117+00:00",
+  "git_commit": "86c887e8147b639f7a457a29fdf6da9bd960811b",
+  "model": "mbert-b2",
+  "checkpoint": "checkpoint-1072",
+  "run_id": null,
+  "battery_version": "adversarial_v1",
+  "battery_sha256": "fa0d02819800c9c6ce62f0a7f446d1b0d6b44b1471883a5d25e5e0e799c7f0d4",
+  "split": "test_adversarial.csv",
+  "n_cases": 75,
+  "f1_macro_diagnostic": 0.7489208999287387,
+  "global_correct": 59,
+  "global_accuracy": 0.7866666666666666,
+  "global_acc_ci_lo": 0.6812003421070318,
+  "global_acc_ci_hi": 0.8641979882028261,
+  "n_threats": 16,
+  "threat_fn": 0,
+  "threat_fn_rate": 0.0,
+  "f1_amenazas": 1.0,
+  "fpr_dialectal_gap": 0.2857142857142857,
+  "fpr_ci_overlap": true,
+  "mitigation_required": true,
+  "mitigation_reasons": [
+    "fpr_dialectal_gap_0.2857_ci_overlap_True"
+  ],
+  "train_overlap_n": 7,
+  "train_overlap_note": "Sin solapamiento con val/test. Filas de train B2 con texto idéntico se excluyen al reentrenar (T-06).",
+  "xlmr_v1_baseline": {
+    "A. Ofuscación de groserías": {
+      "correct": 17,
+      "n": 20
+    },
+    "B. Emojis": {
+      "correct": 6,
+      "n": 18
+    },
+    "C. Amenazas ofuscadas": {
+      "correct": 5,
+      "n": 11
+    },
+    "D. Jerga salvadoreña inofensiva": {
+      "fp": 6,
+      "n": 14
+    },
+    "E. Control sin jerga": {
+      "fp": 0,
+      "n": 12
+    },
+    "global": {
+      "correct": 48,
+      "n": 75
+    }
+  },
+  "is_diagnostic_metric": true
+}
