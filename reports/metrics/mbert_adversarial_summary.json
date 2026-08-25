@@ -1,6 +1,6 @@
 {
-  "evaluated_at": "2026-08-16T02:49:12.542548+00:00",
-  "git_commit": "86c887e8147b639f7a457a29fdf6da9bd960811b",
+  "evaluated_at": "2026-08-17T05:36:48.547584+00:00",
+  "git_commit": "2087655c35f26d2ddd43810228be36d00f99ff97",
   "model": "mbert",
   "checkpoint": "checkpoint-1072",
   "run_id": "0f93eb01-69e5-4807-ac78-bbc1f7b66cbb",

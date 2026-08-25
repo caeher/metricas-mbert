@@ -62,3 +62,4 @@ reports/latex/*.blg
 Thumbs.db
 metricas-proyecto-ml-colab/
 metricas-proyecto-ml-colab.zip
+correcciones-export/*.zip
