@@ -1,0 +1,62 @@
+\chapter{T-06: Robustez adversarial y equidad}
+
+\section{Batería adversarial v1}
+
+Se evaluó el checkpoint oficial sobre \texttt{test\_adversarial.csv} ($n=75$, familias A--E). Esta métrica es \textbf{diagnóstica} y no sustituye el F1 oficial del test principal.
+
+\begin{itemize}[noitemsep]
+  \item Manifiesto: \texttt{adversarial\_battery\_manifest.json} (SHA-256 versionado).
+  \item Resultado global: 45/75 aciertos (60\%).
+  \item F1-macro diagnóstico: 0.5314.
+  \item FN en amenazas: 10 de 16 casos de amenaza/violencia.
+\end{itemize}
+
+\section{Resultados por familia}
+
+\begin{table}[H]
+  \centering
+  \caption{Batería adversarial por familia (mBERT oficial)}
+  \label{tab:adversarial-families}
+  \input{generated/tab_adversarial_families.tex}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{11_adversarial_families.png}
+  \caption{Comparación por familia (mBERT vs referencia XLM-R v1)}
+  \label{fig:adversarial}
+\end{figure}
+
+\section{Equidad dialectal (familias D vs E)}
+
+\begin{table}[H]
+  \centering
+  \caption{FPR dialectal en batería adversarial}
+  \label{tab:adversarial-dialect}
+  \input{generated/tab_adversarial_dialect.tex}
+\end{table}
+
+El FPR en jerga inofensiva (familia D) es 12/14 (85.7\%) frente a 0/12 en control (familia E). Los intervalos Wilson no se solapan ($\Delta \approx 0.857$).
+
+\section{Intento de mitigación B2}
+
+Se reentrenó un candidato (\texttt{models/mbert-sv-b2}) excluyendo solapamiento con la batería. Mejora adversarial (59/75) pero \textbf{degrada} el test oficial:
+
+\begin{table}[H]
+  \centering
+  \caption{Antes/después de mitigación B2}
+  \label{tab:adversarial-before-after}
+  \input{generated/tab_adversarial_before_after.tex}
+\end{table}
+
+\textbf{Decisión:} no adoptar B2. Se mantiene \texttt{checkpoint-1072} como modelo oficial (F1 0.7777).
+
+\section{Scripts y tests}
+
+\begin{itemize}[noitemsep]
+  \item \texttt{scripts/evaluate\_adversarial.py}, \texttt{scripts/run\_t06\_pipeline.py}
+  \item \texttt{src/discurso\_odio/evaluation/adversarial.py}
+  \item \texttt{tests/test\_adversarial\_eval.py}
+\end{itemize}
+
+\textbf{Criterio de cierre:} brechas documentadas, mitigación evaluada con tradeoffs explícitos, batería versionada sin fuga a val/test.

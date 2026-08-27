@@ -1,0 +1,57 @@
+\chapter{T-05: Cortes por plataforma y contexto}
+
+\section{Objetivo}
+
+Consolidar métricas oficiales por cortes demográficos y contextuales a partir de las predicciones T-04, con normalización \texttt{SI/SÍ/NO} y advertencias de baja potencia en slices pequeños.
+
+\section{Cortes generales}
+
+\begin{table}[H]
+  \centering
+  \caption{F1-macro por corte contextual}
+  \label{tab:slices}
+  \input{generated/tab_slices.tex}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\textwidth]{07_slice_f1_heatmap.png}
+  \caption{Mapa de calor F1-macro por corte}
+  \label{fig:slices}
+\end{figure}
+
+\section{Plataforma}
+
+\begin{table}[H]
+  \centering
+  \caption{F1-macro por plataforma (mBERT oficial)}
+  \label{tab:platform}
+  \input{generated/tab_platform.tex}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{08_platform_f1_grouped.png}
+  \caption{Comparación F1-macro por plataforma}
+  \label{fig:platform}
+\end{figure}
+
+Destacan brechas entre X (F1 $\approx$ 0.84) y Facebook (F1 $\approx$ 0.67).
+
+\section{Sonda de sesgo dialectal (test principal)}
+
+\begin{table}[H]
+  \centering
+  \caption{Sonda de sesgo dialectal en test ($n=460$)}
+  \label{tab:dialect-bias}
+  \input{generated/tab_dialect_bias.tex}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.7\textwidth]{10_dialect_bias_fpr.png}
+  \caption{FPR en No Tóxico: con vs sin jerga salvadoreña}
+  \label{fig:dialect-fpr}
+\end{figure}
+
+\textbf{Criterio de cierre:} \texttt{slice\_metrics.csv}, \texttt{dialect\_bias\_probe.csv} y tablas LaTeX regeneradas desde CSV; tests en \texttt{test\_mbert\_slices\_official.py}.

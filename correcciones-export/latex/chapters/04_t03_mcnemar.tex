@@ -1,0 +1,32 @@
+\chapter{T-03: McNemar pareado mBERT vs XLM-R}
+
+\section{Hallazgo}
+
+El informe comparativo señaló que comparar dos F1-macro sin prueba pareada es insuficiente. En la fecha del informe faltaba el vector de predicciones mBERT alineado al test.
+
+\section{Implementación}
+
+\begin{enumerate}[noitemsep]
+  \item Exportación de predicciones mBERT: \texttt{reports/metrics/mbert\_test\_predictions.csv} ($n=460$).
+  \item Vector congelado XLM-R: \texttt{reports/metrics/xlmr\_test\_predictions.csv}.
+  \item Prueba McNemar: \texttt{scripts/run\_mcnemar.py} $\rightarrow$ \texttt{mcnemar\_tests.csv}.
+\end{enumerate}
+
+\section{Resultado}
+
+\begin{table}[H]
+  \centering
+  \caption{Pruebas de McNemar (extracto)}
+  \label{tab:mcnemar}
+  \input{generated/tab_mcnemar.tex}
+\end{table}
+
+La comparación mBERT vs XLM-RoBERTa arroja $p=0.200031$ ($b=25$, $c=36$, $n=460$, $\alpha=0.05$): \textbf{no se rechaza la hipótesis nula}. La diferencia puntual de F1-macro no es estadísticamente concluyente con este tamaño de muestra.
+
+Frente a MultinomialNB la superioridad de mBERT sí alcanza significancia ($p < 0.001$).
+
+\section{Interpretación}
+
+Este resultado cierra el hallazgo crítico \#4 de la auditoría. Debe presentarse como \emph{equivalencia estadística}, no como superioridad de mBERT sobre XLM-R.
+
+\textbf{Criterio de cierre:} fila \texttt{xlm-roberta} en \texttt{mcnemar\_tests.csv} y prosa generada en el informe principal.

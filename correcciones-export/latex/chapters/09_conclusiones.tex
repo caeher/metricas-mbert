@@ -1,0 +1,36 @@
+\chapter{Conclusiones}
+
+\section{Estado de las correcciones}
+
+Las seis tareas de auditoría mBERT (T-01 a T-06) están \textbf{completadas} con evidencia reproducible:
+
+\begin{enumerate}[noitemsep]
+  \item Baseline mayoritaria corregida (0.128).
+  \item Checkpoint empaquetado y verificable (F1 0.7777).
+  \item McNemar pareado ejecutado (equivalencia estadística vs XLM-R).
+  \item Métrica oficial única con trazabilidad completa.
+  \item Cortes y plataforma consolidados desde predicciones oficiales.
+  \item Robustez adversarial medida; mitigación B2 rechazada por tradeoff en test.
+\end{enumerate}
+
+\section{Riesgos residuales}
+
+\begin{itemize}[noitemsep]
+  \item \textbf{Amenazas ofuscadas:} 6/11 correctas en batería adversarial; FN elevados en amenazas.
+  \item \textbf{Emojis:} 7/18 correctos; asociación espuria emoji--toxicidad persiste.
+  \item \textbf{Sesgo dialectal:} FPR alto en jerga salvadoreña inofensiva (familia D y sonda en test).
+  \item \textbf{Plataforma Facebook:} F1-macro inferior a X; requiere más datos o ajuste de umbral por slice.
+\end{itemize}
+
+\section{Recomendaciones}
+
+\begin{enumerate}[noitemsep]
+  \item Ampliar corpus con amenazas ofuscadas y textos no tóxicos con jerga/emojis.
+  \item Mantener evaluación adversarial versionada en cada iteración del modelo.
+  \item No adoptar mitigaciones que degraden el F1 oficial sin análisis de costo-beneficio por slice.
+  \item Presentar mBERT y XLM-R como estadísticamente equivalentes en test ($n=460$).
+\end{enumerate}
+
+\section{Entrega a Cristian}
+
+Este paquete (\texttt{correcciones-export/}) contiene todo lo necesario para auditoría, defensa de tesis y replicación en Colab, sin incluir el trabajo XLMR ni las correcciones de Julio.

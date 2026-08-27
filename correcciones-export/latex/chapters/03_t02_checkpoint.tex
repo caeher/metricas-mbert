@@ -1,0 +1,54 @@
+\chapter{T-02: Checkpoint mBERT reproducible}
+
+\section{Hallazgo}
+
+La auditoría no pudo reproducir métricas de mBERT porque los pesos entrenados no estaban incluidos en la entrega auditada.
+
+\section{Entrega}
+
+Se implementó un paquete de auditoría con manifiesto SHA-256:
+
+\begin{itemize}[noitemsep]
+  \item \textbf{Archivo:} \texttt{artifacts/mbert-sv-audit.zip} (copia en \texttt{correcciones-export/}).
+  \item \textbf{Checkpoint:} \texttt{checkpoint-1072}, época 4, semilla 42.
+  \item \textbf{Manifiesto:} \texttt{reports/metrics/mbert\_checkpoint\_manifest.json}.
+  \item \textbf{Verificación:} \texttt{reports/metrics/mbert\_checkpoint\_verify.json} (\texttt{passed: true}).
+\end{itemize}
+
+\section{Contrato de inferencia}
+
+\begin{table}[H]
+  \centering
+  \caption{Contrato idéntico a entrenamiento y evaluación}
+  \label{tab:inference-contract}
+  \begin{tabular}{ll}
+    \toprule
+    Campo & Valor \\
+    \midrule
+    Columna de texto & \texttt{texto\_modelo} \\
+    \texttt{max\_length} & 128 \\
+    Normalizador & \texttt{normalize\_for\_model} v1.1 \\
+    Etiquetas & 0--3 (No Tóxico, Ofensivo, Odio, Amenazas) \\
+    Test & \texttt{data/processed/test.csv} ($n=460$) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Comandos de verificación}
+
+\begin{lstlisting}[language=bash]
+python scripts/package_mbert_checkpoint.py
+python scripts/verify_mbert_checkpoint.py --package artifacts/mbert-sv-audit.zip
+python scripts/evaluate_mbert_official.py --model-dir models/mbert-sv
+\end{lstlisting}
+
+La guía completa está en \texttt{docs/guia-inferencia-mbert.md}.
+
+\section{Salidas versionables}
+
+\begin{itemize}[noitemsep]
+  \item \texttt{mbert\_test\_predictions.csv} --- 460 predicciones alineadas.
+  \item \texttt{mbert\_test\_probabilities.csv}, \texttt{mbert\_confusion\_matrix.csv}, \texttt{mbert\_calibration.csv}.
+\end{itemize}
+
+\textbf{Criterio de cierre:} verificación independiente reproduce F1-macro 0.7777 dentro de tolerancia $10^{-4}$.

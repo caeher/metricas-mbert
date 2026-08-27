@@ -1,0 +1,58 @@
+\chapter{Resumen y alcance}
+
+\section{Contexto}
+
+El \emph{Informe de Auditoría de Modelos} \cite{auditoria2026} y el \emph{Informe Comparativa mBERT vs XLM-R} \cite{comparativa2026} identificaron hallazgos aplicables al modelo mBERT (\texttt{bert-base-multilingual-cased}), responsabilidad de Cristian Antonio Escalante Hernández. Este documento consolida las \textbf{correcciones implementadas} (T-01 a T-06) y la evidencia reproducible asociada.
+
+\section{Alcance}
+
+\begin{itemize}[noitemsep]
+  \item \textbf{Incluido:} mBERT, evaluación oficial, McNemar pareado, cortes, robustez adversarial y equidad dialectal.
+  \item \textbf{Excluido:} carpeta \texttt{XLMR/}, hallazgos exclusivos de Julio/Dresler (XLM-RoBERTa) y correcciones de su informe.
+  \item \textbf{Excepción:} se usa el vector congelado \texttt{xlmr\_test\_predictions.csv} únicamente como insumo de la prueba McNemar (T-03).
+\end{itemize}
+
+\section{Hallazgos de auditoría cerrados}
+
+\begin{table}[H]
+  \centering
+  \caption{Hallazgos de auditoría aplicables a Cristian}
+  \label{tab:hallazgos}
+  \begin{tabular}{clp{7cm}c}
+    \toprule
+    \# & Severidad & Descripción & Tarea \\
+    \midrule
+    4 & Crítica & Falta McNemar pareado mBERT vs XLM-R & T-03 \\
+    5 & Alta & Baseline trivial clase mayoritaria incorrecto (0.087) & T-01 \\
+    8 & Alta & Pesos mBERT no entregados para reproducción & T-02 \\
+    --- & Alta & Métrica oficial sin trazabilidad única & T-04 \\
+    --- & Alta & Cortes por plataforma y contexto sin consolidar & T-05 \\
+    --- & Alta & Robustez adversarial y equidad dialectal & T-06 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Cifras canónicas (post-corrección)}
+
+Tras las seis tareas, las cifras oficiales del repositorio son:
+
+\begin{itemize}[noitemsep]
+  \item F1-macro en test ($n=460$): \textbf{0.7777} (checkpoint \texttt{checkpoint-1072}, semilla 42).
+  \item Baseline trivial clase mayoritaria: \textbf{0.128} (antes 0.087).
+  \item McNemar mBERT vs XLM-R: $p=0.200$ ($b=25$, $c=36$) --- equivalencia estadística.
+  \item Batería adversarial v1 ($n=75$): 45/75 aciertos globales (métrica diagnóstica).
+  \item Mitigación B2 evaluada y \textbf{no adoptada} (test F1 0.7777 $\rightarrow$ 0.7161).
+\end{itemize}
+
+La cifra 0.7862 del informe de auditoría queda archivada como histórica y no reproducible (T-04).
+
+\section{Contenido del paquete de entrega}
+
+La carpeta \texttt{correcciones-export/} incluye:
+
+\begin{enumerate}[noitemsep]
+  \item Este informe LaTeX (PDF compilado).
+  \item \texttt{mbert-cristian-colab.zip} --- código, datos y libreta para Colab.
+  \item \texttt{mbert-sv-audit.zip} --- checkpoint oficial empaquetado (T-02).
+  \item \texttt{notebooks/replicar\_mbert\_colab.ipynb} --- libreta única de replicación.
+\end{enumerate}

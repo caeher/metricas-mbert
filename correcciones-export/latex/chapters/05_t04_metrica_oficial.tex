@@ -1,0 +1,40 @@
+\chapter{T-04: Métrica oficial y trazabilidad}
+
+\section{Problema}
+
+Coexistían múltiples cifras de F1-macro para mBERT (0.7862 en auditoría, 0.778 en redondeos legacy, 0.7715 solo validación) sin una regla única de selección del checkpoint.
+
+\section{Regla oficial}
+
+\begin{itemize}[noitemsep]
+  \item Checkpoint: mejor validación (\texttt{checkpoint-1072}).
+  \item Una sola evaluación sobre \texttt{test.csv} ($n=460$).
+  \item Metadatos en \texttt{mbert\_official\_run.json} (run\_id, commit, hash del test, semilla).
+\end{itemize}
+
+\section{Trazabilidad}
+
+\begin{table}[H]
+  \centering
+  \caption{Inventario F1-macro mBERT}
+  \label{tab:traceability}
+  \input{generated/tab_mbert_traceability.tex}
+\end{table}
+
+\section{Métricas globales oficiales}
+
+\begin{table}[H]
+  \centering
+  \caption{Métricas globales mBERT (test oficial)}
+  \label{tab:mbert-global}
+  \input{generated/tab_mbert_global.tex}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{04_confusion_matrix.png}
+  \caption{Matriz de confusión mBERT (test, $n=460$)}
+  \label{fig:confusion}
+\end{figure}
+
+\textbf{Criterio de cierre:} toda cifra publicada proviene de \texttt{mbert\_test\_metrics.csv}; 0.7862 marcado como no reproducible.

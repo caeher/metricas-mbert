@@ -1,0 +1,33 @@
+\chapter{T-01: Baseline de clase mayoritaria}
+
+\section{Hallazgo}
+
+El informe de auditoría señaló que \texttt{trivial\_baselines()} calculaba mal el F1-macro del clasificador que siempre predice la clase mayoritaria: usaba la proporción $p$ como precisión \emph{y} recall, cuando el recall de la clase mayoritaria debe ser 1.0.
+
+\section{Corrección}
+
+Se corrigió \texttt{src/discurso\_odio/evaluation/metrics.py}. Para $k=4$ clases y proporción $p$ de la mayoritaria en test:
+
+\begin{equation}
+  \mathrm{F1}_{\mathrm{macro}} = \frac{2p}{k(1+p)}
+\end{equation}
+
+Con $n=460$ y 159 instancias de Lenguaje Ofensivo ($p \approx 0.3457$), el valor correcto es \textbf{0.128}, no 0.087.
+
+\section{Evidencia}
+
+\begin{table}[H]
+  \centering
+  \caption{Baselines triviales corregidos}
+  \label{tab:trivial-baselines}
+  \input{generated/tab_trivial_baselines.tex}
+\end{table}
+
+\section{Tests y regeneración}
+
+\begin{itemize}[noitemsep]
+  \item \texttt{tests/test\_metrics.py} --- aserción con distribución real del test.
+  \item Regeneración de \texttt{trivial\_baselines.csv}, tablas LaTeX y capítulos de baselines.
+\end{itemize}
+
+\textbf{Criterio de cierre:} ningún artefacto publicado conserva 0.087; EDA e informe usan 0.128 con la misma regla de redondeo.

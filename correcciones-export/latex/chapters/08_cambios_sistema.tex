@@ -1,0 +1,53 @@
+\chapter{Cambios en el sistema}
+
+\section{Mapa tarea $\rightarrow$ artefactos}
+
+\begin{table}[H]
+  \centering
+  \caption{Resumen de entregables por tarea}
+  \label{tab:deliverables}
+  \small
+  \begin{tabular}{clp{6.5cm}}
+    \toprule
+    Tarea & Componente & Archivos principales \\
+    \midrule
+    T-01 & Código + tests & \texttt{evaluation/metrics.py}, \texttt{test\_metrics.py} \\
+    T-01 & Métricas & \texttt{trivial\_baselines.csv}, \texttt{tab\_trivial\_baselines.tex} \\
+    T-02 & Empaquetado & \texttt{package\_mbert\_checkpoint.py}, \texttt{mbert-sv-audit.zip} \\
+    T-02 & Verificación & \texttt{verify\_mbert\_checkpoint.py}, \texttt{mbert\_checkpoint\_verify.json} \\
+    T-03 & McNemar & \texttt{run\_mcnemar.py}, \texttt{mcnemar\_tests.csv} \\
+    T-04 & Eval oficial & \texttt{evaluate\_mbert\_official.py}, \texttt{mbert\_official\_run.json} \\
+    T-04 & Trazabilidad & \texttt{mbert\_f1\_traceability.csv}, \texttt{tab\_mbert\_traceability.tex} \\
+    T-05 & Cortes & \texttt{compute\_slice\_metrics.py}, \texttt{slice\_metrics.csv} \\
+    T-05 & Dialecto & \texttt{compute\_dialect\_bias.py}, \texttt{dialect\_bias\_probe.csv} \\
+    T-06 & Adversarial & \texttt{evaluation/adversarial.py}, \texttt{test\_adversarial.csv} \\
+    T-06 & Pipeline & \texttt{run\_t06\_pipeline.py}, \texttt{mbert\_adversarial\_*.json/csv} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Pipeline reproducible}
+
+\begin{enumerate}[noitemsep]
+  \item \texttt{python scripts/train\_mbert.py}
+  \item \texttt{python scripts/evaluate\_mbert\_official.py}
+  \item \texttt{python scripts/compute\_slice\_metrics.py}
+  \item \texttt{python scripts/compute\_dialect\_bias.py}
+  \item \texttt{python scripts/run\_mcnemar.py}
+  \item \texttt{python scripts/evaluate\_adversarial.py --model-dir models/mbert-sv --eval-test}
+  \item \texttt{python scripts/generate\_figures.py}
+  \item \texttt{python scripts/generate\_latex\_report.py}
+  \item \texttt{pytest tests/test\_adversarial\_eval.py -q}
+\end{enumerate}
+
+\section{Documentación de soporte}
+
+\begin{itemize}[noitemsep]
+  \item \texttt{docs/auditoria-mbert-cristian.md} --- extracción estructurada de hallazgos.
+  \item \texttt{docs/guia-inferencia-mbert.md} --- contrato e inferencia.
+  \item \texttt{tasks/01}--\texttt{tasks/06} --- especificaciones con criterios de aceptación.
+\end{itemize}
+
+\section{Fuera de alcance}
+
+No se modificaron ni entregan correcciones para: \texttt{XLMR/}, informe de Julio, reentrenamiento XLM-R, ni hallazgos 1--3 y 6--13 exclusivos de XLM-R.
