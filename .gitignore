@@ -63,3 +63,7 @@ Thumbs.db
 metricas-proyecto-ml-colab/
 metricas-proyecto-ml-colab.zip
 correcciones-export/*.zip
+applications/frontend/node_modules/
+applications/frontend/dist/
+applications/backend/models/mbert-sv/
+applications/backend/models/xlmr/
