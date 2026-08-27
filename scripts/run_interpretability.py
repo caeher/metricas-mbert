@@ -8,13 +8,10 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import torch
-from transformers import AutoModelForSequenceClassification
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from discurso_odio.config import load_settings
-from discurso_odio.models.inference_contract import get_inference_contract
 from discurso_odio.data.loaders import load_split
 from discurso_odio.interpretability.lime_explainer import (
     aggregate_lime_weights,
@@ -28,41 +25,13 @@ from discurso_odio.interpretability.shap_explainer import (
     extract_top_tokens,
     make_shap_predict_fn,
 )
-from discurso_odio.models.mbert import build_tokenizer, get_device, predict
+from discurso_odio.models.mbert import predict
+from discurso_odio.models.runtime import CachedPredictor
 from discurso_odio.paths import MODELS_DIR, REPORTS_METRICS
 from discurso_odio.utils.seed import set_seed
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
-
-
-class CachedPredictor:
-    """Predictor en memoria para LIME/SHAP sin recargar el modelo."""
-
-    def __init__(self, model_dir: Path):
-        settings = load_settings()
-        self.device = get_device()
-        self.tokenizer = build_tokenizer()
-        self.model = AutoModelForSequenceClassification.from_pretrained(model_dir)
-        self.model.to(self.device)
-        self.model.eval()
-        contract = get_inference_contract()
-        self.max_length = contract.max_length
-        self.batch_size = 16
-
-    @torch.no_grad()
-    def predict_proba(self, texts: list[str]) -> np.ndarray:
-        all_probs = []
-        for i in range(0, len(texts), self.batch_size):
-            batch = [str(t) if t else " " for t in texts[i : i + self.batch_size]]
-            enc = self.tokenizer(
-                batch, truncation=True, padding=True, max_length=self.max_length, return_tensors="pt"
-            )
-            enc = {k: v.to(self.device) for k, v in enc.items()}
-            logits = self.model(**enc).logits
-            probs = torch.softmax(logits, dim=-1).cpu().numpy()
-            all_probs.append(probs)
-        return np.concatenate(all_probs, axis=0)
 
 
 def main():
