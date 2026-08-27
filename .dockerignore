@@ -1,0 +1,46 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Node
+applications/frontend/node_modules/
+applications/frontend/dist/
+
+# Git / IDE
+.git/
+.gitignore
+.DS_Store
+Thumbs.db
+
+# Notebooks y artefactos pesados no necesarios para inferencia
+**/.ipynb_checkpoints/
+artifacts/
+metricas-proyecto-ml-colab/
+metricas-proyecto-ml-colab.zip
+correcciones-export/
+
+# XLMR (no requerido para mBERT)
+XLMR/
+
+# Reportes no usados por la API
+reports/figures/
+reports/tables/
+reports/latex/
+reports/metrics/*.csv
+
+# Modelos alternativos (solo se empaqueta mbert-sv)
+models/mbert-sv-agresivo/
+models/mbert-sv-b2/
+models/baseline_*.joblib
+
+# Documentación y planes
+*.docx
+*.pdf
+.cursor/
+Informe_Comparativa_mBERT_vs_XLMR.docx
