@@ -1,0 +1,73 @@
+{
+  "evaluated_at": "2026-09-06T15:29:31.927093+00:00",
+  "git_commit": "af6d23145cf55b3a5f26549aad9861da3d653582",
+  "model": "mbert-v1",
+  "checkpoint": "checkpoint-1072",
+  "run_id": null,
+  "battery_version": "adversarial_v2_144",
+  "battery_sha256": "574f7bbfdb4d5e07057bae0d5e20ae530099fa1ad002ba46c2e16d0ff7530d81",
+  "split": "test_adversarial_144.csv",
+  "n_cases": 144,
+  "f1_macro_diagnostic": 0.4367104440275172,
+  "global_correct": 69,
+  "global_accuracy": 0.4791666666666667,
+  "global_acc_ci_lo": 0.3991789622770364,
+  "global_acc_ci_hi": 0.5602370226039235,
+  "n_threats": 27,
+  "threat_fn": 16,
+  "threat_fn_rate": 0.5925925925925926,
+  "f1_amenazas": 0.5789473684210527,
+  "fpr_dialectal_gap": 0.8571428571428571,
+  "fpr_dialectal_f": 0.7058823529411765,
+  "fpr_ci_overlap": false,
+  "battery_pred_class3": 13,
+  "mitigation_required": true,
+  "mitigation_reasons": [
+    "amenazas_ofuscadas_correct_6_of_11",
+    "amenazas_fn_5_of_11",
+    "emojis_correct_7_of_18",
+    "fpr_dialectal_gap_0.8571_ci_overlap_False"
+  ],
+  "train_overlap_n": 7,
+  "xlmr_v1_baseline": {
+    "A. Ofuscación de groserías": {
+      "correct": 17,
+      "n": 20
+    },
+    "B. Emojis": {
+      "correct": 6,
+      "n": 18
+    },
+    "C. Amenazas ofuscadas": {
+      "correct": 5,
+      "n": 11
+    },
+    "D. Jerga salvadoreña inofensiva": {
+      "fp": 6,
+      "n": 14
+    },
+    "E. Control sin jerga": {
+      "fp": 0,
+      "n": 12
+    },
+    "global": {
+      "correct": 74,
+      "n": 144
+    },
+    "F. Falsos amigos dialectales": {
+      "fp": 26,
+      "n": 34
+    },
+    "G. Pares mínimos de emoji": {
+      "correct": 12,
+      "n": 35
+    }
+  },
+  "is_diagnostic_metric": true,
+  "group_g_innocuous_fp": 10,
+  "group_g_innocuous_n": 10,
+  "group_g_attack_fn": 5,
+  "group_g_attack_n": 7,
+  "group_g_pred_offensive_rate": 0.5142857142857142,
+  "group_g_pred_class3": 6
+}

@@ -17,9 +17,18 @@ from discurso_odio.evaluation.predictions import git_commit
 from discurso_odio.evaluation.slices import _wilson_ci
 from discurso_odio.models.mbert import predict
 from discurso_odio.models.mbert_artifacts import sha256_file
+from discurso_odio.data.adversarial_battery import (
+    BATTERY_144_N,
+    BATTERY_144_VERSION,
+    FAMILY_SPECS_144,
+    GROUP_F,
+    GROUP_G,
+)
 from discurso_odio.paths import (
+    ADVERSARIAL_144_BATTERY_MANIFEST_PATH,
     ADVERSARIAL_BATTERY_MANIFEST_PATH,
     REPORTS_METRICS,
+    TEST_ADVERSARIAL_144_CSV,
     TEST_ADVERSARIAL_CSV,
 )
 
@@ -41,6 +50,13 @@ XLMR_V1_BASELINE = {
     "D. Jerga salvadoreña inofensiva": {"fp": 6, "n": 14},
     "E. Control sin jerga": {"fp": 0, "n": 12},
     "global": {"correct": 48, "n": 75},
+}
+
+XLMR_V1_BASELINE_144 = {
+    **XLMR_V1_BASELINE,
+    GROUP_F: {"fp": 26, "n": 34},
+    GROUP_G: {"correct": 12, "n": 35},
+    "global": {"correct": 74, "n": 144},
 }
 
 MITIGATION_THRESHOLDS = {
@@ -569,3 +585,264 @@ def evaluate_test_metrics_parallel(
                     metrics_row[col] = float(official.iloc[0][col])
     pd.DataFrame([metrics_row]).to_csv(out_path, index=False)
     return metrics_row
+
+
+def build_battery_144_manifest(*, write: bool = True) -> dict[str, Any]:
+    """Manifiesto versionado de la batería extendida A–G (n=144)."""
+    adv_path = TEST_ADVERSARIAL_144_CSV
+    if not adv_path.exists():
+        from discurso_odio.data.adversarial_battery import write_adversarial_144_csv
+
+        write_adversarial_144_csv(adv_path)
+    adv_df = pd.read_csv(adv_path)
+    manifest: dict[str, Any] = {
+        "battery_version": BATTERY_144_VERSION,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "seed": load_settings()["project"]["seed"],
+        "path": str(adv_path.relative_to(adv_path.parents[2])),
+        "n_cases": len(adv_df),
+        "sha256": sha256_file(adv_path),
+        "families": {name: spec["n"] for name, spec in FAMILY_SPECS_144.items()},
+        "rule": "diagnóstico: se reporta aparte, nunca como métrica principal",
+        "git_commit": git_commit(),
+    }
+    if write:
+        ADVERSARIAL_144_BATTERY_MANIFEST_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with open(ADVERSARIAL_144_BATTERY_MANIFEST_PATH, "w", encoding="utf-8") as handle:
+            json.dump(manifest, handle, indent=2, ensure_ascii=False)
+    return manifest
+
+
+def load_battery_144_manifest() -> dict[str, Any]:
+    if ADVERSARIAL_144_BATTERY_MANIFEST_PATH.exists():
+        with open(ADVERSARIAL_144_BATTERY_MANIFEST_PATH, encoding="utf-8") as handle:
+            return json.load(handle)
+    return build_battery_144_manifest(write=True)
+
+
+def _emoji_pair_metrics(
+    adv_df: pd.DataFrame,
+    y_true: np.ndarray,
+    y_pred: np.ndarray,
+) -> dict[str, Any]:
+    """Métricas del grupo G: emoji inocuo que dispara toxicidad y emoji de ataque ignorado."""
+    mask_g = adv_df["grupo"].values == GROUP_G
+    if not mask_g.any():
+        return {}
+
+    g_df = adv_df.loc[mask_g].copy()
+    g_df["y_true"] = y_true[mask_g]
+    g_df["y_pred"] = y_pred[mask_g]
+
+    innocuous_variants = {
+        "corazon_inocuo",
+        "saludo_inocuo",
+        "manos_inocuo",
+        "pastel_inocuo",
+        "balon_inocuo",
+        "risa_inocuo",
+        "pulgar_inocuo",
+        "confeti_inocuo",
+    }
+    attack_variants = {
+        "pistola_amenaza",
+        "cuchillo_amenaza",
+        "ataud_amenaza",
+        "calavera_amenaza",
+        "bomba_amenaza",
+    }
+
+    inoc_mask = g_df["variante"].isin(innocuous_variants) & (g_df["y_true"] == 0)
+    attack_mask = g_df["variante"].isin(attack_variants) & (g_df["y_true"] == 3)
+
+    inoc_fp = int(((g_df.loc[inoc_mask, "y_pred"] >= 1).sum())) if inoc_mask.any() else 0
+    inoc_n = int(inoc_mask.sum())
+    attack_fn = int(((g_df.loc[attack_mask, "y_pred"] != 3).sum())) if attack_mask.any() else 0
+    attack_n = int(attack_mask.sum())
+    emoji_offensive = int(((g_df["y_pred"] == 1).sum()))
+
+    return {
+        "group_g_innocuous_fp": inoc_fp,
+        "group_g_innocuous_n": inoc_n,
+        "group_g_attack_fn": attack_fn,
+        "group_g_attack_n": attack_n,
+        "group_g_pred_offensive_rate": emoji_offensive / len(g_df) if len(g_df) else float("nan"),
+        "group_g_pred_class3": int((g_df["y_pred"] == 3).sum()),
+    }
+
+
+def evaluate_adversarial_144_battery(
+    *,
+    model_dir: Path,
+    model_name: str = "mbert",
+    checkpoint: str = "",
+    run_id: str | None = None,
+    output_prefix: str = "mbert",
+) -> dict[str, Any]:
+    """Evalúa un checkpoint mBERT sobre test_adversarial_144.csv (A–G)."""
+    manifest = load_battery_144_manifest()
+    adv_path = TEST_ADVERSARIAL_144_CSV
+    current_sha = sha256_file(adv_path)
+    if manifest.get("sha256") and manifest["sha256"] != current_sha:
+        raise ValueError(
+            f"SHA-256 de test_adversarial_144.csv ({current_sha}) no coincide con el manifiesto "
+            f"({manifest['sha256']})."
+        )
+
+    train_overlaps = assert_adversarial_not_in_splits(splits=("val", "test"))
+
+    adv_df = load_split("adversarial_144")
+    if len(adv_df) != BATTERY_144_N:
+        raise ValueError(f"Se esperaban {BATTERY_144_N} casos adversariales, hay {len(adv_df)}.")
+
+    y_pred, y_prob = predict(adv_df["texto_modelo"].tolist(), model_dir)
+    y_true = adv_df["label"].values.astype(int)
+    y_pred = np.asarray(y_pred, dtype=int)
+    confidence = np.max(y_prob, axis=1)
+    correct = y_true == y_pred
+
+    pred_df = adv_df.copy()
+    pred_df["y_true"] = y_true
+    pred_df["y_pred"] = y_pred
+    pred_df["confianza"] = confidence
+    pred_df["acierto"] = correct
+
+    family_rows: list[dict[str, Any]] = []
+    for grupo, spec in FAMILY_SPECS_144.items():
+        mask = adv_df["grupo"].values == grupo
+        if not mask.any():
+            continue
+        yt = y_true[mask]
+        yp = y_pred[mask]
+        conf = confidence[mask]
+        corr = correct[mask]
+        row: dict[str, Any] = {
+            "model": model_name,
+            "checkpoint": checkpoint,
+            "grupo": grupo,
+            "family_key": spec["key"],
+            "metric_type": spec["metric"],
+            **_confidence_stats(conf, corr),
+        }
+        if spec["metric"] == "accuracy":
+            row.update(_accuracy_metrics(yt, yp))
+        elif spec["metric"] == "fpr":
+            row.update(_fpr_metrics(yt, yp))
+        elif spec["metric"] == "emoji_pair":
+            row.update(_accuracy_metrics(yt, yp))
+        pred_dist = pd.Series(yp).value_counts().sort_index()
+        for label in range(4):
+            row[f"pred_label_{label}"] = int(pred_dist.get(label, 0))
+        family_rows.append(row)
+
+    family_df = pd.DataFrame(family_rows)
+    threat = _threat_metrics(y_true, y_pred)
+    global_acc = _accuracy_metrics(y_true, y_pred)
+    global_f1 = float(f1_score(y_true, y_pred, average="macro", zero_division=0))
+    emoji_metrics = _emoji_pair_metrics(adv_df, y_true, y_pred)
+
+    d_row = family_df[family_df["family_key"] == "D"]
+    e_row = family_df[family_df["family_key"] == "E"]
+    f_row = family_df[family_df["family_key"] == "F"]
+    fpr_gap = float("nan")
+    ci_overlap = True
+    if len(d_row) and len(e_row):
+        fpr_d = float(d_row.iloc[0]["fpr"])
+        fpr_e = float(e_row.iloc[0]["fpr"])
+        fpr_gap = fpr_d - fpr_e
+        ci_overlap = not (
+            float(d_row.iloc[0]["fpr_ci_lo"]) > float(e_row.iloc[0]["fpr_ci_hi"])
+            or float(e_row.iloc[0]["fpr_ci_lo"]) > float(d_row.iloc[0]["fpr_ci_hi"])
+        )
+
+    fpr_f = float(f_row.iloc[0]["fpr"]) if len(f_row) else float("nan")
+    mitigation = assess_mitigation_gap(family_df, fpr_gap=fpr_gap, ci_overlap=ci_overlap)
+
+    summary: dict[str, Any] = {
+        "evaluated_at": datetime.now(timezone.utc).isoformat(),
+        "git_commit": git_commit(),
+        "model": model_name,
+        "checkpoint": checkpoint,
+        "run_id": run_id,
+        "battery_version": manifest["battery_version"],
+        "battery_sha256": manifest["sha256"],
+        "split": adv_path.name,
+        "n_cases": len(adv_df),
+        "f1_macro_diagnostic": global_f1,
+        "global_correct": global_acc["correct"],
+        "global_accuracy": global_acc["accuracy"],
+        "global_acc_ci_lo": global_acc["acc_ci_lo"],
+        "global_acc_ci_hi": global_acc["acc_ci_hi"],
+        **threat,
+        "fpr_dialectal_gap": fpr_gap,
+        "fpr_dialectal_f": fpr_f,
+        "fpr_ci_overlap": ci_overlap,
+        "battery_pred_class3": int((y_pred == 3).sum()),
+        "mitigation_required": mitigation["mitigation_required"],
+        "mitigation_reasons": mitigation["reasons"],
+        "train_overlap_n": int(len(train_overlaps)),
+        "xlmr_v1_baseline": XLMR_V1_BASELINE_144,
+        "is_diagnostic_metric": True,
+        **emoji_metrics,
+    }
+
+    export_adversarial_artifacts(
+        pred_df=pred_df,
+        family_df=family_df,
+        summary=summary,
+        output_prefix=f"{output_prefix}_144",
+    )
+    return summary
+
+
+def decide_mitigation_adoption_multiobjective(
+    before_after_df: pd.DataFrame,
+    *,
+    baseline_f1: float = 0.7777,
+    bootstrap_overlap: bool = False,
+) -> tuple[bool, str]:
+    """Criterio multiobjetivo del informe de verificación (B2 vs v1)."""
+    if len(before_after_df) < 2:
+        return False, "Faltan filas baseline/candidato."
+    base = before_after_df.iloc[0]
+    cand = before_after_df.iloc[1]
+
+    c_improved = (
+        cand.get("group_c_correct", 0) > base.get("group_c_correct", 0)
+        or cand.get("adv_threat_fn", 999) < base.get("adv_threat_fn", 999)
+    )
+    gap_improved = cand.get("fpr_gap", 1) < base.get("fpr_gap", 1)
+    f1_delta = float(cand.get("test_f1_macro", 0)) - float(base.get("test_f1_macro", baseline_f1))
+    f1_ok = f1_delta >= -0.02 or bootstrap_overlap
+
+    g_inoc_fp_base = base.get("group_g_innocuous_fp", float("nan"))
+    g_inoc_fp_cand = cand.get("group_g_innocuous_fp", float("nan"))
+    g_improved = pd.isna(g_inoc_fp_base) or (
+        not pd.isna(g_inoc_fp_cand) and g_inoc_fp_cand < g_inoc_fp_base
+    )
+
+    pred3_base = base.get("battery_pred_class3", float("nan"))
+    pred3_cand = cand.get("battery_pred_class3", float("nan"))
+    pred3_ok = pd.isna(pred3_base) or (
+        not pd.isna(pred3_cand) and pred3_cand <= pred3_base + 5
+    )
+
+    adv_improved = cand.get("adv_global_correct", 0) > base.get("adv_global_correct", 0)
+
+    if adv_improved and c_improved and gap_improved and f1_ok and g_improved and pred3_ok:
+        return True, "Mejora adversarial 144 con F1 test dentro de tolerancia y sin sobre-predicción de Amenazas."
+
+    reasons: list[str] = []
+    if not adv_improved:
+        reasons.append("sin mejora global adversarial")
+    if not c_improved:
+        reasons.append("sin mejora grupo C/FN amenazas")
+    if not gap_improved:
+        reasons.append("sin reducción brecha FPR D-E")
+    if not f1_ok:
+        reasons.append(f"F1-macro test cae >0.02 (delta={f1_delta:.4f})")
+    if not g_improved:
+        reasons.append("emoji inocuo sigue disparando toxicidad (grupo G)")
+    if not pred3_ok:
+        reasons.append(f"sobre-predicción clase 3 en batería ({pred3_cand} vs {pred3_base})")
+    return False, "; ".join(reasons)

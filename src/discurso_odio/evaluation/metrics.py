@@ -199,7 +199,7 @@ def trivial_baselines(class_counts: dict[int, int]) -> dict[str, float]:
     f1_majority = sum(f1_per_class) / k
 
     return {
-        "azar_estratificado": round(f1_stratified, 3),
-        "azar_uniforme": round(f1_uniform, 3),
-        "clase_mayoritaria": round(f1_majority, 3),
+        "azar_estratificado": round(f1_stratified, 4),
+        "azar_uniforme": round(f1_uniform, 4),
+        "clase_mayoritaria": round(f1_majority, 4),
     }

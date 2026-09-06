@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
@@ -21,7 +22,11 @@ from transformers import (
 )
 
 from discurso_odio.config import get_max_steps, get_training_config, load_settings
-from discurso_odio.data.loaders import get_class_weights
+from discurso_odio.data.loaders import (
+    compute_sample_loss_weights,
+    get_b2_class_weights,
+    get_class_weights,
+)
 from discurso_odio.models.inference_contract import (
     apply_normalization,
     get_inference_contract,
@@ -48,6 +53,14 @@ def get_device() -> torch.device:
     return torch.device("cpu")
 
 
+def build_label_maps() -> tuple[dict[int, str], dict[str, int]]:
+    settings = load_settings()
+    names = list(settings["labels"]["names"])
+    id2label = {i: name for i, name in enumerate(names)}
+    label2id = {name: i for i, name in enumerate(names)}
+    return id2label, label2id
+
+
 def build_tokenizer(model_name: str | None = None):
     settings = load_settings()
     model_name = model_name or settings["model"]["name"]
@@ -58,7 +71,13 @@ def build_model(model_name: str | None = None, num_labels: int | None = None):
     settings = load_settings()
     model_name = model_name or settings["model"]["name"]
     num_labels = num_labels or settings["labels"]["num_classes"]
-    return AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=num_labels)
+    id2label, label2id = build_label_maps()
+    return AutoModelForSequenceClassification.from_pretrained(
+        model_name,
+        num_labels=num_labels,
+        id2label=id2label,
+        label2id=label2id,
+    )
 
 
 def make_hf_dataset(
@@ -67,29 +86,75 @@ def make_hf_dataset(
     label_col: str,
     tokenizer,
     max_length: int,
+    sample_weights: pd.Series | np.ndarray | None = None,
 ) -> Dataset:
     texts = df[text_col].fillna("").astype(str).tolist()
     labels = df[label_col].astype(int).tolist()
+    data: dict[str, list] = {"text": texts, "labels": labels}
+    if sample_weights is not None:
+        data["sample_weight"] = np.asarray(sample_weights, dtype=np.float32).tolist()
 
     def tokenize(batch):
-        return tokenizer(batch["text"], truncation=True, max_length=max_length)
+        tokenized = tokenizer(batch["text"], truncation=True, max_length=max_length)
+        if "sample_weight" in batch:
+            tokenized["sample_weight"] = batch["sample_weight"]
+        return tokenized
 
-    ds = Dataset.from_dict({"text": texts, "labels": labels})
+    ds = Dataset.from_dict(data)
     return ds.map(tokenize, batched=True, remove_columns=["text"])
 
 
-def make_weighted_loss_fn(class_weights: dict[int, float], device: torch.device):
-    weights = torch.tensor(
-        [class_weights[i] for i in sorted(class_weights)],
-        dtype=torch.float32,
-        device=device,
-    )
+@dataclass
+class SampleWeightCollator(DataCollatorWithPadding):
+    """Collator que conserva sample_weight para la pérdida ponderada por fila."""
 
-    def compute_loss_func(outputs, labels, num_items_in_batch=None):
-        loss_fn = CrossEntropyLoss(weight=weights)
-        return loss_fn(outputs.logits, labels)
+    def __call__(self, features):
+        weights = [float(f.pop("sample_weight", 1.0)) for f in features]
+        batch = super().__call__(features)
+        batch["sample_weight"] = torch.tensor(weights, dtype=torch.float32)
+        return batch
 
-    return compute_loss_func
+
+class MbertTrainer(Trainer):
+    """Trainer con pérdida ponderada por clase, fila y label smoothing."""
+
+    def __init__(
+        self,
+        *args,
+        class_weights: dict[int, float] | None = None,
+        label_smoothing: float = 0.0,
+        **kwargs,
+    ):
+        super().__init__(*args, **kwargs)
+        self.class_weights = class_weights
+        self.label_smoothing = label_smoothing
+
+    def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
+        labels = inputs.pop("labels")
+        sample_weight = inputs.pop("sample_weight", None)
+        outputs = model(**inputs)
+        logits = outputs.logits
+
+        weight_tensor = None
+        if self.class_weights:
+            weight_tensor = torch.tensor(
+                [self.class_weights[i] for i in sorted(self.class_weights)],
+                dtype=torch.float32,
+                device=logits.device,
+            )
+
+        loss_fn = CrossEntropyLoss(
+            weight=weight_tensor,
+            reduction="none",
+            label_smoothing=self.label_smoothing,
+        )
+        loss = loss_fn(logits.view(-1, logits.size(-1)), labels.view(-1))
+        if sample_weight is not None:
+            loss = (loss * sample_weight.to(logits.device)).mean()
+        else:
+            loss = loss.mean()
+
+        return (loss, outputs) if return_outputs else loss
 
 
 def build_trainer(
@@ -99,7 +164,12 @@ def build_trainer(
     text_col: str | None = None,
     label_col: str | None = None,
     model_name: str | None = None,
-) -> tuple[Trainer, AutoTokenizer]:
+    *,
+    class_weights: dict[int, float] | None = None,
+    sample_weights: pd.Series | np.ndarray | None = None,
+    label_smoothing: float = 0.0,
+    use_b2_class_weights: bool = False,
+) -> tuple[MbertTrainer, AutoTokenizer]:
     settings = load_settings()
     train_cfg = get_training_config()
     max_steps = get_max_steps()
@@ -116,11 +186,13 @@ def build_trainer(
     model = build_model(model_name)
     model.to(device)
 
-    train_ds = make_hf_dataset(train_df, text_col, label_col, tokenizer, max_length)
-    val_ds = make_hf_dataset(val_df, text_col, label_col, tokenizer, max_length)
+    if class_weights is None:
+        class_weights = get_b2_class_weights() if use_b2_class_weights else get_class_weights(train_df, label_col)
 
-    class_weights = get_class_weights(train_df, label_col)
-    compute_loss_func = make_weighted_loss_fn(class_weights, device)
+    train_ds = make_hf_dataset(
+        train_df, text_col, label_col, tokenizer, max_length, sample_weights=sample_weights
+    )
+    val_ds = make_hf_dataset(val_df, text_col, label_col, tokenizer, max_length)
 
     def compute_metrics(eval_pred):
         logits, labels = eval_pred
@@ -150,15 +222,16 @@ def build_trainer(
         max_steps=max_steps if max_steps > 0 else -1,
     )
 
-    trainer = Trainer(
+    trainer = MbertTrainer(
         model=model,
         args=training_args,
         train_dataset=train_ds,
         eval_dataset=val_ds,
         processing_class=tokenizer,
-        data_collator=DataCollatorWithPadding(tokenizer=tokenizer),
+        data_collator=SampleWeightCollator(tokenizer=tokenizer),
         compute_metrics=compute_metrics,
-        compute_loss_func=compute_loss_func,
+        class_weights=class_weights,
+        label_smoothing=label_smoothing,
         callbacks=[EarlyStoppingCallback(early_stopping_patience=train_cfg["early_stopping_patience"])],
     )
     return trainer, tokenizer
@@ -169,16 +242,33 @@ def train_mbert(
     val_df: pd.DataFrame,
     output_dir: str | Path | None = None,
     text_col: str | None = None,
-) -> Trainer:
+    *,
+    class_weights: dict[int, float] | None = None,
+    sample_weights: pd.Series | np.ndarray | None = None,
+    label_smoothing: float = 0.0,
+    use_b2_class_weights: bool = False,
+) -> MbertTrainer:
     settings = load_settings()
     output_dir = Path(output_dir or settings["model"]["output_dir"])
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    trainer, tokenizer = build_trainer(train_df, val_df, output_dir, text_col=text_col)
+    trainer, tokenizer = build_trainer(
+        train_df,
+        val_df,
+        output_dir,
+        text_col=text_col,
+        class_weights=class_weights,
+        sample_weights=sample_weights,
+        label_smoothing=label_smoothing,
+        use_b2_class_weights=use_b2_class_weights,
+    )
     trainer.train()
     trainer.save_model(str(output_dir))
     tokenizer.save_pretrained(str(output_dir))
     write_inference_contract(output_dir)
+    from discurso_odio.models.mbert_artifacts import apply_id2label
+
+    apply_id2label(output_dir / "config.json")
 
     eval_metrics = trainer.evaluate()
     with open(output_dir / "train_metrics.json", "w", encoding="utf-8") as f:

@@ -47,13 +47,14 @@ cuando el historial del \texttt{Trainer} está disponible.
 \label{fig:training}
 \end{figure}
 
-El checkpoint final se guarda en \texttt{models/mbert-sv/} y se usa para todas
-las evaluaciones posteriores (test local, slices, benchmark e
-interpretabilidad). Los pesos no se versionan en Git: el paquete de auditoría
-(\texttt{artifacts/mbert-sv-audit.zip}) incluye \texttt{model.safetensors},
-tokenizer, \texttt{inference_contract.json} y un manifiesto SHA-256 con
+El checkpoint final se guarda en \texttt{models/mbert-sv/} (v1, train 2{,}144) y se usa
+para evaluaciones hasta adoptar B2. Los pesos no se versionan en Git: el paquete de
+auditoría (\texttt{artifacts/mbert-sv-audit.zip}) incluye \texttt{model.safetensors},
+tokenizer, \texttt{inference\_contract.json} y un manifiesto SHA-256 con
 commit, semilla 42, \texttt{max\_length=128}, normalizador
 \texttt{normalize\_for\_model} y hash de \texttt{data/processed/test.csv}.
-Se obtiene por el canal de artefactos (Google Drive / tesina); la guía de
-carga está en \texttt{docs/guia-inferencia-mbert.md}. El F1-macro oficial
-ligado a este checkpoint es $0{,}7777$ (tolerancia $10^{-4}$).
+La verificación independiente (1 sep 2026) reproduce F1-macro \textbf{0{,}7777}
+como cifra oficial del checkpoint entregado; el informe alternativo con 0{,}786
+queda archivado como no reproducible. Reentrenamiento B2: \texttt{models/mbert-sv-b2}
+con train 3{,}286 (B2 sin solapes adversarial), pesos de clase de
+\texttt{metadata.json} y masa efectiva $\approx$90 en amenazas sintéticas.

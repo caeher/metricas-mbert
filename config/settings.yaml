@@ -32,6 +32,8 @@ model:
   text_column: texto_modelo
   label_column: label
   output_dir: models/mbert-sv
+  label_smoothing_b2: 0.05
+  threat_synthetic_effective_n: 90
 
 # Contrato único entrenamiento / evaluación / inferencia (T-06)
 inference_contract:

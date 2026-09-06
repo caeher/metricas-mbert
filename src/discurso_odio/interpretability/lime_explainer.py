@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from typing import Callable
 
@@ -9,6 +10,27 @@ import numpy as np
 from lime.lime_text import LimeTextExplainer
 
 from discurso_odio.config import load_settings
+
+_WORDPIECE_SUFFIX = re.compile(r"^##")
+
+
+def normalize_tokens_for_jaccard(tokens: list[str]) -> list[str]:
+    """Fusiona subwords WordPiece (##) y normaliza a palabras comparables con LIME."""
+    merged: list[str] = []
+    for token in tokens:
+        piece = str(token).strip()
+        if not piece:
+            continue
+        if _WORDPIECE_SUFFIX.match(piece):
+            suffix = piece[2:]
+            if merged:
+                merged[-1] = merged[-1] + suffix
+            elif suffix:
+                merged.append(suffix)
+        else:
+            merged.append(piece)
+    cleaned = [t.lower().strip(".,!?;:\"'()[]") for t in merged if t.strip()]
+    return [t for t in cleaned if t and t not in {"<pad>", "<s>", "</s>", "[PAD]", "[cls]", "[sep]"}]
 
 
 def build_lime_explainer(class_names: list[str] | None = None) -> LimeTextExplainer:
@@ -78,8 +100,10 @@ def aggregate_lime_weights(explanations: list[dict], top_k: int = 10) -> dict[in
 
 
 def jaccard_top_k(tokens_a: list[str], tokens_b: list[str], k: int = 10) -> float:
-    set_a = set(tokens_a[:k])
-    set_b = set(tokens_b[:k])
+    norm_a = normalize_tokens_for_jaccard(tokens_a)
+    norm_b = normalize_tokens_for_jaccard(tokens_b)
+    set_a = set(norm_a[:k])
+    set_b = set(norm_b[:k])
     if not set_a and not set_b:
         return 1.0
     if not set_a or not set_b:

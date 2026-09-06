@@ -1,0 +1,58 @@
+{
+  "evaluated_at": "2026-09-06T15:29:13.408313+00:00",
+  "git_commit": "af6d23145cf55b3a5f26549aad9861da3d653582",
+  "model": "mbert-v1",
+  "checkpoint": "checkpoint-1072",
+  "run_id": null,
+  "battery_version": "adversarial_v1",
+  "battery_sha256": "fa0d02819800c9c6ce62f0a7f446d1b0d6b44b1471883a5d25e5e0e799c7f0d4",
+  "split": "test_adversarial.csv",
+  "n_cases": 75,
+  "f1_macro_diagnostic": 0.531352375102375,
+  "global_correct": 45,
+  "global_accuracy": 0.6,
+  "global_acc_ci_lo": 0.48688038796210675,
+  "global_acc_ci_hi": 0.7033748435413322,
+  "n_threats": 16,
+  "threat_fn": 10,
+  "threat_fn_rate": 0.625,
+  "f1_amenazas": 0.5454545454545454,
+  "fpr_dialectal_gap": 0.8571428571428571,
+  "fpr_ci_overlap": false,
+  "mitigation_required": true,
+  "mitigation_reasons": [
+    "amenazas_ofuscadas_correct_6_of_11",
+    "amenazas_fn_5_of_11",
+    "emojis_correct_7_of_18",
+    "fpr_dialectal_gap_0.8571_ci_overlap_False"
+  ],
+  "train_overlap_n": 7,
+  "train_overlap_note": "Sin solapamiento con val/test. Filas de train B2 con texto idéntico se excluyen al reentrenar (T-06).",
+  "xlmr_v1_baseline": {
+    "A. Ofuscación de groserías": {
+      "correct": 17,
+      "n": 20
+    },
+    "B. Emojis": {
+      "correct": 6,
+      "n": 18
+    },
+    "C. Amenazas ofuscadas": {
+      "correct": 5,
+      "n": 11
+    },
+    "D. Jerga salvadoreña inofensiva": {
+      "fp": 6,
+      "n": 14
+    },
+    "E. Control sin jerga": {
+      "fp": 0,
+      "n": 12
+    },
+    "global": {
+      "correct": 48,
+      "n": 75
+    }
+  },
+  "is_diagnostic_metric": true
+}

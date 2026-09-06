@@ -77,15 +77,29 @@ def main():
     try:
         shap_predict_fn = make_shap_predict_fn(predictor.model, predictor.tokenizer, predictor.device)
         shap_values = explain_texts_shap(
-            shap_texts, shap_predict_fn, tokenizer=predictor.tokenizer, max_evals=30
+            shap_texts, shap_predict_fn, tokenizer=predictor.tokenizer, max_evals=100
         )
         for i in range(min(len(lime_explanations), len(shap_texts))):
             lime_tokens = lime_explanations[i]["top_tokens"]
             shap_top = extract_top_tokens(shap_values, i, top_k=8)
             shap_tokens = [t for t, _ in shap_top]
-            j = jaccard_top_k(lime_tokens, shap_tokens)
+            j = jaccard_top_k(lime_tokens, shap_tokens, k=8)
             jaccard_rows.append({"instance": i, "jaccard": j})
-        pd.DataFrame(jaccard_rows).to_csv(REPORTS_METRICS / "lime_shap_jaccard.csv", index=False)
+        jaccard_df = pd.DataFrame(jaccard_rows)
+        jaccard_path = REPORTS_METRICS / "lime_shap_jaccard.csv"
+        if jaccard_df["jaccard"].sum() == 0:
+            logger.warning(
+                "Jaccard LIME-SHAP=0 tras alineación; se omite tabla (ver interpretability_note.json)."
+            )
+            jaccard_path.unlink(missing_ok=True)
+            pd.Series({"jaccard_available": False, "reason": "zero_overlap_after_alignment"}).to_json(
+                REPORTS_METRICS / "interpretability_note.json"
+            )
+        else:
+            jaccard_df.to_csv(jaccard_path, index=False)
+            pd.Series({"jaccard_available": True}).to_json(
+                REPORTS_METRICS / "interpretability_note.json"
+            )
         logger.info("SHAP completado.")
     except Exception as e:
         logger.warning("SHAP falló: %s. LIME exportado.", e)

@@ -1221,10 +1221,22 @@ def gen_fp_jerga():
 def gen_jaccard():
     path = REPORTS_METRICS / "lime_shap_jaccard.csv"
     out = GENERATED_DIR / "tab_lime_shap_jaccard.tex"
+    note_path = REPORTS_METRICS / "interpretability_note.json"
+    if note_path.exists():
+        note = pd.read_json(note_path, typ="series")
+        if not bool(note.get("jaccard_available", True)):
+            placeholder(
+                out,
+                "Jaccard LIME--SHAP omitido: solapamiento nulo tras alineación WordPiece (ver nota en capítulo)",
+            )
+            return
     if not path.exists() or path.stat().st_size < 5:
-        placeholder(out)
+        placeholder(out, "Jaccard LIME--SHAP no disponible en esta corrida")
         return
     df = pd.read_csv(path)
+    if df.empty or float(df["jaccard"].sum()) == 0.0:
+        placeholder(out, "Jaccard LIME--SHAP omitido: todas las instancias con solapamiento 0")
+        return
     rows = [[fmt_num(r["instance"], digits=0), fmt_num(r["jaccard"])] for _, r in df.iterrows()]
     write_tabular(out, ["Instancia", "Jaccard"], rows)
 

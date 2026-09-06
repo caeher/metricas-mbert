@@ -43,7 +43,7 @@ def test_trivial_baselines_audit_test_distribution():
     majority_label = max(counts, key=counts.get)
     assert counts[majority_label] == 159
     baselines = trivial_baselines(counts)
-    assert baselines["clase_mayoritaria"] == 0.128
+    assert baselines["clase_mayoritaria"] == 0.1284
     assert baselines["azar_estratificado"] == 0.25
     assert baselines["azar_uniforme"] == 0.25
 
@@ -52,7 +52,7 @@ def test_trivial_baselines_second_distribution():
     counts = {0: 100, 1: 200, 2: 150, 3: 50}
     baselines = trivial_baselines(counts)
     assert baselines["azar_estratificado"] == 0.25
-    assert baselines["clase_mayoritaria"] == 0.143
+    assert baselines["clase_mayoritaria"] == 0.1429
 
 
 def test_trivial_baselines_divides_by_num_classes_not_present_labels():
