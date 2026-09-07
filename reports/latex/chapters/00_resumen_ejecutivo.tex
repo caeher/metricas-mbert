@@ -1,0 +1,23 @@
+\chapter*{Resumen ejecutivo}
+\addcontentsline{toc}{chapter}{Resumen ejecutivo}
+
+Este informe documenta la evaluación del modelo \textbf{mBERT B2}
+(\texttt{bert-base-multilingual-cased}, checkpoint \texttt{checkpoint-1644})
+reentrenado sobre el corpus ampliado con datos sintéticos dirigidos
+(train $n=3{,}293$; val/test sin cambios respecto al v1).
+
+\input{generated/mbert_intro_prose}
+
+\begin{table}[H]
+\centering
+\caption{Métricas globales oficiales (test, $n=460$).}
+\label{tab:resumen-global}
+\input{generated/tab_mbert_global}
+\end{table}
+
+Los cortes más difíciles son ironía y sarcasmo; Facebook presenta menor
+F1-macro que X. La batería adversarial extendida ($n=144$) mejora frente al
+checkpoint v1 (120/144 aciertos vs.\ 69/144), aunque el F1-macro en test
+principal desciende de $0{,}7777$ (v1) a $0{,}7610$ (B2).
+
+\clearpage

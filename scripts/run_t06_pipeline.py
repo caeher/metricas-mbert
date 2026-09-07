@@ -13,11 +13,14 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from discurso_odio.evaluation.adversarial import (
+    build_battery_144_manifest,
+    build_battery_manifest,
     decide_mitigation_adoption,
+    evaluate_adversarial_144_battery,
     evaluate_adversarial_battery,
     evaluate_test_metrics_parallel,
     export_before_after,
-    load_battery_manifest,
+    load_battery_144_manifest,
 )
 from discurso_odio.evaluation.official_mbert import (
     load_official_run_metadata,
@@ -33,25 +36,58 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Pipeline T-06 robustez y equidad mBERT.")
     parser.add_argument("--skip-train", action="store_true", help="No reentrenar B2 aunque haya brecha")
     parser.add_argument("--train-max-steps", type=int, default=0, help="Límite de pasos (0 = épocas completas)")
+    parser.add_argument(
+        "--battery-144",
+        action="store_true",
+        help="También evalúa la batería extendida A–G (n=144)",
+    )
+    parser.add_argument(
+        "--skip-battery-v1",
+        action="store_true",
+        help="Omite la batería v1 (n=75); implica evaluar solo --battery-144",
+    )
     args = parser.parse_args()
 
-    load_battery_manifest()
+    if not args.skip_battery_v1:
+        load_battery_manifest()
 
-    official = load_official_run_metadata()
-    baseline_dir = MODELS_DIR / "mbert-sv"
-    summary = evaluate_adversarial_battery(
-        model_dir=baseline_dir,
-        model_name="mbert",
-        checkpoint=official_checkpoint_label(official, baseline_dir),
-        run_id=official.get("run_id") if official else None,
-        output_prefix="mbert",
-    )
-    evaluate_test_metrics_parallel(
-        model_dir=baseline_dir,
-        model_name="mbert",
-        checkpoint=summary["checkpoint"],
-        output_prefix="mbert",
-    )
+        official = load_official_run_metadata()
+        baseline_dir = MODELS_DIR / "mbert-sv"
+        summary = evaluate_adversarial_battery(
+            model_dir=baseline_dir,
+            model_name="mbert",
+            checkpoint=official_checkpoint_label(official, baseline_dir),
+            run_id=official.get("run_id") if official else None,
+            output_prefix="mbert",
+        )
+        evaluate_test_metrics_parallel(
+            model_dir=baseline_dir,
+            model_name="mbert",
+            checkpoint=summary["checkpoint"],
+            output_prefix="mbert",
+        )
+    else:
+        official = load_official_run_metadata()
+        baseline_dir = MODELS_DIR / "mbert-sv"
+        summary = {"checkpoint": official_checkpoint_label(official, baseline_dir), "mitigation_required": False}
+
+    if args.battery_144 or args.skip_battery_v1:
+        load_battery_144_manifest()
+        summary_144 = evaluate_adversarial_144_battery(
+            model_dir=baseline_dir,
+            model_name="mbert-v1",
+            checkpoint=summary["checkpoint"],
+            run_id=official.get("run_id") if official else None,
+            output_prefix="mbert_v1",
+        )
+        logger.info(
+            "Adversarial 144: %d/%d global (F1 diag=%.4f)",
+            summary_144["global_correct"],
+            summary_144["n_cases"],
+            summary_144["f1_macro_diagnostic"],
+        )
+        if args.skip_battery_v1:
+            summary = summary_144
 
     if not summary.get("mitigation_required") or args.skip_train:
         logger.info("Mitigación no requerida o omitida.")

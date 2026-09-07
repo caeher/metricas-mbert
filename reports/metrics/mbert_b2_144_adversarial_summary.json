@@ -1,0 +1,68 @@
+{
+  "evaluated_at": "2026-09-07T19:58:08.215256+00:00",
+  "git_commit": "7471b3b0e52eb4de59ff25e7a8947dfadf25f17f",
+  "model": "mbert-b2",
+  "checkpoint": "checkpoint-1644",
+  "run_id": null,
+  "battery_version": "adversarial_v2_144",
+  "battery_sha256": "5162b87d96eaaa3718185a9bda93fed9938177e2bbc8bd803a6414300aa9111f",
+  "split": "test_adversarial_144.csv",
+  "n_cases": 144,
+  "f1_macro_diagnostic": 0.7515551102378635,
+  "global_correct": 120,
+  "global_accuracy": 0.8333333333333334,
+  "global_acc_ci_lo": 0.7639773510623427,
+  "global_acc_ci_hi": 0.8853668908422996,
+  "n_threats": 27,
+  "threat_fn": 0,
+  "threat_fn_rate": 0.0,
+  "f1_amenazas": 1.0,
+  "fpr_dialectal_gap": 0.07142857142857142,
+  "fpr_dialectal_f": 0.23529411764705882,
+  "fpr_ci_overlap": true,
+  "battery_pred_class3": 37,
+  "mitigation_required": false,
+  "mitigation_reasons": [],
+  "train_overlap_n": 7,
+  "xlmr_v1_baseline": {
+    "A. Ofuscación de groserías": {
+      "correct": 17,
+      "n": 20
+    },
+    "B. Emojis": {
+      "correct": 6,
+      "n": 18
+    },
+    "C. Amenazas ofuscadas": {
+      "correct": 5,
+      "n": 11
+    },
+    "D. Jerga salvadoreña inofensiva": {
+      "fp": 6,
+      "n": 14
+    },
+    "E. Control sin jerga": {
+      "fp": 0,
+      "n": 12
+    },
+    "global": {
+      "correct": 74,
+      "n": 144
+    },
+    "F. Falsos amigos dialectales": {
+      "fp": 26,
+      "n": 34
+    },
+    "G. Pares mínimos de emoji": {
+      "correct": 12,
+      "n": 35
+    }
+  },
+  "is_diagnostic_metric": true,
+  "group_g_innocuous_fp": 1,
+  "group_g_innocuous_n": 10,
+  "group_g_attack_fn": 0,
+  "group_g_attack_n": 7,
+  "group_g_pred_offensive_rate": 0.02857142857142857,
+  "group_g_pred_class3": 13
+}

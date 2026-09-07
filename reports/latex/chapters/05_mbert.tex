@@ -1,9 +1,9 @@
-\chapter{Fine-tuning de mBERT}
+\chapter{Fine-tuning de mBERT B2}
 \label{ch:mbert}
 
 Este capítulo corresponde al notebook \texttt{04\_finetuning\_mbert}. Se
-describe el entrenamiento de \texttt{bert-base-multilingual-cased}
-~\cite{devlin2019bert} sobre el corpus salvadoreño.
+describe el reentrenamiento de \texttt{bert-base-multilingual-cased}
+~\cite{devlin2019bert} sobre el corpus B2 salvadoreño.
 
 \section{Configuración de entrenamiento}
 
@@ -12,13 +12,15 @@ se resumen en la Tabla~\ref{tab:hparams}.
 
 \begin{table}[H]
 \centering
-\caption{Hiperparámetros de fine-tuning (CPU).}
+\caption{Hiperparámetros de fine-tuning B2 (CPU).}
 \label{tab:hparams}
 \begin{tabular}{lc}
 \toprule
 Parámetro & Valor \\
 \midrule
 Modelo base & \texttt{bert-base-multilingual-cased} \\
+Directorio de salida & \texttt{models/mbert-sv-b2} \\
+Train & 3{,}293 (2{,}144 reales + 1{,}149 sintéticos) \\
 Épocas & 4 \\
 Batch size (train) & 8 \\
 Batch size (eval) & 16 \\
@@ -26,35 +28,42 @@ Learning rate & $2 \times 10^{-5}$ \\
 Warmup ratio & 0{,}1 \\
 Weight decay & 0{,}01 \\
 Max length & 128 \\
+Label smoothing (B2) & 0{,}05 \\
 Early stopping patience & 2 \\
 Semilla & 42 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
+\section{Pesos de clase B2}
+
+Los pesos publicados en \texttt{metadata.json} (Tabla~\ref{tab:weights}) mitigan
+el desbalance y se combinan con masa efectiva $\approx 90$ en amenazas sintéticas
+durante el entrenamiento.
+
 \section{Métricas de validación}
 
-Al finalizar el entrenamiento (época 4), el modelo alcanza en validación un
-F1-macro de \textbf{0{,}771} y una accuracy de \textbf{0{,}771}
-(\texttt{train\_metrics.json}). La Figura~\ref{fig:training} muestra la
-evolución de la pérdida y del F1 de evaluación a lo largo del entrenamiento,
-cuando el historial del \texttt{Trainer} está disponible.
+Al finalizar el entrenamiento (época 4), el mejor checkpoint
+(\texttt{checkpoint-1644}) alcanza en validación un F1-macro de \textbf{0{,}756}
+y una accuracy de \textbf{0{,}756} (\texttt{train\_metrics.json}). La
+Figura~\ref{fig:training} resume las métricas finales de validación; el historial
+completo de pérdida por step no fue exportado desde Colab.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{09_training_loss.png}
-\caption{Curva de entrenamiento: pérdida y F1-macro de evaluación.}
+\caption{Curva de entrenamiento: métricas finales de validación B2.}
 \label{fig:training}
 \end{figure}
 
-El checkpoint final se guarda en \texttt{models/mbert-sv/} (v1, train 2{,}144) y se usa
-para evaluaciones hasta adoptar B2. Los pesos no se versionan en Git: el paquete de
-auditoría (\texttt{artifacts/mbert-sv-audit.zip}) incluye \texttt{model.safetensors},
-tokenizer, \texttt{inference\_contract.json} y un manifiesto SHA-256 con
-commit, semilla 42, \texttt{max\_length=128}, normalizador
-\texttt{normalize\_for\_model} y hash de \texttt{data/processed/test.csv}.
-La verificación independiente (1 sep 2026) reproduce F1-macro \textbf{0{,}7777}
-como cifra oficial del checkpoint entregado; el informe alternativo con 0{,}786
-queda archivado como no reproducible. Reentrenamiento B2: \texttt{models/mbert-sv-b2}
-con train 3{,}286 (B2 sin solapes adversarial), pesos de clase de
-\texttt{metadata.json} y masa efectiva $\approx$90 en amenazas sintéticas.
+El checkpoint oficial se guarda en \texttt{models/mbert-sv-b2/}. Los pesos no
+se versionan en Git. El contrato de inferencia (\texttt{inference\_contract.json})
+fija \texttt{max\_length=128}, columna \texttt{texto\_modelo} y normalizador
+\texttt{normalize\_for\_model} v1.1.
+
+\section{Comparación con el checkpoint v1}
+
+El checkpoint v1 (\texttt{checkpoint-1072}, train 2{,}144) alcanzaba F1-macro
+\textbf{0{,}7777} en test. El B2 prioriza robustez adversarial y equidad
+dialectal; la evaluación del Capítulo~\ref{ch:evaluacion} cuantifica el
+intercambio frente al v1.

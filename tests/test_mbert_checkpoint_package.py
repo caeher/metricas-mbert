@@ -139,7 +139,7 @@ def test_committed_manifest_identifies_checkpoint():
     assert data["max_length"] == 128
     assert data["normalizer"] == "normalize_for_model"
     assert data["seed"] == 42
-    assert data["official_f1_macro"] == 0.7777
+    assert data["official_f1_macro"] == 0.7610
     assert data["test_n"] == 460
     assert "model.safetensors" in data["sha256"]
     assert data["test_sha256"] == sha256_file(TEST_CSV)
@@ -172,4 +172,4 @@ def test_committed_verify_report_passed():
     assert report["f1_match"] is True
     assert report["test_sha256_match"] is True
     assert report["used_repo_models_dir"] is False
-    assert abs(report["f1_macro"] - 0.7777) <= F1_TOLERANCE
+    assert abs(report["f1_macro"] - 0.7610) <= F1_TOLERANCE

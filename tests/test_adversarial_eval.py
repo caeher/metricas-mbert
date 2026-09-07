@@ -10,7 +10,6 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from discurso_odio.data.loaders import load_split
 from discurso_odio.evaluation.adversarial import (
     BATTERY_N,
     FAMILY_SPECS,
@@ -22,8 +21,15 @@ from discurso_odio.evaluation.adversarial import (
     find_train_overlaps,
     load_battery_manifest,
 )
+from discurso_odio.data.loaders import load_split
 from discurso_odio.models.mbert_artifacts import sha256_file
-from discurso_odio.paths import ADVERSARIAL_BATTERY_MANIFEST_PATH, REPORTS_METRICS, TEST_ADVERSARIAL_CSV
+from discurso_odio.paths import (
+    ADVERSARIAL_144_BATTERY_MANIFEST_PATH,
+    ADVERSARIAL_BATTERY_MANIFEST_PATH,
+    REPORTS_METRICS,
+    TEST_ADVERSARIAL_144_CSV,
+    TEST_ADVERSARIAL_CSV,
+)
 
 
 def test_adversarial_battery_schema():
@@ -136,3 +142,30 @@ def test_build_battery_manifest_writes_file():
     manifest = build_battery_manifest(write=True)
     assert ADVERSARIAL_BATTERY_MANIFEST_PATH.exists()
     assert manifest["sha256"] == sha256_file(TEST_ADVERSARIAL_CSV)
+
+
+def test_adversarial_144_battery_schema():
+    from discurso_odio.data.adversarial_battery import BATTERY_144_N, FAMILY_SPECS_144
+    from discurso_odio.evaluation.adversarial import build_battery_144_manifest, load_battery_144_manifest
+
+    if not TEST_ADVERSARIAL_144_CSV.exists():
+        pytest.skip("test_adversarial_144.csv no generado")
+    df = load_split("adversarial_144")
+    assert len(df) == BATTERY_144_N == 144
+    for grupo, spec in FAMILY_SPECS_144.items():
+        assert int((df["grupo"] == grupo).sum()) == spec["n"]
+    manifest = load_battery_144_manifest()
+    assert manifest["battery_version"] == "adversarial_v2_144"
+    assert manifest["sha256"] == sha256_file(TEST_ADVERSARIAL_144_CSV)
+
+
+def test_adversarial_144_summary_schema():
+    summary_path = REPORTS_METRICS / "mbert_v1_144_adversarial_summary.json"
+    if not summary_path.exists():
+        pytest.skip("Ejecutar evaluate_adversarial.py --battery-144 primero")
+    with open(summary_path, encoding="utf-8") as handle:
+        summary = json.load(handle)
+    assert summary["n_cases"] == 144
+    assert summary["battery_version"] == "adversarial_v2_144"
+    assert "group_g_innocuous_fp" in summary
+    assert "xlmr_v1_baseline" in summary

@@ -38,6 +38,9 @@ from discurso_odio.utils.seed import set_seed
 
 
 def default_mbert_model_dir() -> Path:
+    b2 = MODELS_DIR / "mbert-sv-b2"
+    if (b2 / "model.safetensors").exists():
+        return b2
     return MODELS_DIR / "mbert-sv"
 
 

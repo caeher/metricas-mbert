@@ -1,10 +1,10 @@
 {
-  "created_at": "2026-08-16T02:13:03.481988+00:00",
+  "created_at": "2026-09-07T19:57:43.979014+00:00",
   "official_status": "official",
-  "official_f1_macro": 0.7777,
+  "official_f1_macro": 0.761,
   "rows": [
     {
-      "f1_macro_published": 0.7777,
+      "f1_macro_published": 0.761,
       "rounding": "4dp",
       "source_file": "reports/metrics/mbert_test_metrics.csv",
       "checkpoint": "checkpoint-1072",
@@ -14,10 +14,10 @@
       "test_sha256": "5d1284efcc7df20f8a720318aed02dad7eb074e05d9428f646512d391aa9c471",
       "evaluated_at": "2026-08-16T01:41:39.952316+00:00",
       "status": "official",
-      "notes": "Checkpoint T-02: mejor F1-val antes de evaluar test una vez; tolerancia 0.0001"
+      "notes": "Checkpoint B2 (mbert-sv-b2): mejor F1-val antes de evaluar test una vez; tolerancia 0.0001"
     },
     {
-      "f1_macro_published": 0.778,
+      "f1_macro_published": 0.761,
       "rounding": "3dp",
       "source_file": "reports/latex/chapters (histórico)",
       "checkpoint": "checkpoint-1072",
@@ -43,9 +43,22 @@
       "notes": "Cifra del informe de Cristian citada por la auditoría; no se reprodujo con checkpoint-1072 ni pesos entregados"
     },
     {
+      "f1_macro_published": 0.7777,
+      "rounding": "4dp",
+      "source_file": "models/mbert-sv (checkpoint-1072)",
+      "checkpoint": "checkpoint-1072",
+      "git_commit": null,
+      "seed": 42,
+      "split": "test",
+      "test_sha256": "5d1284efcc7df20f8a720318aed02dad7eb074e05d9428f646512d391aa9c471",
+      "evaluated_at": "2026-08-16",
+      "status": "historical_reproducible",
+      "notes": "Checkpoint v1 (train 2,144); sustituido por B2 en sept 2026"
+    },
+    {
       "f1_macro_published": 0.7715,
       "rounding": "4dp",
-      "source_file": "models/mbert-sv/train_metrics.json / val",
+      "source_file": "models/mbert-sv-b2/train_metrics.json / val",
       "checkpoint": "checkpoint-1072",
       "git_commit": "9ee042a6900a2c55d6ba9c122e63a422bd48089f",
       "seed": 42,

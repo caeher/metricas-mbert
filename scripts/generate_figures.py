@@ -15,6 +15,7 @@ import pandas as pd
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from discurso_odio.evaluation.slices import platform_rows
+from discurso_odio.models.mbert import default_mbert_model_dir
 from discurso_odio.paths import MODELS_DIR, PROJECT_ROOT, REPORTS_FIGURES, REPORTS_METRICS, REPORTS_TABLES
 from discurso_odio.utils.plotting import setup_plot_style
 
@@ -87,7 +88,7 @@ def plot_confusion_matrix():
         print(f"Omitiendo matriz de confusión: {e}")
         return
 
-    model_dir = MODELS_DIR / "mbert-sv"
+    model_dir = default_mbert_model_dir()
     if not model_dir.exists():
         print("Modelo mBERT no encontrado; se omite 04_confusion_matrix.png")
         return
@@ -397,12 +398,13 @@ def plot_lime_weights():
 
 def plot_training_curve():
     out = REPORTS_FIGURES / "09_training_loss.png"
-    state_paths = list((MODELS_DIR / "mbert-sv").glob("checkpoint-*/trainer_state.json"))
-    root_state = MODELS_DIR / "mbert-sv" / "trainer_state.json"
+    model_dir = default_mbert_model_dir()
+    state_paths = list(model_dir.glob("checkpoint-*/trainer_state.json"))
+    root_state = model_dir / "trainer_state.json"
     if root_state.exists():
         state_paths.append(root_state)
     if not state_paths:
-        train_metrics = MODELS_DIR / "mbert-sv" / "train_metrics.json"
+        train_metrics = model_dir / "train_metrics.json"
         if train_metrics.exists():
             with open(train_metrics, encoding="utf-8") as f:
                 m = json.load(f)

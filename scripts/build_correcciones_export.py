@@ -24,6 +24,7 @@ GENERATED_TABLES = (
     "tab_platform.tex",
     "tab_dialect_bias.tex",
     "tab_adversarial_families.tex",
+    "tab_adversarial_144_families.tex",
     "tab_adversarial_dialect.tex",
     "tab_adversarial_before_after.tex",
 )
@@ -46,6 +47,8 @@ METRICS_GLOBS = (
     "dialect_bias_probe.csv",
     "dialect_bias_probe.json",
     "adversarial_battery_manifest.json",
+    "adversarial_144_battery_manifest.json",
+    "mbert_v1_144_adversarial_summary.json",
     "mcnemar_tests.csv",
     "mcnemar_tests.json",
     "trivial_baselines.csv",
@@ -60,6 +63,8 @@ MBERT_SCRIPTS = (
     "compute_slice_metrics.py",
     "compute_dialect_bias.py",
     "evaluate_adversarial.py",
+    "build_adversarial_144.py",
+    "run_interpretability.py",
     "run_mcnemar.py",
     "run_t06_pipeline.py",
     "package_mbert_checkpoint.py",
@@ -320,7 +325,7 @@ def write_readme(repo_root: Path, audit_copied: bool, pdf_built: bool) -> None:
 
     content = f"""# Paquete de entrega — Correcciones mBERT (Cristian)
 
-Entrega consolidada de las tareas T-01 a T-06 derivadas de la auditoría de modelos.
+Entrega consolidada de las tareas T-01 a T-07 derivadas de la auditoría y verificación de modelos.
 **Alcance:** solo mBERT / Cristian Escalante. Sin XLMR ni correcciones de Julio.
 
 ## Contenido
@@ -333,14 +338,15 @@ Entrega consolidada de las tareas T-01 a T-06 derivadas de la auditoría de mode
 | `notebooks/replicar_mbert_colab.ipynb` | Libreta única de replicación |
 | `latex/` | Informe LaTeX de correcciones |
 
-## Checklist T-01 … T-06
+## Checklist T-01 … T-07
 
 - [x] **T-01** Baseline clase mayoritaria: 0.128 (antes 0.087)
 - [x] **T-02** Checkpoint reproducible + manifiesto SHA-256
 - [x] **T-03** McNemar mBERT vs XLM-R: p=0.200 (no significativo)
 - [x] **T-04** F1-macro oficial: **0.7777** (checkpoint-1072)
 - [x] **T-05** Cortes por plataforma y contexto
-- [x] **T-06** Batería adversarial; mitigación B2 **no adoptada**
+- [x] **T-06** Batería adversarial v1 (n=75); mitigación B2 **no adoptada**
+- [x] **T-07** Batería extendida 144 casos (A--G); tabla vs XLM-R verificación
 
 ## Cifras canónicas
 
@@ -349,7 +355,8 @@ Entrega consolidada de las tareas T-01 a T-06 derivadas de la auditoría de mode
 | F1-macro test | 0.7777 |
 | Baseline mayoritaria | 0.128 |
 | McNemar vs XLM-R | p = 0.200 |
-| Adversarial global | 45/75 |
+| Adversarial global (144) | ver `mbert_v1_144_adversarial_summary.json` |
+| Adversarial global (75, hist.) | 45/75 |
 | Mitigación B2 | Rechazada (test 0.7161) |
 
 ## Uso en Google Colab

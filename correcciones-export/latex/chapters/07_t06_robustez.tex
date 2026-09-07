@@ -51,12 +51,31 @@ Se reentrenó un candidato (\texttt{models/mbert-sv-b2}) excluyendo solapamiento
 
 \textbf{Decisión:} no adoptar B2. Se mantiene \texttt{checkpoint-1072} como modelo oficial (F1 0.7777).
 
+\section{Batería extendida 144 casos (T-07)}
+
+La verificación independiente (1 sep 2026) evaluó ambos modelos sobre \texttt{test\_adversarial\_144.csv} ($n=144$, familias A--G), incluyendo falsos amigos dialectales y pares mínimos de emoji.
+
+\begin{itemize}[noitemsep]
+  \item Manifiesto: \texttt{adversarial\_144\_battery\_manifest.json} (\texttt{adversarial\_v2\_144}).
+  \item Resultado global mBERT: 69/144 (verificación NumPy: 74/144; ver nota de reconciliación en T-07).
+  \item Atajo emoji--toxicidad: 10/10 emojis inocuos en grupo G disparan toxicidad.
+\end{itemize}
+
+\begin{table}[H]
+  \centering
+  \caption{Batería 144: mBERT vs referencia XLM-R (verificación)}
+  \label{tab:adversarial-144-families}
+  \input{generated/tab_adversarial_144_families.tex}
+\end{table}
+
 \section{Scripts y tests}
 
 \begin{itemize}[noitemsep]
-  \item \texttt{scripts/evaluate\_adversarial.py}, \texttt{scripts/run\_t06\_pipeline.py}
+  \item \texttt{scripts/evaluate\_adversarial.py --battery-144}, \texttt{scripts/build\_adversarial\_144.py}
+  \item \texttt{scripts/run\_t06\_pipeline.py --battery-144}
+  \item \texttt{scripts/run\_interpretability.py}
   \item \texttt{src/discurso\_odio/evaluation/adversarial.py}
-  \item \texttt{tests/test\_adversarial\_eval.py}
+  \item \texttt{tests/test\_adversarial\_eval.py}, \texttt{tests/test\_interpretability.py}
 \end{itemize}
 
 \textbf{Criterio de cierre:} brechas documentadas, mitigación evaluada con tradeoffs explícitos, batería versionada sin fuga a val/test.

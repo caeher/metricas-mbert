@@ -10,6 +10,7 @@ Este directorio contiene exclusivamente las tareas de Cristian sobre el modelo *
 | 4 | [Unificar la métrica oficial y su trazabilidad](04-unificar-metrica-oficial-mbert.md) | Alta |
 | 5 | [Consolidar métricas por cortes y plataforma](05-consolidar-metricas-cortes-plataforma.md) | Alta |
 | 6 | [Evaluar robustez y equidad de mBERT](06-evaluar-robustez-equidad-mbert.md) | Alta |
+| 7 | [Batería adversarial extendida 144 casos](07-bateria-adversarial-144-mbert.md) | Alta |
 
 ## Regla de cierre
 

@@ -70,13 +70,27 @@ def explain_texts_shap(
     return explainer(texts, max_evals=max_evals)
 
 
-def extract_top_tokens(shap_values, text_idx: int = 0, class_idx: int | None = None, top_k: int = 10) -> list[tuple[str, float]]:
-    """Extrae top-k tokens por magnitud SHAP."""
+def extract_top_tokens(
+    shap_values,
+    text_idx: int = 0,
+    class_idx: int | None = None,
+    top_k: int = 10,
+) -> list[tuple[str, float]]:
+    """Extrae top-k tokens por magnitud SHAP para una clase objetivo.
+
+    Para concordancia con LIME, ``class_idx`` debe ser la clase predicha por el
+    modelo en esa instancia (no la suma sobre todas las clases).
+    """
     sv = shap_values[text_idx]
-    if class_idx is None:
-        values = np.abs(sv.values).sum(axis=-1) if sv.values.ndim > 1 else np.abs(sv.values)
+    raw = np.asarray(sv.values)
+    if raw.ndim > 1:
+        if class_idx is None:
+            # Multiclase: magnitud por token en la clase con mayor |SHAP| agregado
+            values = np.abs(raw).max(axis=-1)
+        else:
+            values = np.abs(raw[:, class_idx])
     else:
-        values = np.abs(sv.values[:, class_idx]) if sv.values.ndim > 1 else np.abs(sv.values)
+        values = np.abs(raw)
 
     tokens = sv.data if hasattr(sv, "data") else []
     if isinstance(tokens, str):

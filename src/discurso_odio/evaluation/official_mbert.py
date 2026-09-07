@@ -193,7 +193,7 @@ def build_traceability_rows(
             "evaluated_at": manifest.get("packaged_at"),
             "status": "official",
             "notes": (
-                "Checkpoint T-02: mejor F1-val antes de evaluar test una vez; "
+                "Checkpoint B2 (mbert-sv-b2): mejor F1-val antes de evaluar test una vez; "
                 f"tolerancia {F1_TOLERANCE}"
             ),
         },
@@ -227,9 +227,22 @@ def build_traceability_rows(
             ),
         },
         {
+            "f1_macro_published": 0.7777,
+            "rounding": "4dp",
+            "source_file": "models/mbert-sv (checkpoint-1072)",
+            "checkpoint": "checkpoint-1072",
+            "git_commit": None,
+            "seed": settings["project"]["seed"],
+            "split": "test",
+            "test_sha256": test_sha,
+            "evaluated_at": "2026-08-16",
+            "status": "historical_reproducible",
+            "notes": "Checkpoint v1 (train 2,144); sustituido por B2 en sept 2026",
+        },
+        {
             "f1_macro_published": round(float(manifest.get("best_metric_val_f1_macro", 0.7715)), 4),
             "rounding": "4dp",
-            "source_file": "models/mbert-sv/train_metrics.json / val",
+            "source_file": "models/mbert-sv-b2/train_metrics.json / val",
             "checkpoint": manifest.get("checkpoint", "checkpoint-1072"),
             "git_commit": manifest.get("git_commit") or git_commit(),
             "seed": manifest.get("seed", settings["project"]["seed"]),

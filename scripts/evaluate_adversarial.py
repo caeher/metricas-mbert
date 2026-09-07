@@ -12,11 +12,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
 from discurso_odio.evaluation.adversarial import (
+    build_battery_144_manifest,
     build_battery_manifest,
-    decide_mitigation_adoption,
+    evaluate_adversarial_144_battery,
     evaluate_adversarial_battery,
     evaluate_test_metrics_parallel,
-    export_before_after,
 )
 from discurso_odio.evaluation.official_mbert import (
     load_official_run_metadata,
@@ -64,11 +64,24 @@ def main() -> None:
         action="store_true",
         help="Regenera adversarial_battery_manifest.json",
     )
+    parser.add_argument(
+        "--battery-144",
+        action="store_true",
+        help="Evalúa la batería extendida A–G (n=144) en lugar de la v1 (n=75)",
+    )
+    parser.add_argument(
+        "--build-manifest-144",
+        action="store_true",
+        help="Regenera adversarial_144_battery_manifest.json",
+    )
     args = parser.parse_args()
 
     if args.build_manifest:
         manifest = build_battery_manifest(write=True)
         logger.info("Manifiesto escrito: %s", manifest["sha256"])
+    if args.build_manifest_144:
+        manifest = build_battery_144_manifest(write=True)
+        logger.info("Manifiesto 144 escrito: %s", manifest["sha256"])
 
     output_prefix = args.output_prefix or args.model_name.replace("-", "_")
     official = load_official_run_metadata() if args.model_name == "mbert" else None
@@ -81,13 +94,24 @@ def main() -> None:
         identity = read_checkpoint_identity(args.model_dir)
         checkpoint = identity.get("checkpoint") or args.model_dir.name
 
-    summary = evaluate_adversarial_battery(
-        model_dir=args.model_dir,
-        model_name=args.model_name,
-        checkpoint=checkpoint,
-        run_id=run_id,
-        output_prefix=output_prefix,
-    )
+    if args.battery_144:
+        if args.build_manifest_144 or not (REPORTS_METRICS / "adversarial_144_battery_manifest.json").exists():
+            build_battery_144_manifest(write=True)
+        summary = evaluate_adversarial_144_battery(
+            model_dir=args.model_dir,
+            model_name=args.model_name,
+            checkpoint=checkpoint,
+            run_id=run_id,
+            output_prefix=output_prefix,
+        )
+    else:
+        summary = evaluate_adversarial_battery(
+            model_dir=args.model_dir,
+            model_name=args.model_name,
+            checkpoint=checkpoint,
+            run_id=run_id,
+            output_prefix=output_prefix,
+        )
 
     logger.info(
         "Adversarial %s [%s]: %d/%d global, F1 diag=%.4f, mitigation=%s",

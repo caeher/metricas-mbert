@@ -80,11 +80,20 @@ def main():
             shap_texts, shap_predict_fn, tokenizer=predictor.tokenizer, max_evals=100
         )
         for i in range(min(len(lime_explanations), len(shap_texts))):
-            lime_tokens = lime_explanations[i]["top_tokens"]
-            shap_top = extract_top_tokens(shap_values, i, top_k=8)
+            lime_exp = lime_explanations[i]
+            lime_tokens = lime_exp["top_tokens"]
+            pred_class = lime_exp.get("predicted_class", -1)
+            class_idx = pred_class if isinstance(pred_class, int) and pred_class >= 0 else None
+            shap_top = extract_top_tokens(shap_values, i, class_idx=class_idx, top_k=8)
             shap_tokens = [t for t, _ in shap_top]
             j = jaccard_top_k(lime_tokens, shap_tokens, k=8)
-            jaccard_rows.append({"instance": i, "jaccard": j})
+            jaccard_rows.append(
+                {
+                    "instance": i,
+                    "predicted_class": pred_class,
+                    "jaccard": j,
+                }
+            )
         jaccard_df = pd.DataFrame(jaccard_rows)
         jaccard_path = REPORTS_METRICS / "lime_shap_jaccard.csv"
         if jaccard_df["jaccard"].sum() == 0:

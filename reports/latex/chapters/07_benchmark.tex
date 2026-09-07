@@ -6,6 +6,10 @@ modelo mBERT afinado en el corpus local se evalúa sin reentrenamiento sobre
 datasets públicos en español/latam hospedados en Hugging Face
 ~\cite{socialtox,sinodio,contextualizedhate,textdetox,aliaes,exist}.
 
+\textbf{Nota metodológica:} las cifras de este capítulo provienen del checkpoint
+v1 (\texttt{checkpoint-1072}). El B2 no fue re-evaluado en zero-shot externo en
+esta corrida; el test local ($n=460$) sí corresponde al B2 oficial.
+
 \section{Protocolo}
 
 Para cada dataset se proyectan las etiquetas originales a un esquema
@@ -22,7 +26,7 @@ En métrica binaria algunos datasets alcanzan F1 $\approx 0{,}70$, pero el
 
 \begin{table}[H]
 \centering
-\caption{Benchmark zero-shot de mBERT-SV sobre datasets externos.}
+\caption{Benchmark zero-shot de mBERT-SV (checkpoint v1) sobre datasets externos.}
 \label{tab:benchmark}
 \input{generated/tab_benchmark}
 \end{table}
@@ -30,7 +34,7 @@ En métrica binaria algunos datasets alcanzan F1 $\approx 0{,}70$, pero el
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{05_benchmark_externo.png}
-\caption{F1-macro y F1-binario en el benchmark externo.}
+\caption{F1-macro y F1-binario en el benchmark externo (checkpoint v1).}
 \label{fig:benchmark}
 \end{figure}
 
@@ -40,5 +44,4 @@ La caída de desempeño confirma un fuerte \emph{domain shift}: el modelo está
 especializado en el dialecto, la distribución de clases y las plataformas del
 corpus salvadoreño. La transferencia zero-shot a odio contextualizado argentino,
 toxicidad social española o datasets de sexismo (EXIST) no es suficiente para
-uso productivo sin adaptación adicional (fine-tuning, few-shot o alineación de
-etiquetas más fina).
+uso productivo sin adaptación adicional.

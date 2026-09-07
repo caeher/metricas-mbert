@@ -13,7 +13,7 @@ from discurso_odio.config import load_settings
 from discurso_odio.evaluation.predictions import git_commit
 from discurso_odio.models.inference_contract import get_inference_contract, write_inference_contract
 from discurso_odio.models.mbert import default_mbert_model_dir
-from discurso_odio.paths import PROJECT_ROOT, TEST_CSV
+from discurso_odio.paths import MODELS_DIR, PROJECT_ROOT, TEST_CSV
 
 PACKAGE_ROOT_NAME = "mbert-sv"
 ZIP_NAME = "mbert-sv-audit.zip"
@@ -22,7 +22,7 @@ MANIFEST_REPORT_PATH = PROJECT_ROOT / "reports" / "metrics" / "mbert_checkpoint_
 VERIFY_REPORT_PATH = PROJECT_ROOT / "reports" / "metrics" / "mbert_checkpoint_verify.json"
 
 F1_TOLERANCE = 1e-4
-OFFICIAL_F1_MACRO = 0.7777
+OFFICIAL_F1_MACRO = 0.7610
 BASE_MODEL = "bert-base-multilingual-cased"
 
 REQUIRED_FILES = (
@@ -87,7 +87,9 @@ def resolve_mbert_source(explicit: Path | None = None) -> Path:
 
     candidates = [
         default_mbert_model_dir(),
+        MODELS_DIR / "mbert-sv-b2",
         PROJECT_ROOT / "resultados-metricas" / "models" / "mbert-sv",
+        PROJECT_ROOT / "resultados-metricas" / "models" / "mbert-sv-b2",
     ]
     for candidate in candidates:
         if (candidate / "model.safetensors").exists() and (candidate / "config.json").exists():
@@ -183,9 +185,10 @@ archivos locales no declarados para cargar tokenizer y pesos.
   normalizador `normalize_for_model` v1.1
 - `MANIFEST.json` — commit, semilla, época, SHA-256, hash de `test.csv`
 
-**Corpus B2:** `test.csv` incluye `origen` y `plantilla_id`; IDs, textos y
-etiquetas son idénticos al v1. El checkpoint (`checkpoint-1072`) se entrenó
-sobre train v1; el F1 oficial 0.7777 no cambia hasta reentrenar.
+**Corpus B2:** `val` y `test` son idénticos al v1; el train incluye datos
+sintéticos dirigidos. El checkpoint oficial B2 (`checkpoint-1644`) alcanza
+F1-macro **0.7610** en test ($n=460$). El checkpoint v1 (`checkpoint-1072`)
+queda como referencia histórica reproducible (F1-macro 0.7777).
 
 ## Inferencia (misma config que entrenamiento/evaluación)
 

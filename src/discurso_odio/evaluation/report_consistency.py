@@ -313,7 +313,7 @@ def check_slice_metrics(
     trace_path = generated_dir / "mbert_platform_traceability_prose.tex"
     if trace_path.exists():
         trace_text = trace_path.read_text(encoding="utf-8")
-        if "not_reproducible" not in trace_text and _banned_historical_in_text(trace_text):
+        if "no reproducible" not in trace_text.lower() and _banned_historical_in_text(trace_text):
             errors.append(
                 ConsistencyError(
                     "mbert_platform_traceability_prose.tex cita históricos sin marcar not_reproducible"
@@ -506,21 +506,33 @@ def assert_mbert_official_consistency(
 
 def check_adversarial_consistency(generated_dir: Path) -> list[ConsistencyError]:
     errors: list[ConsistencyError] = []
-    summary_path = PROJECT_ROOT / "reports" / "metrics" / "mbert_adversarial_summary.json"
-    prose_path = generated_dir / "adversarial_prose.tex"
-    if not summary_path.exists():
+    metrics_dir = PROJECT_ROOT / "reports" / "metrics"
+    summary_path = None
+    for name in (
+        "mbert_b2_144_adversarial_summary.json",
+        "mbert_v1_144_adversarial_summary.json",
+        "mbert_144_adversarial_summary.json",
+        "mbert_adversarial_summary.json",
+    ):
+        candidate = metrics_dir / name
+        if candidate.exists():
+            summary_path = candidate
+            break
+    if summary_path is None:
         return errors
     with open(summary_path, encoding="utf-8") as handle:
         summary = json.load(handle)
+    prose_path = generated_dir / "adversarial_prose.tex"
     if not prose_path.exists():
         errors.append(ConsistencyError("adversarial_prose.tex no generado"))
         return errors
     text = prose_path.read_text(encoding="utf-8")
+    text_norm = text.replace("\\_", "_")
     checkpoint = str(summary.get("checkpoint", ""))
     battery = str(summary.get("battery_version", ""))
-    if checkpoint and checkpoint not in text:
+    if checkpoint and checkpoint not in text_norm:
         errors.append(ConsistencyError(f"adversarial_prose.tex no cita checkpoint {checkpoint}"))
-    if battery and battery not in text:
+    if battery and battery not in text_norm:
         errors.append(ConsistencyError(f"adversarial_prose.tex no cita {battery}"))
     if "métrica principal" not in text.lower() and "diagnóstic" not in text.lower():
         errors.append(

@@ -1,1 +1,1 @@
-{"jaccard_available":false,"reason":"zero_overlap_after_alignment"}
+{"jaccard_available": false, "reason": "zero_overlap_after_alignment", "note": "Regenerar con run_interpretability.py cuando el checkpoint esté disponible; SHAP usa class_idx de LIME desde sep 2026."}

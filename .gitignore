@@ -43,6 +43,14 @@ reports/metrics/*.csv
 !reports/metrics/mbert_platform_traceability.json
 !reports/metrics/adversarial_battery_manifest.json
 !reports/metrics/mbert_adversarial_summary.json
+!reports/metrics/adversarial_144_battery_manifest.json
+!reports/metrics/mbert_v1_144_adversarial_summary.json
+!reports/metrics/mbert_v1_144_adversarial_family_metrics.csv
+!reports/metrics/trivial_baselines.csv
+!reports/metrics/lime_global_weights.csv
+!reports/metrics/lime_shap_jaccard.csv
+!reports/metrics/interpretability_fp_jerga.csv
+!reports/metrics/interpretability_note.json
 !reports/metrics/mbert_adversarial_before_after.json
 reports/tables/*.md
 reports/latex/figures/*.png

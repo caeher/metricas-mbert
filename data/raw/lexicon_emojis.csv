@@ -1,0 +1,52 @@
+﻿ID,emoji,descripcion_uso,clase_asociada,subclase,grupos_afectados,n_codepoints
+EMO-001,🐒,Bestialización racial: comparar latinoamericanos con monos o simios,Discurso de Odio,Bestialización,Latinoamericanos,1
+EMO-002,🐒🇲🇽,Bestialización racial: comparar latinoamericanos con monos o simios,Discurso de Odio,Bestialización,Latinoamericanos,3
+EMO-003,🐒🇦🇷,Bestialización racial: comparar latinoamericanos con monos o simios,Discurso de Odio,Bestialización,Latinoamericanos,3
+EMO-004,🐒🇪🇨,Bestialización racial: comparar latinoamericanos con monos o simios,Discurso de Odio,Bestialización,Latinoamericanos,3
+EMO-005,🐒🇻🇪,Bestialización racial: comparar latinoamericanos con monos o simios,Discurso de Odio,Bestialización,Latinoamericanos,3
+EMO-006,🐒🇭🇳,Bestialización racial: comparar latinoamericanos con monos o simios,Discurso de Odio,Bestialización,Latinoamericanos,3
+EMO-007,🐒🇸🇻,Bestialización racial: comparar latinoamericanos con monos o simios,Discurso de Odio,Bestialización,Latinoamericanos,3
+EMO-008,🧼🇮🇱,Antisemitismo eliminacionista: alusión al Holocausto mediante el jabón,Discurso de Odio,Antisemitismo,Judíos,3
+EMO-009,🧼,Antisemitismo eliminacionista: alusión al Holocausto mediante el jabón,Discurso de Odio,Antisemitismo,Judíos,1
+EMO-010,🧃,Juego de palabras 'jugo'/'judío' para evadir filtros de palabras,Discurso de Odio,Antisemitismo,Judíos,1
+EMO-011,🍍,Cosificación sexual de menores encubierta,Discurso de Odio,Cosificación infantil,Menores de edad,1
+EMO-012,🏳️‍🌈🤨,Señalamiento burlesco de la orientación sexual o identidad de género,Discurso de Odio,Homofobia,Personas LGBT,5
+EMO-013,🏳️‍🌈👀,Señalamiento burlesco de la orientación sexual o identidad de género,Discurso de Odio,Homofobia,Personas LGBT,5
+EMO-014,🗣️👊🤤,Insulto capacitista a la inteligencia,Discurso de Odio,Capacitismo,Personas con discapacidad intelectual,4
+EMO-015,🤤,Insulto capacitista a la inteligencia,Discurso de Odio,Capacitismo,Personas con discapacidad intelectual,1
+EMO-016,🤮🙈,Desprecio racial hacia personas de tez oscura,Discurso de Odio,Racismo,Personas racializadas,2
+EMO-017,👴💀,Burla por edad avanzada,Discurso de Odio,Edadismo,Adultos mayores,2
+EMO-018,👴👻,Burla por edad avanzada,Discurso de Odio,Edadismo,Adultos mayores,2
+EMO-019,🥷,Insulto racial hacia personas negras o morenas,Discurso de Odio,Racismo,Afrodescendientes,1
+EMO-020,😈📕,Estigmatización de personas con baja escolaridad,Discurso de Odio,Clasismo,Personas con baja educación,2
+EMO-021,🦶,Referencia despectiva a personas morenas,Discurso de Odio,Racismo,Personas racializadas,1
+EMO-022,🙋‍♂️,Saludo nazi encubierto en discusiones sobre Israel,Discurso de Odio,Antisemitismo,Judíos,4
+EMO-023,🐀,"Comparación con ratas: desprecio, suciedad, invasión",Discurso de Odio,Aporofobia,Migrantes y personas empobrecidas,1
+EMO-024,🐁,"Comparación con ratas: desprecio, suciedad, invasión",Discurso de Odio,Aporofobia,Migrantes y personas empobrecidas,1
+EMO-025,🐷,Comparación con cerdos: gordofobia o desprecio racial,Discurso de Odio,Gordofobia,Personas con sobrepeso,1
+EMO-026,🐖,Comparación con cerdos: gordofobia o desprecio racial,Discurso de Odio,Gordofobia,Personas con sobrepeso,1
+EMO-027,🐕,Comparación con perros: sumisión o clase baja,Discurso de Odio,Aporofobia,Personas en situación de pobreza,1
+EMO-028,🐶,Comparación con perros: sumisión o clase baja,Discurso de Odio,Aporofobia,Personas en situación de pobreza,1
+EMO-029,🐍,Asociación con traición y maldad,Lenguaje Ofensivo,Tono Agresivo,Individuo,1
+EMO-030,🧠❓,Burla sobre falta de inteligencia,Discurso de Odio,Capacitismo,Personas con discapacidad intelectual,2
+EMO-031,🧠🚫,Burla sobre falta de inteligencia,Discurso de Odio,Capacitismo,Personas con discapacidad intelectual,2
+EMO-032,💀,Deseo de muerte o burla por enfermedad grave,Amenazas/Violencia,Deseo de Daño,Personas enfermas,1
+EMO-033,⚰️,Burla por muerte o enfermedad terminal,Amenazas/Violencia,Deseo de Daño,Personas enfermas,2
+EMO-034,🧟,Deshumanización de seguidores políticos,Lenguaje Ofensivo,Descalificación Política,Colectivo político,1
+EMO-035,🪳,Comparación con cucarachas: desprecio extremo e invasión,Discurso de Odio,Aporofobia,Migrantes y grupos étnicos,1
+EMO-036,🪲,Comparación con cucarachas: desprecio extremo e invasión,Discurso de Odio,Aporofobia,Migrantes y grupos étnicos,1
+EMO-037,🌑,Referencia despectiva encubierta a la tez oscura,Discurso de Odio,Racismo,Personas racializadas,1
+EMO-038,🚽🧻,Cosificación como desecho aplicada a personas,Discurso de Odio,Aporofobia,Migrantes y personas empobrecidas,2
+EMO-039,🚽,Cosificación como desecho aplicada a personas,Discurso de Odio,Aporofobia,Migrantes y personas empobrecidas,1
+EMO-040,👨‍🌾🐒,Burla racista hacia personas indígenas o campesinas,Discurso de Odio,Racismo,Pueblos indígenas,4
+EMO-041,🇮🇱🤢,Rechazo antisemita disfrazado de crítica política,Discurso de Odio,Antisemitismo,Judíos e israelíes,3
+EMO-042,🇺🇸🦅💩,Desprecio nacional hacia estadounidenses,Lenguaje Ofensivo,Crítica Institucional,Estadounidenses,4
+EMO-043,🧹👷,Eliminacionismo: 'barrer' o 'limpiar' a un grupo,Amenazas/Violencia,Incitación a la Violencia,Migrantes y grupos étnicos,2
+EMO-044,🧹,Eliminacionismo: 'barrer' o 'limpiar' a un grupo,Amenazas/Violencia,Incitación a la Violencia,Migrantes y grupos étnicos,1
+EMO-045,🐋🚫,Rechazo a personas con sobrepeso,Discurso de Odio,Gordofobia,Personas con sobrepeso,2
+EMO-046,🐋,Rechazo a personas con sobrepeso,Discurso de Odio,Gordofobia,Personas con sobrepeso,1
+EMO-047,🔫,Amenaza con arma de fuego,Amenazas/Violencia,Amenaza Directa,Individuo,1
+EMO-048,🔪,Amenaza con arma blanca,Amenazas/Violencia,Amenaza Directa,Individuo,1
+EMO-049,💣,Amenaza explosiva,Amenazas/Violencia,Amenaza Directa,Colectivo,1
+EMO-050,🪦,Deseo de muerte,Amenazas/Violencia,Deseo de Daño,Individuo,1
+EMO-051,⚱️,Deseo de muerte,Amenazas/Violencia,Deseo de Daño,Individuo,2

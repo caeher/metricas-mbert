@@ -24,10 +24,10 @@ del Capítulo~\ref{ch:evaluacion}).
 
 Se calcula el índice de Jaccard entre los top-$k$ tokens de LIME y SHAP por
 instancia (Tabla~\ref{tab:jaccard}), tras alinear subwords WordPiece de SHAP
-a palabras. Si el solapamiento sigue siendo nulo, la tabla se omite y se
-reporta solo LIME global más la sonda de jerga del Capítulo~\ref{ch:evaluacion}.
-En la corrida histórica el Jaccard era 0 por desalineación de tokenización;
-con la alineación corregida se regenera desde \texttt{run\_interpretability.py}.
+a palabras y usar la \textbf{misma clase predicha} en ambos métodos. Si el
+solapamiento sigue siendo nulo tras la alineación, la tabla se omite y el
+capítulo reporta solo LIME global más la sonda de jerga del
+Capítulo~\ref{ch:evaluacion} (ver \texttt{interpretability\_note.json}).
 
 \begin{table}[H]
 \centering

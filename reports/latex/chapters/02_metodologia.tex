@@ -5,10 +5,25 @@
 
 El corpus procesado reside en \texttt{data/processed/} con particiones
 \texttt{train.csv}, \texttt{val.csv} y \texttt{test.csv}, más el corpus limpio
-completo. Cada instancia incluye el texto de entrada del modelo
-(\texttt{texto\_modelo}), la etiqueta ordinal, metadatos de plataforma y
-indicadores de sarcasmo, ironía, contexto político y conteo de jerga local
+completo. La versión \textbf{B2} amplía el train a \textbf{3{,}293} instancias
+(2{,}144 reales + 1{,}149 sintéticos); \texttt{val} ($n=459$) y \texttt{test}
+($n=460$) son \textbf{byte por byte idénticos} al v1, lo que garantiza
+comparabilidad directa de métricas.
+
+Cada instancia incluye el texto de entrada del modelo
+(\texttt{texto\_modelo}), la etiqueta ordinal, metadatos de plataforma,
+campos \texttt{origen} y \texttt{plantilla\_id} (solo train B2), e indicadores
+de sarcasmo, ironía, contexto político y conteo de jerga local
 (\texttt{n\_jerga}).
+
+\subsection{Motivación del reentrenamiento B2}
+
+La auditoría del checkpoint v1 identificó cuatro huecos que no resuelve solo
+la arquitectura: (i)~atajo emoji$\Rightarrow$tóxico, (ii)~emojis de ataque no
+vistos, (iii)~amenazas ofuscadas clasificadas como ofensivas, y
+(iv)~sesgo dialectal (FPR elevado en jerga salvadoreña inofensiva). El train B2
+incorpora sintéticos dirigidos para cada familia, documentados en
+\texttt{data/raw/metadata.json}.
 
 \section{Pipeline experimental}
 
@@ -16,10 +31,11 @@ El flujo de trabajo es reproducible y se alinea con los notebooks 01--07:
 
 \begin{enumerate}[leftmargin=*]
   \item Análisis exploratorio (distribuciones, plataformas, longitudes).
-  \item Normalización de texto y extracción de features (pesos de clase,
+  \item Normalización de texto y extracción de features (pesos de clase B2,
         indicadores dialectales).
   \item Baselines TF-IDF (Logistic Regression, LinearSVC, MultinomialNB).
-  \item Fine-tuning de mBERT~\cite{devlin2019bert} con early stopping.
+  \item Fine-tuning de mBERT~\cite{devlin2019bert} con early stopping sobre
+        \texttt{models/mbert-sv-b2}.
   \item Evaluación completa: métricas globales, por clase, por cortes, McNemar
         y comparación de modelos.
   \item Benchmark zero-shot sobre datasets públicos de Hugging Face.
@@ -42,8 +58,8 @@ proyecto:
   \item \textbf{Incertidumbre:} intervalo de confianza bootstrap del F1-macro
         (1000 remuestreos, $\alpha = 0{,}05$).
   \item \textbf{Comparación de modelos:} prueba de McNemar~\cite{mcnemar1947}
-        pareada entre mBERT y cada baseline, y entre mBERT y XLM-RoBERTa sobre
-        las mismas 460 instancias de test ($\alpha = 0{,}05$).
+        pareada entre mBERT B2 y cada baseline, y entre mBERT y XLM-RoBERTa
+        v1 sobre las mismas 460 instancias de test ($\alpha = 0{,}05$).
 \end{itemize}
 
 La métrica de decisión principal es el \textbf{F1-macro}, que trata por igual
@@ -53,39 +69,23 @@ las cuatro clases y es adecuada ante desbalance.
 
 Los baselines de referencia (clase mayoritaria, azar uniforme y azar
 estratificado) se calculan sobre la distribución del \textbf{test} ($n=460$) con
-$k=4$ clases fijas. El piso de clase mayoritaria asume precisión $p$ y recall
-$1{,}0$ en la etiqueta dominante y F1 cero en el resto; el F1-macro publicado
-en \texttt{trivial\_baselines.csv} usa \texttt{round(x, 3)} y las tablas LaTeX
-generadas muestran cuatro decimales.
+$k=4$ clases fijas.
 
 \section{Cortes (slices)}
 
 Además del desempeño global, se calculan métricas sobre subconjuntos
 definidos en el test (plataforma, jerga, sarcasmo, ironía y contexto político).
-Los cortes de mBERT se derivan del mismo vector de predicciones oficial
-(T-04: \texttt{mbert\_test\_predictions.csv}) y se exportan en
-\texttt{reports/metrics/slice\_metrics.csv} con \texttt{run\_id}, checkpoint,
-distribución de clases, F1-macro, accuracy e intervalos de confianza o
-advertencia de baja potencia cuando $n < 30$.
-
-\begin{itemize}[leftmargin=*]
-  \item Plataforma (X vs.\ Facebook).
-  \item Presencia de jerga local (\texttt{n\_jerga} $> 0$ vs.\ $= 0$).
-  \item Sarcasmo, ironía y contexto político (sí/no).
-\end{itemize}
-
-Como sonda de sesgo dialectal se estima la tasa de falsos positivos sobre la
-clase No Tóxico, separando instancias con y sin jerga salvadoreña.
+Los cortes de mBERT B2 se derivan del mismo vector de predicciones oficial
+(\texttt{mbert\_test\_predictions.csv}) y se exportan en
+\texttt{reports/metrics/slice\_metrics.csv}.
 
 \subsection{Batería adversarial diagnóstica}
 
-Además del test principal, existe un conjunto \texttt{test\_adversarial.csv}
-($n=75$, versión \texttt{adversarial\_v1}) con familias de ofuscación,
-emojis, amenazas encubiertas y pares dialectales semánticamente equivalentes.
-Este conjunto es \textbf{exclusivamente diagnóstico}: no se usa para entrenar,
-validar ni seleccionar el modelo, y sus métricas no sustituyen el F1-macro
-oficial sobre \texttt{test.csv}.
+Existen dos conjuntos adversariales: \texttt{test\_adversarial.csv} ($n=75$) y
+\texttt{test\_adversarial\_144.csv} ($n=144$, familias A--G). Son
+\textbf{exclusivamente diagnósticos}: no entrenan ni seleccionan el modelo, y no
+sustituyen el F1-macro oficial sobre \texttt{test.csv}.
 
-\section{Contrato de inferencia XLM-R}
+\section{Contrato de inferencia}
 
 \input{generated/inference_contract_prose}

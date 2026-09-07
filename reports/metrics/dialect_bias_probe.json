@@ -1,12 +1,12 @@
 {
-  "created_at": "2026-08-16T02:36:37.423670+00:00",
-  "git_commit": "2a31768080ff23ea939d6b326a081115bbcee8ff",
+  "created_at": "2026-09-07T19:57:43.964444+00:00",
+  "git_commit": "7471b3b0e52eb4de59ff25e7a8947dfadf25f17f",
   "jerga_definition": "n_jerga > 0",
   "rows": [
     {
-      "run_id": "0f93eb01-69e5-4807-ac78-bbc1f7b66cbb",
+      "run_id": "5ff7f3a3-fc32-4db1-ae1b-a2052085a461",
       "model": "mbert",
-      "checkpoint": "checkpoint-1072",
+      "checkpoint": "checkpoint-1644",
       "split": "test.csv",
       "n_test": 460,
       "group": "con_jerga",
@@ -18,9 +18,9 @@
       "jerga_definition": "n_jerga > 0"
     },
     {
-      "run_id": "0f93eb01-69e5-4807-ac78-bbc1f7b66cbb",
+      "run_id": "5ff7f3a3-fc32-4db1-ae1b-a2052085a461",
       "model": "mbert",
-      "checkpoint": "checkpoint-1072",
+      "checkpoint": "checkpoint-1644",
       "split": "test.csv",
       "n_test": 460,
       "group": "sin_jerga",
@@ -60,12 +60,8 @@
       "jerga_definition": "n_jerga > 0"
     }
   ],
-  "run_id": "0f93eb01-69e5-4807-ac78-bbc1f7b66cbb",
-  "checkpoint": "checkpoint-1072",
-  "xlmr_status": "ok",
-  "official_run_id": "0f93eb01-69e5-4807-ac78-bbc1f7b66cbb",
-  "max_length": 128,
-  "text_column": "texto_modelo",
-  "normalizer": "normalize_for_model",
-  "normalizer_version": "1.1"
+  "run_id": "5ff7f3a3-fc32-4db1-ae1b-a2052085a461",
+  "checkpoint": "checkpoint-1644",
+  "evaluated_at": "2026-09-07T19:57:37.811840+00:00",
+  "official_f1_macro": 0.761
 }

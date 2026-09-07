@@ -1,3 +1,5 @@
-Se evaluó el checkpoint \texttt{checkpoint-1072} (\texttt{run\_id}=0f93eb01\ldots) sobre la batería adversarial \texttt{adversarial\_v1} ($n=75$, SHA-256 verificado). Esta métrica es \textbf{diagnóstica} y no sustituye el F1-macro oficial sobre \texttt{test.csv}.
-El modelo acertó 45/75 casos (F1-macro diagnóstico=0.5314). Sobre amenazas ofuscadas (grupo C): F1 Amenazas/Violencia=0.5455, FN=10/16. La brecha FPR dialectal (D$-$E) es 0.8571.
-La puerta de mitigación se activó (amenazas\_ofuscadas\_correct\_6\_of\_11, amenazas\_fn\_5\_of\_11, emojis\_correct\_7\_of\_18, fpr\_dialectal\_gap\_0.8571\_ci\_overlap\_False); se entrenó un candidato B2 sin filas de train que coinciden con la batería.
+Se evaluó el checkpoint \texttt{checkpoint-1644} (\texttt{run\_id}=None\ldots) sobre la batería adversarial \texttt{adversarial\_v2\_144} ($n=144$, SHA-256 verificado). Esta métrica es \textbf{diagnóstica} y no sustituye el F1-macro oficial sobre \texttt{test.csv}.
+El modelo acertó 120/144 casos (F1-macro diagnóstico=0.7516). Sobre amenazas ofuscadas (grupo C): F1 Amenazas/Violencia=1.0000, FN=0/27. La brecha FPR dialectal (D$-$E) es 0.0714.
+No se activó la puerta de mitigación; se documentan riesgos residuales (tamaño reducido de la batería y anchos IC en subconjuntos pequeños).
+La batería histórica v1 ($n=75$) reportó 64/75 aciertos; la evaluación principal usa la batería extendida A--G ($n=144$) alineada con la verificación independiente (sep 2026).
+En pares mínimos de emoji (grupo G), 1/10 emojis inocuos vuelven tóxico un texto previamente No Tóxico (atajo emoji--toxicidad documentado en el EDA).

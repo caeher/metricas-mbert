@@ -28,7 +28,7 @@ resultados centrales del proyecto sobre el conjunto de prueba ($n = 460$).
 
 La matriz de confusión (Figura~\ref{fig:cm}) confirma confusiones
 preferentemente entre clases adyacentes en la escala ordinal (p.\,ej.\ ofensivo
-$\leftrightarrow$ odio), coherente con el MAE ordinal de $0{,}324$.
+$\leftrightarrow$ odio), coherente con el MAE ordinal de $0{,}352$.
 
 \begin{figure}[H]
 \centering
@@ -71,6 +71,14 @@ McNemar en la sección siguiente sobre las mismas $n=460$ instancias.
 \input{generated/tab_mbert_traceability}
 \end{table}
 
+\section{Comparación v1 vs.\ B2}
+
+La Tabla~\ref{tab:mbert-traceability} documenta la evolución del F1-macro. En
+test principal el B2 desciende de $0{,}7777$ (v1) a $0{,}7610$, pero mejora en
+robustez adversarial (64/75 vs.\ 45/75 en batería v1) y reduce la brecha FPR
+dialectal (0.07 vs.\ 0.86). En cortes, Facebook pasa de F1 $0{,}673$ a
+$0{,}665$ y X de $0{,}839$ a $0{,}819$.
+
 \section{Pruebas de McNemar}
 
 La Tabla~\ref{tab:mcnemar} reporta la prueba de McNemar~\cite{mcnemar1947}
@@ -79,11 +87,11 @@ sobre las mismas $n=460$ instancias de test ($\alpha = 0{,}05$).
 
 \input{generated/mcnemar_prose}
 
-La diferencia frente a MultinomialNB es altamente significativa
-($p \approx 4 \times 10^{-6}$). Frente a Logistic Regression
-($p \approx 0{,}28$) y LinearSVC ($p \approx 0{,}52$) no se rechaza la
-hipótesis nula: el margen de mBERT sobre los mejores baselines lineales no
-es estadísticamente concluyente en este tamaño de test.
+La diferencia frente a MultinomialNB es significativa ($p \approx 0{,}005$).
+Frente a Logistic Regression ($p \approx 0{,}24$) y LinearSVC ($p \approx 0{,}53$)
+no se rechaza la hipótesis nula. Frente a XLM-RoBERTa v1 la diferencia sí es
+significativa ($p \approx 0{,}04$), con XLM-R acertando más instancias en este
+test ($b=26$, $c=44$).
 
 \begin{table}[H]
 \centering
@@ -177,13 +185,20 @@ cifras históricas no reproducibles frente a la línea oficial.
 \label{fig:dialect-fpr}
 \end{figure}
 
-\section{Robustez adversarial y equidad dialectal (T-06)}
+\section{Robustez adversarial y equidad dialectal (T-06 / T-07)}
 
 \input{generated/adversarial_prose}
 
 \begin{table}[H]
 \centering
-\caption{Resultados por familia en la batería adversarial \texttt{test\_adversarial.csv} ($n=75$, diagnóstico). Fuente: \texttt{reports/metrics/mbert\_adversarial\_family\_metrics.csv}.}
+\caption{Resultados por familia en la batería extendida \texttt{test\_adversarial\_144.csv} ($n=144$, A--G). Fuente: verificación independiente sep 2026.}
+\label{tab:adversarial-144-families}
+\input{generated/tab_adversarial_144_families}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Resultados por familia en la batería histórica \texttt{test\_adversarial.csv} ($n=75$, diagnóstico v1).}
 \label{tab:adversarial-families}
 \input{generated/tab_adversarial_families}
 \end{table}

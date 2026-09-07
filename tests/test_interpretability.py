@@ -12,6 +12,7 @@ from discurso_odio.interpretability.lime_explainer import (
     jaccard_top_k,
     normalize_tokens_for_jaccard,
 )
+from discurso_odio.interpretability.shap_explainer import extract_top_tokens
 from discurso_odio.models.mbert_artifacts import apply_id2label
 from discurso_odio.paths import MODELS_DIR
 
@@ -28,6 +29,24 @@ def test_jaccard_nonzero_after_alignment():
     shap = ["que", "##bon", "##ita", "familia"]
     score = jaccard_top_k(lime, shap, k=3)
     assert score > 0.0
+
+
+def test_extract_top_tokens_uses_class_idx():
+    """SHAP por clase predicha, no suma sobre todas las clases."""
+    import numpy as np
+
+    class _SV:
+        def __init__(self, values, data):
+            self.values = values
+            self.data = data
+
+    # Dos tokens, dos clases; clase 1 con pico en token 0
+    values = np.array([[0.9, 0.1], [0.2, 0.8]])
+    sv = _SV(values, ["familia", "bonita"])
+    top_cls1 = extract_top_tokens([sv], text_idx=0, class_idx=1, top_k=2)
+    assert top_cls1[0][0] == "familia"
+    top_cls0 = extract_top_tokens([sv], text_idx=0, class_idx=0, top_k=2)
+    assert top_cls0[0][0] == "bonita"
 
 
 def test_apply_id2label_writes_real_names(tmp_path: Path):

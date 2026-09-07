@@ -1,10 +1,10 @@
 {
   "battery_version": "adversarial_v2_144",
-  "created_at": "2026-09-06T15:27:09.853276+00:00",
+  "created_at": "2026-09-07T19:58:06.230602+00:00",
   "seed": 42,
-  "path": "data\\processed\\test_adversarial_144.csv",
+  "path": "data/processed/test_adversarial_144.csv",
   "n_cases": 144,
-  "sha256": "574f7bbfdb4d5e07057bae0d5e20ae530099fa1ad002ba46c2e16d0ff7530d81",
+  "sha256": "5162b87d96eaaa3718185a9bda93fed9938177e2bbc8bd803a6414300aa9111f",
   "families": {
     "A. Ofuscación de groserías": 20,
     "B. Emojis": 18,
@@ -15,5 +15,5 @@
     "G. Pares mínimos de emoji": 35
   },
   "rule": "diagnóstico: se reporta aparte, nunca como métrica principal",
-  "git_commit": "af6d23145cf55b3a5f26549aad9861da3d653582"
+  "git_commit": "7471b3b0e52eb4de59ff25e7a8947dfadf25f17f"
 }

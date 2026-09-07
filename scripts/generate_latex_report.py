@@ -162,6 +162,59 @@ def gen_mbert_official_prose():
     print(f"Generado: {out.name}")
 
 
+def _best_baseline_f1() -> float | None:
+    path = REPORTS_METRICS / "baselines_tfidf.csv"
+    if not path.exists():
+        return None
+    bl = pd.read_csv(path)
+    if "model" not in bl.columns:
+        bl = pd.read_csv(path, index_col=0).reset_index()
+        bl.columns = ["model", "f1_macro"]
+    if bl.empty:
+        return None
+    return float(bl["f1_macro"].max())
+
+
+def _linear_svc_f1() -> float | None:
+    path = REPORTS_METRICS / "baselines_tfidf.csv"
+    if not path.exists():
+        return None
+    bl = pd.read_csv(path)
+    svc = bl[bl["model"].astype(str).str.lower() == "linearsvc"]
+    if svc.empty:
+        return None
+    return float(svc.iloc[0]["f1_macro"])
+
+
+def _target_goal_note(row: pd.Series) -> str:
+    hi = float(row["f1_bootstrap_hi"])
+    if hi >= 0.80:
+        return (
+            "El objetivo de $0{,}80$ no se alcanza en el punto estimado, "
+            "aunque el intervalo de confianza superior lo incluye."
+        )
+    return (
+        "El objetivo de $0{,}80$ no se alcanza ni en el punto estimado "
+        "ni en el extremo superior del intervalo bootstrap."
+    )
+
+
+def _baseline_comparison_note(mbert_f1: float) -> str:
+    linear = _linear_svc_f1()
+    best = _best_baseline_f1()
+    if best is None or linear is None:
+        return "superando a los baselines TF-IDF disponibles"
+    if mbert_f1 >= best - 1e-6:
+        return (
+            f"superando al mejor baseline TF-IDF (LinearSVC, F1-macro "
+            f"${_latex_num(linear)}$)"
+        )
+    return (
+        f"por debajo del mejor baseline TF-IDF (LinearSVC, F1-macro "
+        f"${_latex_num(linear)}$; mejor TF-IDF ${_latex_num(best)}$)"
+    )
+
+
 def gen_mbert_intro_prose():
     """Resumen ejecutivo de mBERT para la introducción."""
     out = GENERATED_DIR / "mbert_intro_prose.tex"
@@ -169,20 +222,13 @@ def gen_mbert_intro_prose():
     if row is None:
         out.write_text("% mbert_test_metrics.csv no disponible\n", encoding="utf-8")
         return
-    baselines_path = REPORTS_METRICS / "baselines_tfidf.csv"
-    linear_f1 = "---"
-    if baselines_path.exists():
-        bl = pd.read_csv(baselines_path)
-        svc = bl[bl["model"].astype(str).str.lower() == "linearsvc"]
-        if not svc.empty:
-            linear_f1 = _latex_num(svc.iloc[0]["f1_macro"])
     text = (
-        f"Sobre el conjunto de prueba ($n = 460$), el modelo mBERT alcanza un "
+        f"Sobre el conjunto de prueba ($n = 460$), el modelo mBERT B2 alcanza un "
         f"\\textbf{{F1-macro de {_latex_num(row['f1_macro'])}}} "
         f"(intervalo bootstrap 95\\,\\%: $[{_latex_num(row['f1_bootstrap_lo'])},\\ "
-        f"{_latex_num(row['f1_bootstrap_hi'])}]$), superando al mejor baseline TF-IDF "
-        f"(LinearSVC, F1-macro ${linear_f1}$). El objetivo de $0{{,}}80$ no se alcanza, "
-        f"aunque el intervalo de confianza superior lo incluye."
+        f"{_latex_num(row['f1_bootstrap_hi'])}]$), "
+        f"{_baseline_comparison_note(float(row['f1_macro']))}. "
+        f"{_target_goal_note(row)}"
     )
     out.write_text(text + "\n", encoding="utf-8")
     print(f"Generado: {out.name}")
@@ -195,20 +241,21 @@ def gen_mbert_conclusions_prose():
     if row is None:
         out.write_text("% mbert_test_metrics.csv no disponible\n", encoding="utf-8")
         return
-    baselines_path = REPORTS_METRICS / "baselines_tfidf.csv"
-    linear_f1 = _latex_num(0.7645)
-    if baselines_path.exists():
-        bl = pd.read_csv(baselines_path)
-        svc = bl[bl["model"].astype(str).str.lower() == "linearsvc"]
-        if not svc.empty:
-            linear_f1 = _latex_num(svc.iloc[0]["f1_macro"])
+    linear_f1_val = _linear_svc_f1()
+    linear_f1 = _latex_num(linear_f1_val) if linear_f1_val is not None else _latex_num(0.7645)
+    mbert_f1 = float(row["f1_macro"])
+    if linear_f1_val is not None and mbert_f1 < linear_f1_val:
+        comparison = (
+            f"queda por debajo de LinearSVC (${linear_f1}$) en F1-macro puntual, "
+            f"aunque supera a MultinomialNB y Logistic Regression"
+        )
+    else:
+        comparison = f"supera a LinearSVC (${linear_f1}$) y al resto de baselines"
     line = (
-        f"  \\item mBERT alcanza F1-macro \\textbf{{{_latex_num(row['f1_macro'])}}} en test "
-        f"($n=460$), superando a LinearSVC (${linear_f1}$) y al resto de baselines, pero "
-        f"\\textbf{{sin alcanzar}} la meta de $0{{,}}80$ definida en la configuración del "
-        f"proyecto. El intervalo bootstrap superior "
-        f"(${_latex_num(row['f1_bootstrap_hi'])}$) incluye el objetivo, lo que sugiere que "
-        f"con más datos o calibración podría lograrse."
+        f"  \\item mBERT B2 alcanza F1-macro \\textbf{{{_latex_num(row['f1_macro'])}}} en test "
+        f"($n=460$), {comparison}, pero \\textbf{{sin alcanzar}} la meta de $0{{,}}80$ "
+        f"definida en la configuración del proyecto. "
+        f"{_target_goal_note(row).replace('El objetivo', 'La meta')}"
     )
     out.write_text(line + "\n", encoding="utf-8")
     print(f"Generado: {out.name}")
@@ -236,18 +283,24 @@ def gen_mbert_comparison_prose():
     if row is None:
         out.write_text("% mbert_test_metrics.csv no disponible\n", encoding="utf-8")
         return
-    baselines_path = REPORTS_METRICS / "baselines_tfidf.csv"
-    linear_f1 = _latex_num(0.7645)
-    if baselines_path.exists():
-        bl = pd.read_csv(baselines_path)
-        svc = bl[bl["model"].astype(str).str.lower() == "linearsvc"]
-        if not svc.empty:
-            linear_f1 = _latex_num(svc.iloc[0]["f1_macro"])
-    text = (
-        f"Entre baselines TF-IDF, mBERT obtiene el mejor F1-macro puntual "
-        f"(${_latex_num(row['f1_macro'])}$), con LinearSVC a poca distancia "
-        f"(${linear_f1}$)."
-    )
+    mbert_f1 = float(row["f1_macro"])
+    best = _best_baseline_f1()
+    linear = _linear_svc_f1()
+    if best is not None and linear is not None and mbert_f1 < best - 1e-6:
+        text = (
+            f"En ranking descriptivo, XLM-RoBERTa v1 lidera el F1-macro puntual; mBERT B2 "
+            f"(${_latex_num(mbert_f1)}$) queda por debajo de LinearSVC "
+            f"(${_latex_num(linear)}$). La superioridad estadística se evalúa con McNemar."
+        )
+    elif linear is not None:
+        text = (
+            f"Entre baselines TF-IDF, mBERT B2 obtiene F1-macro "
+            f"${_latex_num(mbert_f1)}$, con LinearSVC a ${_latex_num(linear)}$."
+        )
+    else:
+        text = (
+            f"mBERT B2 obtiene F1-macro puntual ${_latex_num(mbert_f1)}$."
+        )
     out.write_text(text + "\n", encoding="utf-8")
     print(f"Generado: {out.name}")
 
@@ -295,6 +348,7 @@ def gen_mbert_traceability():
         "same_run_rounded": "Mismo run (redondeo)",
         "validation_only": "Solo validación",
         "not_reproducible": "No reproducible",
+        "historical_reproducible": "Histórico reproducible",
     }
     rows = []
     for _, r in df.iterrows():
@@ -333,7 +387,8 @@ def gen_mbert_traceability_prose():
         f"\\texttt{{{latex_escape(str(run['test_sha256'])[:16])}}}\\ldots, "
         f"evaluación \\texttt{{{latex_escape(str(run['evaluated_at'])[:10])}}}). "
         f"La cifra $0{{,}}7862$ del informe de auditoría queda archivada como "
-        f"\\emph{{no reproducible}} y no se usa en comparaciones."
+        f"\\emph{{no reproducible}}. El checkpoint v1 (F1-macro $0{{,}}7777$) se conserva "
+        f"como referencia histórica reproducible en la misma tabla."
     )
     out.write_text(text + "\n", encoding="utf-8")
     print(f"Generado: {out.name}")
@@ -662,7 +717,7 @@ def gen_platform_traceability():
         prose_lines.append(
             "Cifras históricas del informe de Cristian ("
             + ", ".join(hist_parts)
-            + ") se marcan como \\texttt{not\\_reproducible} y no se mezclan con la tabla oficial."
+            + ") se archivan como históricas no reproducibles y no se mezclan con la tabla oficial."
         )
     out_prose.write_text("\n".join(prose_lines) + "\n", encoding="utf-8")
     print(f"Generado: {out_prose.name}")
@@ -994,24 +1049,60 @@ def gen_dialect_bias_conclusions():
 
 
 def _load_adversarial_summary() -> dict | None:
-    path = REPORTS_METRICS / "mbert_adversarial_summary.json"
-    if not path.exists():
-        return None
-    with open(path, encoding="utf-8") as handle:
-        return json.load(handle)
+    """Prefiere la batería extendida 144 del checkpoint B2 sobre históricos."""
+    for name in (
+        "mbert_b2_144_adversarial_summary.json",
+        "mbert_v1_144_adversarial_summary.json",
+        "mbert_144_adversarial_summary.json",
+        "mbert_adversarial_summary.json",
+    ):
+        path = REPORTS_METRICS / name
+        if path.exists():
+            with open(path, encoding="utf-8") as handle:
+                return json.load(handle)
+    return None
+
+
+def _adversarial_family_metrics_path() -> Path | None:
+    for name in (
+        "mbert_b2_144_adversarial_family_metrics.csv",
+        "mbert_v1_144_adversarial_family_metrics.csv",
+        "mbert_144_adversarial_family_metrics.csv",
+        "mbert_adversarial_family_metrics.csv",
+    ):
+        path = REPORTS_METRICS / name
+        if path.exists():
+            return path
+    return None
+
+
+def _adversarial_v1_summary() -> dict | None:
+    for name in (
+        "mbert_b2_adversarial_summary.json",
+        "mbert_adversarial_summary.json",
+    ):
+        path = REPORTS_METRICS / name
+        if path.exists():
+            with open(path, encoding="utf-8") as handle:
+                data = json.load(handle)
+            if data.get("n_cases") == 75:
+                return data
+    return None
 
 
 def gen_adversarial_families():
-    path = REPORTS_METRICS / "mbert_adversarial_family_metrics.csv"
+    path = _adversarial_family_metrics_path()
     out = GENERATED_DIR / "tab_adversarial_families.tex"
-    if not path.exists():
+    if path is None:
         placeholder(out, "mbert_adversarial_family_metrics.csv no disponible")
         return
     df = pd.read_csv(path)
     if df.empty:
         placeholder(out)
         return
-    sub = df[df["model"] == "mbert"] if "mbert" in df["model"].values else df
+    sub = df[df["model"].astype(str).str.contains("mbert", case=False)] if "model" in df.columns else df
+    if sub.empty:
+        sub = df
     rows = []
     for _, r in sub.iterrows():
         key = str(r.get("family_key", ""))
@@ -1037,13 +1128,15 @@ def gen_adversarial_families():
 
 
 def gen_adversarial_dialect():
-    path = REPORTS_METRICS / "mbert_adversarial_family_metrics.csv"
+    path = _adversarial_family_metrics_path()
     out = GENERATED_DIR / "tab_adversarial_dialect.tex"
-    if not path.exists():
+    if path is None:
         placeholder(out)
         return
     df = pd.read_csv(path)
-    sub = df[df["model"] == "mbert"] if "mbert" in df["model"].values else df
+    sub = df[df["model"].astype(str).str.contains("mbert", case=False)] if "model" in df.columns else df
+    if sub.empty:
+        sub = df
     rows = []
     for key in ("D", "E"):
         part = sub[sub["family_key"] == key]
@@ -1102,7 +1195,79 @@ def gen_adversarial_prose():
             "No se activó la puerta de mitigación; se documentan riesgos residuales "
             "(tamaño reducido de la batería y anchos IC en subconjuntos pequeños)."
         )
+    v1 = _adversarial_v1_summary()
+    if v1 and summary.get("n_cases") == 144:
+        lines.append(
+            f"La batería histórica v1 ($n=75$) reportó "
+            f"{v1.get('global_correct')}/{v1.get('n_cases')} aciertos; la evaluación "
+            f"principal usa la batería extendida A--G ($n=144$) alineada con la verificación "
+            f"independiente (sep 2026)."
+        )
+    if summary.get("n_cases") == 144 and summary.get("group_g_innocuous_fp") is not None:
+        lines.append(
+            f"En pares mínimos de emoji (grupo G), {summary.get('group_g_innocuous_fp')}/"
+            f"{summary.get('group_g_innocuous_n', 10)} emojis inocuos vuelven tóxico un texto "
+            f"previamente No Tóxico (atajo emoji--toxicidad documentado en el EDA)."
+        )
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    print(f"Generado: {out.name}")
+
+
+def gen_adversarial_144_families():
+    """Tabla A--G con mBERT vs referencia XLM-R (verificación independiente)."""
+    out = GENERATED_DIR / "tab_adversarial_144_families.tex"
+    summary = _load_adversarial_summary()
+    path = _adversarial_family_metrics_path()
+    if summary is None or summary.get("n_cases") != 144 or path is None:
+        placeholder(out, "Batería adversarial 144 no disponible")
+        return
+    df = pd.read_csv(path)
+    sub = df[df["model"].astype(str).str.contains("mbert", case=False)] if "model" in df.columns else df
+    if sub.empty:
+        sub = df
+    xlmr_ref = summary.get("xlmr_v1_baseline") or {}
+
+    def _xlmr_metric(grupo: str, metric_type: str) -> str:
+        ref = xlmr_ref.get(grupo)
+        if not ref:
+            return "---"
+        if metric_type == "fpr":
+            return _frac_latex(ref.get("fp", 0), ref.get("n", 0))
+        return f"{int(ref.get('correct', 0))}/{int(ref.get('n', 0))}"
+
+    rows = []
+    for _, r in sub.iterrows():
+        grupo = str(r.get("grupo", ""))
+        if r.get("metric_type") == "fpr":
+            mbert_m = f"FPR {_frac_latex(r.get('fp', 0), r.get('n', 0))}"
+        else:
+            mbert_m = f"{int(r.get('correct', 0))}/{int(r.get('n', 0))}"
+        rows.append(
+            [
+                latex_escape(str(r.get("family_key", ""))),
+                latex_escape(grupo[:36]),
+                mbert_m,
+                _xlmr_metric(grupo, str(r.get("metric_type", "accuracy"))),
+                fmt_num(r.get("n"), digits=0),
+            ]
+        )
+    global_ref = xlmr_ref.get("global", {})
+    if global_ref:
+        rows.append(
+            [
+                "ALL",
+                "Global",
+                f"{summary.get('global_correct')}/{summary.get('n_cases')}",
+                f"{global_ref.get('correct', '---')}/{global_ref.get('n', 144)}",
+                fmt_num(summary.get("n_cases"), digits=0),
+            ]
+        )
+    write_tabular(
+        out,
+        ["Fam.", "Grupo", "mBERT", "XLM-R ref.", "n"],
+        rows,
+        col_spec="llccr",
+    )
     print(f"Generado: {out.name}")
 
 
@@ -1149,9 +1314,9 @@ def gen_adversarial_tradeoffs():
     notes = meta.get("adoption_notes", "")
     if adopted:
         line = (
-            f"El candidato B2 cumple los criterios de adopción documentados en T-06: "
-            f"{latex_escape(notes)}. El checkpoint oficial T-04 permanece como referencia "
-            f"de la métrica publicada."
+            f"El checkpoint B2 fue adoptado como modelo oficial: "
+            f"{latex_escape(notes)}. La métrica publicada en test principal es "
+            f"F1-macro $0{{,}}7610$ (checkpoint \\texttt{{checkpoint-1644}})."
         )
     else:
         line = (
@@ -1168,10 +1333,15 @@ def gen_adversarial_conclusions():
     if not summary:
         out.write_text("% adversarial summary no disponible\n", encoding="utf-8")
         return
+    n_cases = summary.get("n_cases", 75)
+    table_ref = (
+        "tab:adversarial-144-families" if n_cases == 144 else "tab:adversarial-families"
+    )
     line = (
-        f"  \\item La batería adversarial ({summary.get('global_correct')}/{summary.get('n_cases')} "
-        f"aciertos globales) confirma brechas en robustez retórica y equidad dialectal del "
-        f"checkpoint oficial; ver Tabla~\\ref{{tab:adversarial-families}}."
+        f"  \\item La batería adversarial ($n={n_cases}$, "
+        f"{summary.get('global_correct')}/{n_cases} aciertos globales) confirma brechas "
+        f"en robustez retórica, atajo emoji--toxicidad (grupo G) y equidad dialectal del "
+        f"checkpoint oficial; ver Tabla~\\ref{{{table_ref}}}."
     )
     out.write_text(line + "\n", encoding="utf-8")
     print(f"Generado: {out.name}")
@@ -1263,7 +1433,9 @@ def gen_lime_weights():
 
 def gen_val_metrics_note():
     """Opcional: tabla corta de métricas de validación desde JSON."""
-    path = MODELS_DIR / "mbert-sv" / "train_metrics.json"
+    path = MODELS_DIR / "mbert-sv-b2" / "train_metrics.json"
+    if not path.exists():
+        path = MODELS_DIR / "mbert-sv" / "train_metrics.json"
     out = GENERATED_DIR / "tab_val_metrics.tex"
     if not path.exists():
         placeholder(out)
@@ -1370,6 +1542,7 @@ def main():
     gen_dialect_bias_prose()
     gen_dialect_bias_conclusions()
     gen_adversarial_families()
+    gen_adversarial_144_families()
     gen_adversarial_dialect()
     gen_adversarial_prose()
     gen_adversarial_before_after()

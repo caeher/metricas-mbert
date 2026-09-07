@@ -154,8 +154,8 @@ Guía: [`docs/guia-inferencia-mbert.md`](docs/guia-inferencia-mbert.md).
 Distribución a revisores: Google Drive (mismo canal que Colab). Pegar la URL
 en el manifiesto con `--artifact-url` al publicar.
 
-**Métrica oficial (T-04):** F1-macro **0.7777** (tolerancia `1e-4`) sobre
-`data/processed/test.csv` (n = 460), checkpoint `checkpoint-1072`, semilla 42.
+**Métrica oficial (T-04/B2):** F1-macro **0.7610** (tolerancia `1e-4`) sobre
+`data/processed/test.csv` (n = 460), checkpoint `checkpoint-1644`, semilla 42.
 Trazabilidad: `reports/metrics/mbert_f1_traceability.csv`. Una sola corrida
 genera predicciones, métricas, matriz de confusión y calibración
 (`reports/metrics/mbert_official_run.json`).

@@ -5,19 +5,19 @@
 
 \begin{enumerate}[leftmargin=*]
   \input{generated/mbert_conclusions_prose}
-  \item La prueba de McNemar confirma superioridad significativa de mBERT solo
-        frente a MultinomialNB. Frente a LinearSVC/LogReg y frente a
-        XLM-RoBERTa (comparación pareada sobre $n=460$) no se rechaza la
-        hipótesis nula ($\alpha=0{,}05$): bajo este test, la diferencia
-        puntual de F1-macro no es concluyente y equivale a equivalencia
-        estadística de aciertos, no a ausencia de trabajo ni de diferencia
-        descriptiva entre modelos.
+  \item El reentrenamiento B2 mejora robustez adversarial (64/75 en batería v1
+        vs.\ 45/75 del checkpoint v1; 120/144 en batería extendida) y reduce el
+        sesgo dialectal (FPR gap 0.07 vs.\ 0.86), a costa de una caída puntual
+        del F1-macro en test de $0{,}7777$ a $0{,}7610$.
+  \item La prueba de McNemar confirma superioridad significativa de mBERT B2
+        frente a MultinomialNB y frente a XLM-RoBERTa v1 ($\alpha=0{,}05$).
+        Frente a LinearSVC y Logistic Regression no se rechaza la hipótesis nula.
   \item Los cortes revelan fragilidad ante ironía y sarcasmo, y peor desempeño
         en Facebook respecto a X.
   \input{generated/dialect_bias_conclusions}
   \input{generated/adversarial_conclusions}
-  \item El benchmark zero-shot (F1-macro $0{,}14$--$0{,}31$) evidencia
-        transferencia limitada fuera del dominio salvadoreño.
+  \item El benchmark zero-shot (F1-macro $0{,}14$--$0{,}31$, checkpoint v1)
+        evidencia transferencia limitada fuera del dominio salvadoreño.
 \end{enumerate}
 
 \section{Limitaciones}
@@ -25,24 +25,24 @@
 \begin{itemize}[leftmargin=*]
   \item Tamaño moderado del test y de algunos slices (jerga, ironía).
   \item Calibración imperfecta (ECE $\approx 0{,}16$).
-  \item Concordancia LIME--SHAP nula en la corrida reportada.
-  \item Benchmark externo sujeto a proyección de etiquetas y truncado de
-        muestras.
+  \item Benchmark externo no re-ejecutado con pesos B2.
+  \item Concordancia LIME--SHAP nula en la corrida reportada; pesos globales
+        LIME no exportados.
+  \item El F1-macro puntual del B2 queda por debajo de LinearSVC en el train B2
+        ampliado, aunque mejora en escenarios adversariales.
 \end{itemize}
 
 \section{Trabajo futuro}
 
 \begin{itemize}[leftmargin=*]
-  \item Ampliar datos etiquetados, especialmente ironía/sarcasmo y Facebook.
-  \item Técnicas de calibración y reponderación para reducir el ECE y el FPR
-        dialectal.
-  \item Adaptación al dominio (continued pretraining o few-shot) antes del
-        benchmark externo.
+  \item Ampliar datos etiquetados reales, especialmente ironía/sarcasmo y Facebook.
+  \item Re-ejecutar benchmark zero-shot con checkpoint B2.
+  \item Técnicas de calibración para reducir el ECE sin sacrificar robustez.
   \item Re-ejecutar y estabilizar el pipeline SHAP; enriquecer explicaciones
         globales LIME.
   \item Explorar modelos más recientes multilingües o específicos de español.
 \end{itemize}
 
-En conjunto, el sistema es competitivo en el dominio local y reproducible, pero
-requiere mejoras en robustez retórica, equidad dialectal y generalización
-externa antes de un despliegue de moderación automatizada.
+En conjunto, el sistema B2 es más robusto ante ataques retóricos y jerga
+salvadoreña que el v1, con trazabilidad reproducible, pero requiere más datos
+reales y calibración antes de un despliegue de moderación automatizada.
