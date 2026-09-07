@@ -1,6 +1,7 @@
 """Prueba extracción del ZIP como en Colab."""
 
 import subprocess
+import sys
 import zipfile
 from pathlib import Path
 
@@ -9,7 +10,7 @@ import pytest
 from scripts.colab_extract import find_project_root, setup_from_zip
 
 ROOT = Path(__file__).resolve().parents[1]
-ZIP_PATH = ROOT / "metricas-proyecto-ml-colab.zip"
+ZIP_PATH = ROOT / "google-colab" / "metricas-proyecto-ml-colab.zip"
 BUILD_SCRIPT = ROOT / "scripts" / "build_colab_zip.py"
 PROJECT_NAME = "metricas-proyecto-ml"
 
@@ -17,7 +18,7 @@ PROJECT_NAME = "metricas-proyecto-ml"
 @pytest.fixture(scope="module")
 def colab_zip(tmp_path_factory) -> Path:
     if not ZIP_PATH.exists():
-        subprocess.run(["python", str(BUILD_SCRIPT)], check=True, cwd=ROOT)
+        subprocess.run([sys.executable, str(BUILD_SCRIPT)], check=True, cwd=ROOT)
     return ZIP_PATH
 
 
@@ -34,11 +35,27 @@ def test_colab_zip_contains_required_files(colab_zip: Path):
         f"{PROJECT_NAME}/pyproject.toml",
         f"{PROJECT_NAME}/requirements.txt",
         f"{PROJECT_NAME}/notebooks/00_colab_setup.ipynb",
+        f"{PROJECT_NAME}/models/mbert-sv/model.safetensors",
+        f"{PROJECT_NAME}/models/mbert-sv/inference_contract.json",
     ]
     with zipfile.ZipFile(colab_zip) as zf:
         names = set(zf.namelist())
     for entry in required:
         assert entry in names, f"Falta en ZIP: {entry}"
+
+
+def test_colab_zip_contains_baselines(colab_zip: Path):
+    with zipfile.ZipFile(colab_zip) as zf:
+        names = zf.namelist()
+    baselines = [n for n in names if "/models/baseline_" in n and n.endswith(".joblib")]
+    assert len(baselines) >= 1, "El ZIP debe incluir al menos un baseline TF-IDF"
+
+
+def test_colab_zip_excludes_checkpoints(colab_zip: Path):
+    with zipfile.ZipFile(colab_zip) as zf:
+        names = zf.namelist()
+    checkpoints = [n for n in names if "checkpoint-" in n]
+    assert checkpoints == [], f"El ZIP no debe incluir checkpoints intermedios: {checkpoints[:5]}"
 
 
 def test_setup_from_zip_extracts_to_target(tmp_path: Path, colab_zip: Path):
@@ -47,4 +64,5 @@ def test_setup_from_zip_extracts_to_target(tmp_path: Path, colab_zip: Path):
     assert root == target
     assert (root / "pyproject.toml").is_file()
     assert (root / "data" / "processed" / "train.csv").is_file()
+    assert (root / "models" / "mbert-sv" / "model.safetensors").is_file()
     assert find_project_root(root) == root

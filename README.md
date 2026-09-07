@@ -81,20 +81,29 @@ Salida: `reports/latex/main.docx` (y opcionalmente PDF con `-Pdf`).
 
 ## Google Colab
 
+Paquete listo en [`google-colab/`](google-colab/README.md): código, datos procesados, baselines TF-IDF y pesos finales de mBERT (~700 MB).
+
 ### 1. Generar el ZIP localmente
+
+```bash
+python scripts/build_colab_zip.py
+```
+
+En Windows:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/build_colab_zip.ps1
 ```
 
-Esto crea `metricas-proyecto-ml-colab.zip` con la carpeta raíz `metricas-proyecto-ml/` (requerida por el setup de Colab).
+Salida: `google-colab/metricas-proyecto-ml-colab.zip` con carpeta raíz `metricas-proyecto-ml/` (requerida por el setup de Colab). También se genera `google-colab/00_colab_setup.ipynb` y el staging en `google-colab/metricas-proyecto-ml/`.
 
 ### 2. Subir y configurar en Colab
 
-1. Abre [Google Colab](https://colab.research.google.com/) y sube `notebooks/00_colab_setup.ipynb` o el ZIP completo.
-2. **Runtime → Cambiar tipo de entorno → GPU (T4)** antes del fine-tuning.
-3. Ejecuta las celdas de `00_colab_setup.ipynb` (sube el ZIP, instala dependencias, verifica datos).
-4. La celda de diagnóstico confirma `PROJECT_ROOT`, CUDA y si el modelo ya existe.
+1. Sube el ZIP a **Google Drive** (recomendado por tamaño ~700 MB) o usa upload directo.
+2. Abre [Google Colab](https://colab.research.google.com/) con `google-colab/00_colab_setup.ipynb`.
+3. **Runtime → Cambiar tipo de entorno → GPU (T4)** antes del fine-tuning.
+4. Ejecuta las celdas de setup (extrae ZIP, instala deps con `colab_install_deps.py`, verifica datos y modelo).
+5. La celda de diagnóstico confirma `PROJECT_ROOT`, CUDA y `models/mbert-sv/model.safetensors`.
 
 ### 3. Flujo A — Ejecución completa (primera vez, ~2–4 h con GPU)
 
@@ -109,9 +118,9 @@ Atajo desde la raíz del proyecto en Colab:
 !python scripts/run_interpretability.py  # exporta CSVs LIME/SHAP
 ```
 
-### 4. Flujo B — Solo métricas (modelo ya entrenado)
+### 4. Flujo B — Solo métricas (pesos ya incluidos en el ZIP)
 
-Si ya tienes `models/mbert-sv/` y `models/baseline_*.joblib` (p. ej. en Google Drive):
+El paquete ya incluye `models/mbert-sv/` y `models/baseline_*.joblib`:
 
 ```python
 !python scripts/run_notebooks_colab.py --from 5 --to 7 --skip 4
@@ -129,12 +138,12 @@ Si ya tienes `models/mbert-sv/` y `models/baseline_*.joblib` (p. ej. en Google D
 
 ### 6. Validar el ZIP antes de subir (solo estructura, sin entrenar)
 
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts/build_colab_zip.ps1
+```bash
+python scripts/build_colab_zip.py
 pytest tests/test_colab_zip.py -v
 ```
 
-Ver también [`docs/colab-run-log.md`](docs/colab-run-log.md) para el checklist paso a paso en Colab.
+Ver también [`google-colab/README.md`](google-colab/README.md) y [`docs/colab-run-log.md`](docs/colab-run-log.md).
 
 ## Checkpoint mBERT (auditoría)
 

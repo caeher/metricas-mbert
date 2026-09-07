@@ -75,3 +75,7 @@ applications/frontend/node_modules/
 applications/frontend/dist/
 applications/backend/models/mbert-sv/
 applications/backend/models/xlmr/
+google-colab/metricas-proyecto-ml/
+google-colab/*.zip
+google-colab/00_colab_setup.ipynb
+.colab_zip_staging/
