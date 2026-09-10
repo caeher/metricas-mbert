@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Entrena mBERT sobre el corpus salvadoreño."""
+"""Entrena mBERT sobre el corpus salvadoreño (Fases 1–2 del plan F1 0.80)."""
 
 import logging
 import sys
@@ -12,12 +12,15 @@ import argparse
 from discurso_odio.config import load_settings
 from discurso_odio.data.loaders import (
     compute_sample_loss_weights,
+    default_facebook_boost_weights,
+    filter_train_by_synthetic_policy,
     get_b2_class_weights,
+    get_class_weights,
     load_split,
     load_train_excluding_adversarial_overlap,
 )
 from discurso_odio.evaluation.adversarial import find_train_overlaps
-from discurso_odio.models.mbert import train_mbert
+from discurso_odio.models.mbert import MbertTrainingConfig, train_mbert
 from discurso_odio.paths import MODELS_DIR
 from discurso_odio.utils.seed import set_seed
 
@@ -25,40 +28,61 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(mess
 logger = logging.getLogger(__name__)
 
 
+def _parse_platform_boost(spec: str | None) -> dict[tuple[str, int], float] | None:
+    if not spec or spec.lower() == "none":
+        return None
+    if spec.lower() == "default":
+        return default_facebook_boost_weights()
+    boosts: dict[tuple[str, int], float] = {}
+    for part in spec.split(","):
+        platform, label_s, factor_s = part.split(":")
+        boosts[(platform.strip(), int(label_s))] = float(factor_s)
+    return boosts
+
+
 def main():
     parser = argparse.ArgumentParser(description="Entrena mBERT sobre el corpus salvadoreño.")
+    parser.add_argument("--output-dir", type=Path, default=None)
+    parser.add_argument("--exclude-adversarial-overlap", action="store_true")
+    parser.add_argument("--b2", action="store_true", help="Pesos B2 de metadata.json")
     parser.add_argument(
-        "--output-dir",
-        type=Path,
+        "--synthetic-policy",
+        choices=["b2_full", "real_only", "b2_no_template_heavy"],
+        default="b2_full",
+    )
+    parser.add_argument("--threat-synthetic-effective-n", type=float, default=90.0)
+    parser.add_argument(
+        "--synthetic-effective-fraction",
+        type=float,
         default=None,
-        help="Directorio de salida (default: models/mbert-sv en settings)",
+        help="Downweight global de sintéticos (0.25–0.5 recomendado)",
     )
     parser.add_argument(
-        "--exclude-adversarial-overlap",
-        action="store_true",
-        help="Excluye filas de train cuyo texto coincide con test_adversarial.csv (T-06/B2)",
+        "--platform-class-boost",
+        default="none",
+        help="none | default | Facebook:2:2.5,Facebook:3:1.8",
     )
+    parser.add_argument("--label-smoothing", type=float, default=None)
+    parser.add_argument("--learning-rate", type=float, default=None)
+    parser.add_argument("--epochs", type=int, default=None)
+    parser.add_argument("--seed", type=int, default=None)
+    parser.add_argument("--early-stopping-patience", type=int, default=None)
     parser.add_argument(
-        "--b2",
-        action="store_true",
-        help="Modo B2: pesos de clase de metadata.json, rebalanceo de amenazas sintéticas",
+        "--loss-type",
+        choices=["ce", "focal", "ordinal"],
+        default="ce",
     )
-    parser.add_argument(
-        "--threat-synthetic-effective-n",
-        type=float,
-        default=90.0,
-        help="Masa efectiva total de amenazas sintéticas en la pérdida (default: 90)",
-    )
-    parser.add_argument(
-        "--label-smoothing",
-        type=float,
-        default=0.05,
-        help="Label smoothing para CrossEntropyLoss (default: 0.05; 0 desactiva)",
-    )
+    parser.add_argument("--ordinal-weight", type=float, default=0.3)
+    parser.add_argument("--focal-gamma", type=float, default=2.0)
+    parser.add_argument("--layerwise-lr-decay", type=float, default=None)
+    parser.add_argument("--classifier-dropout", type=float, default=None)
+    parser.add_argument("--use-v1-class-weights", action="store_true")
+    parser.add_argument("--init-model-dir", type=Path, default=None, help="Checkpoint DAPT previo")
     args = parser.parse_args()
 
     settings = load_settings()
-    set_seed(settings["project"]["seed"])
+    seed = args.seed or settings["project"]["seed"]
+    set_seed(seed)
 
     use_b2 = args.b2 or args.exclude_adversarial_overlap
 
@@ -73,33 +97,60 @@ def main():
     else:
         train_df = load_split("train")
 
+    train_df = filter_train_by_synthetic_policy(train_df, args.synthetic_policy)
     val_df = load_split("val")
-    logger.info("Train: %d | Val: %d", len(train_df), len(val_df))
+    logger.info(
+        "Train: %d (policy=%s) | Val: %d",
+        len(train_df),
+        args.synthetic_policy,
+        len(val_df),
+    )
 
-    sample_weights = None
+    label_smoothing = args.label_smoothing
+    if label_smoothing is None:
+        label_smoothing = 0.05 if use_b2 else 0.0
+
     class_weights = None
-    if use_b2:
+    if args.use_v1_class_weights:
+        class_weights = get_class_weights(train_df)
+    elif use_b2:
         class_weights = get_b2_class_weights()
-        sample_weights = compute_sample_loss_weights(
-            train_df,
-            threat_synthetic_effective_n=args.threat_synthetic_effective_n,
-        )
-        logger.info(
-            "B2: pesos_clase=%s | amenazas sintéticas peso=%.4f (n=%d, efectivo=%.0f)",
-            class_weights,
-            float(sample_weights[sample_weights < 1.0].iloc[0]) if (sample_weights < 1.0).any() else 1.0,
-            int((sample_weights < 1.0).sum()),
-            args.threat_synthetic_effective_n,
-        )
+
+    platform_boost = _parse_platform_boost(args.platform_class_boost)
+    sample_weights = compute_sample_loss_weights(
+        train_df,
+        threat_synthetic_effective_n=args.threat_synthetic_effective_n,
+        synthetic_effective_fraction=args.synthetic_effective_fraction,
+        platform_class_boost=platform_boost,
+    )
+
+    training_config = MbertTrainingConfig(
+        learning_rate=args.learning_rate,
+        num_train_epochs=args.epochs,
+        early_stopping_patience=args.early_stopping_patience,
+        seed=seed,
+        label_smoothing=label_smoothing,
+        loss_type=args.loss_type,
+        ordinal_weight=args.ordinal_weight,
+        focal_gamma=args.focal_gamma,
+        classifier_dropout=args.classifier_dropout,
+        layerwise_lr_decay=args.layerwise_lr_decay,
+    )
+
+    output_dir = args.output_dir or (
+        MODELS_DIR / "mbert-sv-f1" if use_b2 else MODELS_DIR / "mbert-sv"
+    )
 
     trainer = train_mbert(
         train_df,
         val_df,
-        output_dir=args.output_dir,
+        output_dir=output_dir,
         class_weights=class_weights,
         sample_weights=sample_weights,
-        label_smoothing=args.label_smoothing if use_b2 else 0.0,
-        use_b2_class_weights=use_b2,
+        label_smoothing=label_smoothing,
+        use_b2_class_weights=use_b2 and not args.use_v1_class_weights,
+        training_config=training_config,
+        init_model_dir=args.init_model_dir,
     )
     logger.info("Entrenamiento completado. Métricas val: %s", trainer.evaluate())
 

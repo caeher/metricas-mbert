@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Literal
 
 import numpy as np
 import pandas as pd
@@ -33,8 +34,11 @@ from discurso_odio.models.inference_contract import (
     resolve_inference_contract,
     write_inference_contract,
 )
+from discurso_odio.models.losses import combined_ordinal_loss
 from discurso_odio.paths import MODELS_DIR
 from discurso_odio.utils.seed import set_seed
+
+LossType = Literal["ce", "focal", "ordinal"]
 
 
 def default_mbert_model_dir() -> Path:
@@ -70,17 +74,24 @@ def build_tokenizer(model_name: str | None = None):
     return AutoTokenizer.from_pretrained(model_name)
 
 
-def build_model(model_name: str | None = None, num_labels: int | None = None):
+def build_model(
+    model_name: str | None = None,
+    num_labels: int | None = None,
+    *,
+    classifier_dropout: float | None = None,
+):
     settings = load_settings()
     model_name = model_name or settings["model"]["name"]
     num_labels = num_labels or settings["labels"]["num_classes"]
     id2label, label2id = build_label_maps()
-    return AutoModelForSequenceClassification.from_pretrained(
-        model_name,
-        num_labels=num_labels,
-        id2label=id2label,
-        label2id=label2id,
-    )
+    kwargs: dict = {
+        "num_labels": num_labels,
+        "id2label": id2label,
+        "label2id": label2id,
+    }
+    if classifier_dropout is not None:
+        kwargs["classifier_dropout"] = classifier_dropout
+    return AutoModelForSequenceClassification.from_pretrained(model_name, **kwargs)
 
 
 def make_hf_dataset(
@@ -126,11 +137,17 @@ class MbertTrainer(Trainer):
         *args,
         class_weights: dict[int, float] | None = None,
         label_smoothing: float = 0.0,
+        loss_type: LossType = "ce",
+        ordinal_weight: float = 0.3,
+        focal_gamma: float = 2.0,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
         self.class_weights = class_weights
         self.label_smoothing = label_smoothing
+        self.loss_type = loss_type
+        self.ordinal_weight = ordinal_weight
+        self.focal_gamma = focal_gamma
 
     def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
         labels = inputs.pop("labels")
@@ -146,18 +163,123 @@ class MbertTrainer(Trainer):
                 device=logits.device,
             )
 
-        loss_fn = CrossEntropyLoss(
-            weight=weight_tensor,
-            reduction="none",
-            label_smoothing=self.label_smoothing,
-        )
-        loss = loss_fn(logits.view(-1, logits.size(-1)), labels.view(-1))
+        if self.loss_type == "ce":
+            loss_fn = CrossEntropyLoss(
+                weight=weight_tensor,
+                reduction="none",
+                label_smoothing=self.label_smoothing,
+            )
+            loss = loss_fn(logits.view(-1, logits.size(-1)), labels.view(-1))
+        else:
+            flat_logits = logits.view(-1, logits.size(-1))
+            flat_labels = labels.view(-1)
+            gamma = self.focal_gamma if self.loss_type == "focal" else 0.0
+            ord_w = self.ordinal_weight if self.loss_type == "ordinal" else 0.0
+            if self.loss_type == "focal":
+                ord_w = 0.0
+            loss = combined_ordinal_loss(
+                flat_logits,
+                flat_labels,
+                ordinal_weight=ord_w,
+                gamma=gamma,
+                class_weights=weight_tensor,
+                label_smoothing=self.label_smoothing,
+            )
+
         if sample_weight is not None:
             loss = (loss * sample_weight.to(logits.device)).mean()
         else:
             loss = loss.mean()
 
         return (loss, outputs) if return_outputs else loss
+
+
+@dataclass
+class MbertTrainingConfig:
+    """Hiperparámetros configurables para barrido Fase 1–2."""
+
+    learning_rate: float | None = None
+    num_train_epochs: int | None = None
+    early_stopping_patience: int | None = None
+    seed: int | None = None
+    label_smoothing: float = 0.0
+    loss_type: LossType = "ce"
+    ordinal_weight: float = 0.3
+    focal_gamma: float = 2.0
+    classifier_dropout: float | None = None
+    layerwise_lr_decay: float | None = None
+    warmup_ratio: float | None = None
+    weight_decay: float | None = None
+
+
+def _build_layerwise_optimizer(model, trainer_args, layerwise_lr_decay: float):
+    """Asigna LR decreciente por capas del encoder BERT."""
+    no_decay = ["bias", "LayerNorm.weight"]
+    base_lr = trainer_args.learning_rate
+    encoder = getattr(model, "bert", None) or getattr(model, "roberta", None)
+    if encoder is None:
+        return None
+
+    param_groups: list[dict] = []
+    n_layers = len(encoder.encoder.layer)
+    for layer_idx, layer in enumerate(encoder.encoder.layer):
+        lr = base_lr * (layerwise_lr_decay ** (n_layers - layer_idx))
+        param_groups.append(
+            {
+                "params": [p for n, p in layer.named_parameters() if not any(nd in n for nd in no_decay)],
+                "weight_decay": trainer_args.weight_decay,
+                "lr": lr,
+            }
+        )
+        param_groups.append(
+            {
+                "params": [p for n, p in layer.named_parameters() if any(nd in n for nd in no_decay)],
+                "weight_decay": 0.0,
+                "lr": lr,
+            }
+        )
+
+    head_prefixes = ("classifier", "dropout")
+    head_params = [
+        p for n, p in model.named_parameters()
+        if n.startswith(head_prefixes) and not any(nd in n for nd in no_decay)
+    ]
+    head_params_nd = [
+        p for n, p in model.named_parameters()
+        if n.startswith(head_prefixes) and any(nd in n for nd in no_decay)
+    ]
+    if head_params:
+        param_groups.append({"params": head_params, "weight_decay": trainer_args.weight_decay, "lr": base_lr})
+    if head_params_nd:
+        param_groups.append({"params": head_params_nd, "weight_decay": 0.0, "lr": base_lr})
+
+    embed_params = [p for n, p in encoder.embeddings.named_parameters()]
+    if embed_params:
+        embed_lr = base_lr * (layerwise_lr_decay ** (n_layers + 1))
+        param_groups.append({"params": embed_params, "weight_decay": trainer_args.weight_decay, "lr": embed_lr})
+
+    optimizer = torch.optim.AdamW(param_groups)
+    num_training_steps = trainer_args.max_steps if trainer_args.max_steps > 0 else (
+        len(trainer_args.__dict__.get("_train_dataloader", []))  # fallback unused
+    )
+    return optimizer
+
+
+class LayerwiseTrainer(MbertTrainer):
+    """Trainer con optimizador layer-wise LR decay."""
+
+    def __init__(self, *args, layerwise_lr_decay: float = 0.95, **kwargs):
+        self.layerwise_lr_decay = layerwise_lr_decay
+        super().__init__(*args, **kwargs)
+
+    def create_optimizer(self):
+        if self.optimizer is not None:
+            return self.optimizer
+        opt = _build_layerwise_optimizer(self.model, self.args, self.layerwise_lr_decay)
+        if opt is not None:
+            self.optimizer = opt
+            return self.optimizer
+        return super().create_optimizer()
 
 
 def build_trainer(
@@ -172,11 +294,15 @@ def build_trainer(
     sample_weights: pd.Series | np.ndarray | None = None,
     label_smoothing: float = 0.0,
     use_b2_class_weights: bool = False,
+    training_config: MbertTrainingConfig | None = None,
+    init_model_dir: str | Path | None = None,
 ) -> tuple[MbertTrainer, AutoTokenizer]:
     settings = load_settings()
     train_cfg = get_training_config()
+    cfg = training_config or MbertTrainingConfig()
     max_steps = get_max_steps()
-    set_seed(settings["project"]["seed"])
+    seed = cfg.seed if cfg.seed is not None else settings["project"]["seed"]
+    set_seed(seed)
 
     text_col = text_col or settings["model"]["text_column"]
     label_col = label_col or settings["model"]["label_column"]
@@ -186,7 +312,21 @@ def build_trainer(
     device = get_device()
 
     tokenizer = build_tokenizer(model_name)
-    model = build_model(model_name)
+    if init_model_dir:
+        from transformers import AutoModelForMaskedLM
+
+        init_path = str(init_model_dir)
+        model = build_model(model_name, classifier_dropout=cfg.classifier_dropout)
+        try:
+            model = AutoModelForSequenceClassification.from_pretrained(init_path)
+        except (OSError, ValueError):
+            mlm = AutoModelForMaskedLM.from_pretrained(init_path)
+            encoder = getattr(model, "bert", None) or getattr(model, "roberta", None)
+            mlm_encoder = getattr(mlm, "bert", None) or getattr(mlm, "roberta", None)
+            if encoder is not None and mlm_encoder is not None:
+                encoder.load_state_dict(mlm_encoder.state_dict(), strict=False)
+    else:
+        model = build_model(model_name, classifier_dropout=cfg.classifier_dropout)
     model.to(device)
 
     if class_weights is None:
@@ -207,12 +347,12 @@ def build_trainer(
 
     training_args = TrainingArguments(
         output_dir=str(output_dir),
-        num_train_epochs=train_cfg["num_train_epochs"],
+        num_train_epochs=cfg.num_train_epochs or train_cfg["num_train_epochs"],
         per_device_train_batch_size=train_cfg["per_device_train_batch_size"],
         per_device_eval_batch_size=train_cfg["per_device_eval_batch_size"],
-        learning_rate=train_cfg["learning_rate"],
-        warmup_ratio=train_cfg["warmup_ratio"],
-        weight_decay=train_cfg["weight_decay"],
+        learning_rate=cfg.learning_rate or train_cfg["learning_rate"],
+        warmup_ratio=cfg.warmup_ratio if cfg.warmup_ratio is not None else train_cfg["warmup_ratio"],
+        weight_decay=cfg.weight_decay if cfg.weight_decay is not None else train_cfg["weight_decay"],
         eval_strategy="epoch",
         save_strategy="epoch",
         load_best_model_at_end=True,
@@ -220,23 +360,32 @@ def build_trainer(
         greater_is_better=True,
         save_total_limit=2,
         logging_steps=50,
-        seed=settings["project"]["seed"],
+        seed=seed,
         report_to="none",
         max_steps=max_steps if max_steps > 0 else -1,
     )
 
-    trainer = MbertTrainer(
-        model=model,
-        args=training_args,
-        train_dataset=train_ds,
-        eval_dataset=val_ds,
-        processing_class=tokenizer,
-        data_collator=SampleWeightCollator(tokenizer=tokenizer),
-        compute_metrics=compute_metrics,
-        class_weights=class_weights,
-        label_smoothing=label_smoothing,
-        callbacks=[EarlyStoppingCallback(early_stopping_patience=train_cfg["early_stopping_patience"])],
-    )
+    patience = cfg.early_stopping_patience or train_cfg["early_stopping_patience"]
+    trainer_cls = LayerwiseTrainer if cfg.layerwise_lr_decay else MbertTrainer
+    trainer_kwargs: dict = {
+        "model": model,
+        "args": training_args,
+        "train_dataset": train_ds,
+        "eval_dataset": val_ds,
+        "processing_class": tokenizer,
+        "data_collator": SampleWeightCollator(tokenizer=tokenizer),
+        "compute_metrics": compute_metrics,
+        "class_weights": class_weights,
+        "label_smoothing": cfg.label_smoothing if training_config else label_smoothing,
+        "loss_type": cfg.loss_type,
+        "ordinal_weight": cfg.ordinal_weight,
+        "focal_gamma": cfg.focal_gamma,
+        "callbacks": [EarlyStoppingCallback(early_stopping_patience=patience)],
+    }
+    if cfg.layerwise_lr_decay:
+        trainer_kwargs["layerwise_lr_decay"] = cfg.layerwise_lr_decay
+
+    trainer = trainer_cls(**trainer_kwargs)
     return trainer, tokenizer
 
 
@@ -250,6 +399,8 @@ def train_mbert(
     sample_weights: pd.Series | np.ndarray | None = None,
     label_smoothing: float = 0.0,
     use_b2_class_weights: bool = False,
+    training_config: MbertTrainingConfig | None = None,
+    init_model_dir: str | Path | None = None,
 ) -> MbertTrainer:
     settings = load_settings()
     output_dir = Path(output_dir or settings["model"]["output_dir"])
@@ -264,6 +415,8 @@ def train_mbert(
         sample_weights=sample_weights,
         label_smoothing=label_smoothing,
         use_b2_class_weights=use_b2_class_weights,
+        training_config=training_config,
+        init_model_dir=init_model_dir,
     )
     trainer.train()
     trainer.save_model(str(output_dir))

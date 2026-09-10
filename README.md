@@ -169,6 +169,30 @@ Trazabilidad: `reports/metrics/mbert_f1_traceability.csv`. Una sola corrida
 genera predicciones, métricas, matriz de confusión y calibración
 (`reports/metrics/mbert_official_run.json`).
 
+**Meta del proyecto:** F1-macro ≥ **0.80** (`config/settings.yaml`). Pipeline integral:
+
+```powershell
+# Fase 0: análisis de errores (sin entrenar)
+python scripts/analyze_mbert_errors.py
+
+# Fases 1–4 + gates (requiere GPU para entrenamiento)
+python scripts/run_f1_target_pipeline.py
+
+# Solo evaluar gates con métricas existentes
+python scripts/evaluate_f1_gates.py --use-existing-metrics
+
+# Barrido HP (val only)
+python scripts/sweep_mbert_f1.py --max-runs 6
+
+# Receta F1 recomendada (manual)
+python scripts/train_mbert.py --b2 --exclude-adversarial-overlap `
+  --synthetic-policy b2_no_template_heavy --synthetic-effective-fraction 0.35 `
+  --platform-class-boost default --label-smoothing 0.0 --loss-type ordinal `
+  --layerwise-lr-decay 0.95 --epochs 6 --output-dir models/mbert-sv-f1
+```
+
+Receta y gates en `config/settings.yaml` → sección `f1_target`.
+
 ## Licencia
 
 Investigación académica — UES ESI 2026.
