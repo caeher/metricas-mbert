@@ -35,6 +35,18 @@ logger = logging.getLogger(__name__)
 SWEEP_CSV = REPORTS_METRICS / "mbert_sweep.csv"
 
 
+def _load_existing_metrics(out_dir: Path) -> dict[str, float] | None:
+    """Lee métricas de val de un entrenamiento ya completado."""
+    metrics_path = out_dir / "train_metrics.json"
+    if not metrics_path.exists():
+        return None
+    data = json.loads(metrics_path.read_text(encoding="utf-8"))
+    return {
+        "val_f1_macro": float(data.get("eval_f1_macro", 0)),
+        "val_accuracy": float(data.get("eval_accuracy", 0)),
+    }
+
+
 def _build_grid(args) -> list[dict]:
     lrs = [float(x) for x in args.learning_rates.split(",")]
     seeds = [int(x) for x in args.seeds.split(",")]
@@ -77,6 +89,11 @@ def main() -> None:
     parser.add_argument("--output-root", type=Path, default=MODELS_DIR / "sweep")
     parser.add_argument("--init-model-dir", type=Path, default=None)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--skip-existing",
+        action="store_true",
+        help="Omitir corridas cuyo output_dir ya tenga train_metrics.json",
+    )
     args = parser.parse_args()
 
     settings = load_settings()
@@ -93,6 +110,16 @@ def main() -> None:
         if args.dry_run:
             rows.append(row)
             continue
+
+        if args.skip_existing:
+            existing = _load_existing_metrics(out_dir)
+            if existing is not None:
+                logger.info("Run %s: omitido (train_metrics.json existente)", run_id)
+                row.update(existing)
+                row["evaluated_at"] = datetime.now(timezone.utc).isoformat()
+                row["status"] = "skipped"
+                rows.append(row)
+                continue
 
         set_seed(cfg["seed"])
         train_df = load_train_excluding_adversarial_overlap()
@@ -135,6 +162,7 @@ def main() -> None:
                 "val_f1_macro": float(metrics.get("eval_f1_macro", 0)),
                 "val_accuracy": float(metrics.get("eval_accuracy", 0)),
                 "evaluated_at": datetime.now(timezone.utc).isoformat(),
+                "status": "trained",
             }
         )
         rows.append(row)

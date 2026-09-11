@@ -8,6 +8,23 @@ Proyecto de clasificación multiclase de toxicidad con **mBERT** (`bert-base-mul
 - ~4 GB RAM libre (CPU)
 - Opcional: GPU NVIDIA + CUDA para entrenamiento acelerado
 
+### GPU local (Windows / Linux)
+
+```powershell
+python scripts/check_cuda.py
+```
+
+Si tienes GPU pero PyTorch dice `+cpu`, reinstala con CUDA:
+
+```powershell
+pip uninstall -y torch torchvision
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+```
+
+En Python 3.14 suele instalarse `torch 2.11.0+cu128` (la 2.13.0+cu128 aún no está publicada para ese runtime).
+
+En `.env` usa `RUN_PROFILE=gpu` para batch sizes mayores. Con 4 GB VRAM y fp16 automático suele caber batch 16; si hay OOM, baja `per_device_train_batch_size` en `config/settings.yaml`.
+
 ## Instalación
 
 ```powershell

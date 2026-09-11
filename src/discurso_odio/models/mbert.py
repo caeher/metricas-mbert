@@ -60,6 +60,15 @@ def get_device() -> torch.device:
     return torch.device("cpu")
 
 
+def cuda_training_kwargs() -> dict[str, bool]:
+    """Opciones de Trainer que aceleran el entrenamiento en GPU NVIDIA."""
+    use_cuda = torch.cuda.is_available()
+    return {
+        "fp16": use_cuda,
+        "dataloader_pin_memory": use_cuda,
+    }
+
+
 def build_label_maps() -> tuple[dict[int, str], dict[str, int]]:
     settings = load_settings()
     names = list(settings["labels"]["names"])
@@ -363,6 +372,7 @@ def build_trainer(
         seed=seed,
         report_to="none",
         max_steps=max_steps if max_steps > 0 else -1,
+        **cuda_training_kwargs(),
     )
 
     patience = cfg.early_stopping_patience or train_cfg["early_stopping_patience"]

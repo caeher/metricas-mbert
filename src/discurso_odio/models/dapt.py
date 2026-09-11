@@ -18,6 +18,7 @@ from transformers import (
 from discurso_odio.config import get_training_config, load_settings
 from discurso_odio.data.loaders import load_split
 from discurso_odio.models.inference_contract import get_inference_contract, write_inference_contract
+from discurso_odio.models.mbert import cuda_training_kwargs
 from discurso_odio.utils.seed import set_seed
 
 
@@ -73,6 +74,7 @@ def train_mbert_dapt(
         logging_steps=100,
         seed=seed,
         report_to="none",
+        **cuda_training_kwargs(),
     )
 
     trainer = Trainer(
