@@ -1,0 +1,161 @@
+{
+  "all_labels_final": false,
+  "author_thread_template_relation_groups": 223,
+  "batteries": {
+    "diagnostic_only": true,
+    "observations": 219,
+    "source_count": 2
+  },
+  "candidate_sources": {
+    "country_inferred_value_unspecified": 497,
+    "exact_text_matches_with_historical_splits": 0,
+    "platform_counts": {
+      "X": 2328
+    },
+    "provisional_label_counts": {
+      "Discurso de odio": 1000,
+      "Lenguaje Ofensivo": 1328
+    },
+    "total": 2328,
+    "training_readiness_counts": {
+      "NO": 2328
+    },
+    "validated_counts": {
+      "NO": 2328
+    }
+  },
+  "canonical_disposition_counts": {
+    "diagnostic_only": 104,
+    "human_adjudication_required": 4,
+    "legacy_split_label_unreviewed": 4212,
+    "quarantine_unvalidated_candidate": 2320
+  },
+  "canonical_entity_count": 6640,
+  "core_splits": {
+    "origin_type_counts": {
+      "real": 3063,
+      "synthetic": 1149
+    },
+    "provisional_label_id_counts": {
+      "0": 1140,
+      "1": 1196,
+      "2": 1036,
+      "3": 840
+    },
+    "test": 460,
+    "total": 4212,
+    "train": 3293,
+    "val": 459
+  },
+  "corpus_full_view": "same IDs and all fields as the union of train/val/test; imported zero extra rows",
+  "date_audit_issue_counts": {
+    "collection_date_precedes_x_publication_date": 445
+  },
+  "deduplication_ledger_event_counts": {
+    "duplicate_publication_url": 1,
+    "exact_text_duplicate": 83,
+    "label_conflict": 4,
+    "source_view_not_imported": 5,
+    "unvalidated_candidate_source": 2328
+  },
+  "empty_text_observations": 0,
+  "encoding_suspect_observation_count": 510,
+  "exact_duplicate_or_publication_groups": 84,
+  "exact_match_limit": "Zero exact matches against historical splits does not establish absence of near-duplicates, URL/post overlap, author/thread leakage, or template leakage.",
+  "exact_text_label_conflict_count": 3,
+  "geography_and_language_by_source": {
+    "data/processed/test_adversarial_144.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 144,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 144
+    },
+    "data/raw/lenguaje_ofensivo.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 1328,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 196,
+      "dialect_unknown": 1132
+    },
+    "data/raw/test.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 460,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 460
+    },
+    "data/raw/test_adversarial.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 75,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 75
+    },
+    "data/raw/thenewdata_X.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 497,
+      "country_unknown": 503,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 317,
+      "dialect_unknown": 683
+    },
+    "data/raw/train.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 3293,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 3293
+    },
+    "data/raw/val.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 459,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 459
+    }
+  },
+  "known_limitations": [
+    "CSV-level bytes can distinguish a valid UTF-8 display issue from replacement characters or likely lost characters only when the bytes preserve evidence; lost source characters cannot be reconstructed safely.",
+    "Country and dialect are not inferred from membership in this project archive or from X/Twitter platform labels.",
+    "Three exact-text conflicts and one same-publication text-version conflict remain unresolved until a human annotator enters reviewer, date, final label and rationale in the ledger."
+  ],
+  "label_conflict_count": 4,
+  "label_conflict_status": "pending human adjudication; no automatic label selected",
+  "method": {
+    "author_thread_template": "reported as relation signals only; never automatic exclusion",
+    "date_anomaly_reference_day": "2026-10-16",
+    "deduplication": "merge only exact normalized text or normalized publication URL into one canonical entity",
+    "exact_text_normalization": "Unicode NFC + casefold + collapsed whitespace; accents and punctuation retained",
+    "final_labels": "blank for every record; only original/provisional labels are carried through",
+    "publication_url_normalization": "lowercase host/path cleanup; query and fragment removed",
+    "similarity": {
+      "automatic_deduplication": false,
+      "method": "character trigram Jaccard candidate search",
+      "threshold": 0.82
+    }
+  },
+  "same_publication_text_version_label_conflict_count": 1,
+  "script_version": "1.0.0",
+  "similarity_candidate_count": 1728,
+  "source_row_counts": {
+    "data/processed/corpus_completo.csv": 4212,
+    "data/processed/test.csv": 460,
+    "data/processed/test_adversarial_144.csv": 144,
+    "data/processed/train.csv": 3293,
+    "data/processed/val.csv": 459,
+    "data/raw/corpus_completo.csv": 4212,
+    "data/raw/lenguaje_ofensivo.csv": 1328,
+    "data/raw/test.csv": 460,
+    "data/raw/test_adversarial.csv": 75,
+    "data/raw/thenewdata_X.csv": 1000,
+    "data/raw/train.csv": 3293,
+    "data/raw/val.csv": 459
+  }
+}
