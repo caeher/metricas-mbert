@@ -1,0 +1,27 @@
+{
+  "manifest_version": "new-sealed-test-v1",
+  "policy_version": "2.0.0",
+  "status": "not_reserved_no_records",
+  "taxonomy_version": "2.0.0",
+  "target_platforms": [
+    "Facebook",
+    "X"
+  ],
+  "target_label_ids": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "planning_n": 800,
+  "planning_n_is_guarantee": false,
+  "planning_allocation": "balanced diagnostic coverage target, 100 per class-platform cell; separate from the representative sample",
+  "records": [],
+  "blocking_requirements": [
+    "Collect new real posts from Facebook and X; current candidate sources are X-only.",
+    "Validate provenance and adjudicate labels under taxonomy v2.0.0.",
+    "Resolve author, thread, event, URL, exact-text, and near-duplicate groups before assignment.",
+    "Keep the sealed representative sample separate from any class/platform-balanced diagnostic battery.",
+    "Freeze sample frame, interval precision targets, report cuts, and custodian access procedure before collection."
+  ]
+}

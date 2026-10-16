@@ -1,0 +1,25 @@
+{
+  "audit_version": "release-overlap-v1",
+  "policy_version": "2.0.0",
+  "status": "pending_next_adjudicated_release",
+  "latest_release_id": null,
+  "required_relations": [
+    "normalized_exact_text",
+    "publication_url",
+    "author_group",
+    "thread_group",
+    "event_group",
+    "human_adjudicated_near_duplicate_component"
+  ],
+  "required_model_input_corpora": [
+    "supervised_train",
+    "synthetic_parent_and_prompt_sources",
+    "DAPT_corpus",
+    "development",
+    "calibration",
+    "historical_test",
+    "new_sealed_test"
+  ],
+  "release_blocker": "Any evaluation component overlapping a training, synthetic-generation, or DAPT corpus must be resolved or conservatively excluded before release.",
+  "audits": []
+}

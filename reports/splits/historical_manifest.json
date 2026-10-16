@@ -1,0 +1,175 @@
+{
+  "diagnostics": {
+    "roles": [
+      "diagnostic_adversarial_v1",
+      "diagnostic_adversarial_v2"
+    ],
+    "selection": "curated/phenomenon-focused; report separately, not as prevalence estimates"
+  },
+  "generated_by": "scripts/build_split_manifests.py",
+  "label_version": "legacy_unreviewed",
+  "limitations": [
+    "Legacy labels have not been adjudicated under taxonomy v2.0.0.",
+    "The historical test has prior analysis and is not an untouched final test.",
+    "Author groups are hashed from legacy anonymized IDs; thread/event identifiers are absent.",
+    "Candidate sources remain quarantined and are not included in any split.",
+    "The new sealed test has not yet been collected or reserved."
+  ],
+  "manifest_csv": "reports/splits/historical_split_manifest.csv",
+  "manifest_csv_sha256": "bb6589ba3c510d2b774f562980f1a9483f6ad97d29576b02aca397d8e1efe8d7",
+  "manifest_version": "historical-snapshot-v1",
+  "model_test_input": {
+    "byte_identical_to": "data/raw/test.csv",
+    "path": "data/processed/test.csv",
+    "sha256": "3239eb4ca59720e1a7aaa574ad38bad53db18c54f5e1424b381f68d1d0b2f1d6"
+  },
+  "overlap_audit": {
+    "adjudicated_near_duplicate_components": "not_available_for_legacy_split_csvs",
+    "author_group_intersections": {
+      "development_legacy::historical_test": 0,
+      "train_legacy::development_legacy": 0,
+      "train_legacy::historical_test": 0
+    },
+    "event_groups": "not_available_in_legacy_split_csvs",
+    "exact_normalized_text_intersections": {
+      "development_legacy::historical_test": 0,
+      "train_legacy::development_legacy": 0,
+      "train_legacy::historical_test": 0
+    },
+    "interpretation": "Zero observed author/exact-text overlap does not establish event/thread/near-duplicate independence or untouched test status.",
+    "scope": "legacy train/development/historical test only",
+    "thread_groups": "not_available_in_legacy_split_csvs"
+  },
+  "policy_version": "2.0.0",
+  "release_id": "historical_snapshot_2026-10-16_v1",
+  "row_count": 4431,
+  "splits": {
+    "development_legacy": {
+      "author_group_count": 459,
+      "event_group_count": 0,
+      "label_assignment_sha256": "3ad5750c5e1f7d9a310a080d7940dd523516a204bf940c0f0b800482875e1df0",
+      "label_counts": {
+        "0": 122,
+        "1": 159,
+        "2": 94,
+        "3": 84
+      },
+      "origin_counts": {
+        "real": 459
+      },
+      "path": "data/raw/val.csv",
+      "platform_counts": {
+        "Facebook": 232,
+        "X": 227
+      },
+      "records_missing_author_group": 0,
+      "role": "development_legacy",
+      "row_count": 459,
+      "sha256": "33d89bf3686c302e9f8896abe68f7d4fc2468690abcd5142c538e9934bb1a4c3",
+      "thread_group_count": 0
+    },
+    "diagnostic_adversarial_v1": {
+      "author_group_count": 0,
+      "event_group_count": 0,
+      "label_assignment_sha256": "e4c3a9a946202be928c959899b117a67c032f3526ddc133d946ac26cd637d09d",
+      "label_counts": {
+        "0": 29,
+        "1": 26,
+        "2": 4,
+        "3": 16
+      },
+      "origin_counts": {
+        "diagnostic_curated_or_generated": 75
+      },
+      "path": "data/raw/test_adversarial.csv",
+      "platform_counts": {
+        "unknown": 75
+      },
+      "records_missing_author_group": 75,
+      "role": "diagnostic_adversarial_v1",
+      "row_count": 75,
+      "sha256": "2ec62fe39ee3fa62401b4d6d1387eecb2f79205d695c277075b8894cb677a510",
+      "thread_group_count": 0
+    },
+    "diagnostic_adversarial_v2": {
+      "author_group_count": 0,
+      "event_group_count": 0,
+      "label_assignment_sha256": "93af2759536e0a1ba06a57a5ce24a5a476791f897a0d630668de9eb99a11ac8f",
+      "label_counts": {
+        "0": 83,
+        "1": 28,
+        "2": 6,
+        "3": 27
+      },
+      "origin_counts": {
+        "diagnostic_curated_or_generated": 144
+      },
+      "path": "data/processed/test_adversarial_144.csv",
+      "platform_counts": {
+        "unknown": 144
+      },
+      "records_missing_author_group": 144,
+      "role": "diagnostic_adversarial_v2",
+      "row_count": 144,
+      "sha256": "574f7bbfdb4d5e07057bae0d5e20ae530099fa1ad002ba46c2e16d0ff7530d81",
+      "thread_group_count": 0
+    },
+    "historical_test": {
+      "author_group_count": 460,
+      "event_group_count": 0,
+      "label_assignment_sha256": "d4e8388a7846f83eca8ab65e17a729d611b0bc92eb0c9cdb99b63adf68a1b5c8",
+      "label_counts": {
+        "0": 123,
+        "1": 159,
+        "2": 95,
+        "3": 83
+      },
+      "origin_counts": {
+        "real": 460
+      },
+      "path": "data/raw/test.csv",
+      "platform_counts": {
+        "Facebook": 232,
+        "X": 228
+      },
+      "records_missing_author_group": 0,
+      "role": "historical_test",
+      "row_count": 460,
+      "sha256": "3239eb4ca59720e1a7aaa574ad38bad53db18c54f5e1424b381f68d1d0b2f1d6",
+      "thread_group_count": 0
+    },
+    "train_legacy": {
+      "author_group_count": 2145,
+      "event_group_count": 0,
+      "label_assignment_sha256": "6e597c85614f47e322319d7b802b24c0a0f92901427899d25d27f3aa5f648e6b",
+      "label_counts": {
+        "0": 895,
+        "1": 878,
+        "2": 847,
+        "3": 673
+      },
+      "origin_counts": {
+        "real": 2144,
+        "sintetico_amenaza_ofuscada": 138,
+        "sintetico_emoji_amenaza": 130,
+        "sintetico_emoji_notoxico": 125,
+        "sintetico_emoji_odio": 179,
+        "sintetico_emoji_ofensivo": 112,
+        "sintetico_jerga_notoxico": 100,
+        "sintetico_nacionalidad_notoxico": 96,
+        "sintetico_relleno_emoji": 269
+      },
+      "path": "data/raw/train.csv",
+      "platform_counts": {
+        "Facebook": 1656,
+        "X": 1637
+      },
+      "records_missing_author_group": 0,
+      "role": "train_legacy",
+      "row_count": 3293,
+      "sha256": "3240683d9f5ecc9a8ac4764eede1bcd87db366405eac3ca309b66416acaabf6a",
+      "thread_group_count": 0
+    }
+  },
+  "taxonomy_version": "2.0.0"
+}

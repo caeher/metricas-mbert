@@ -1,0 +1,217 @@
+policy_version: "2.0.0"
+status: "protocol_defined_new_release_pending_adjudication_and_collection"
+taxonomy_version: "2.0.0"
+language: "es"
+seed: 42
+
+purpose: >-
+  Preserve the historical evaluation for comparison while establishing
+  reproducible, group-disjoint development, calibration, and sealed new-test
+  cohorts. This file does not certify the current legacy labels as gold.
+
+labels:
+  0: "No Tóxico"
+  1: "Lenguaje Ofensivo"
+  2: "Discurso de Odio"
+  3: "Amenazas/Violencia"
+
+paths:
+  canonical_records: "data/interim/canonical_records.csv"
+  deduplication_ledger: "data/interim/deduplication_exclusion_ledger.csv"
+  historical_manifest_csv: "reports/splits/historical_split_manifest.csv"
+  historical_manifest_json: "reports/splits/historical_manifest.json"
+  sealed_test_manifest: "reports/splits/new_test_sealed_manifest.json"
+  release_overlap_audit: "reports/splits/release_overlap_audit.json"
+  historical_train: "data/raw/train.csv"
+  historical_development: "data/raw/val.csv"
+  historical_test: "data/raw/test.csv"
+  historical_test_model_input: "data/processed/test.csv"
+  diagnostic_battery_v1: "data/raw/test_adversarial.csv"
+  diagnostic_battery_v2: "data/processed/test_adversarial_144.csv"
+
+roles:
+  train:
+    population: "human-adjudicated real records plus approved synthetic records"
+    allowed: ["fit_model", "synthetic_generation", "DAPT"]
+    constraints:
+      - "Synthetic records are train-only."
+      - "A synthetic example and its parent/source group remain in train."
+      - "Only records with annotation_status=anotado and a final label enter supervised training."
+      - "DAPT uses eligible real train/domain text only; exclude all synthetic records."
+  development:
+    population: "real, adjudicated, group-held-out records"
+    allowed: ["early_stopping", "checkpoint_selection", "hyperparameter_selection", "recipe_selection"]
+    constraints:
+      - "Never use development text or groups for synthetic generation or DAPT."
+      - "Development is not the final evaluation and repeated comparisons must be reported as selection results."
+  calibration:
+    population: "real, adjudicated, group-held-out records reserved before recipe search"
+    allowed: ["probability_calibration", "predeclared_threshold_calibration"]
+    constraints:
+      - "Freeze architecture, checkpoint, and hyperparameters before using calibration labels."
+      - "Do not use calibration records for weight fitting, DAPT, synthetic generation, checkpoint selection, or hyperparameter selection."
+      - "If a threshold is tuned, record the method and freeze it before either test is opened."
+    current_status: "not_available_as_an_independent_v2_split"
+  historical_test:
+    population: "the frozen legacy test, retained for historical comparability"
+    allowed: ["historical_comparison", "one-time_relabelled_baseline_and_candidate_comparison"]
+    constraints:
+      - "Do not use for training, DAPT, synthetic generation, thresholds, recipe selection, hyperparameters, or checkpoints."
+      - "Repeated prior use means it is not evidence of untouched generalization."
+      - "Label changes require a separately versioned label manifest and reevaluation of baseline and candidate on the same labels."
+    current_status: "frozen_legacy_labels_unreviewed"
+  new_sealed_test:
+    population: "new real posts, collected after the historical cohort and adjudicated under the frozen taxonomy"
+    allowed: ["final_evaluation_after_recipe_freeze"]
+    constraints:
+      - "No text, label, author, thread, event, duplicate, or near-duplicate group may enter any development activity."
+      - "Access is controlled by an evaluator/custodian after the complete recipe is frozen."
+      - "Do not select or discard examples based on model predictions or measured performance."
+      - "Synthetic examples never fill missing class/platform coverage."
+    current_status: "not_yet_collected_or_reserved"
+  diagnostic:
+    population: "curated or generated challenge examples selected by class, keyword, or phenomenon"
+    allowed: ["separate_error_analysis_only"]
+    constraints:
+      - "Never report as an estimate of real-use prevalence or primary test performance."
+      - "Record selection criteria, version, and whether the item was word-, class-, or phenomenon-selected."
+
+historical_snapshot:
+  policy_role_map:
+    "data/raw/train.csv": "train_legacy"
+    "data/raw/val.csv": "development_legacy"
+    "data/raw/test.csv": "historical_test"
+  model_test_input: "data/processed/test.csv"
+  known_label_state: "legacy_labels_not_reannotated_to_taxonomy_v2"
+  synthetic_train_only: true
+  diagnostics:
+    - "data/raw/test_adversarial.csv"
+    - "data/processed/test_adversarial_144.csv"
+
+eligibility:
+  real_record:
+    required:
+      - "record_disposition=eligible_after_human_review"
+      - "annotation_status=anotado"
+      - "label_final in [0,1,2,3]"
+      - "source and text provenance retained"
+  candidate_record:
+    rule: "Quarantine until validation, human adjudication, and duplicate review are complete."
+    current_sources: ["data/raw/lenguaje_ofensivo.csv", "data/raw/thenewdata_X.csv"]
+    current_platform_coverage: ["X"]
+  synthetic_record:
+    rule: "Train only; retain generator, parent group, template, prompt/version, and review provenance."
+
+grouping:
+  version: "group-closure-v1"
+  keys_in_union_closure:
+    - "author_group_id"
+    - "thread_group_id"
+    - "event_group_id"
+    - "normalized_publication_url"
+    - "exact_normalized_text_sha256"
+    - "human_adjudicated_near_duplicate_cluster_id"
+  normalization:
+    text: "Unicode NFC, casefold, collapse consecutive whitespace; retain raw text separately."
+    url: "Normalize host and remove tracking/query fragments only under the documented URL rule; preserve the original URL."
+  unresolved_relations:
+    rule: "Quarantine the affected records or conservatively keep candidate-linked records in one component until adjudication."
+    never: "Never split unresolved candidate duplicate/event links across roles."
+  missing_group_metadata:
+    rule: "Use a stable record singleton only for assignment; mark the group audit incomplete and do not treat missing metadata as proof of independence."
+  assignment:
+    algorithm: "group-stratified-greedy-v1"
+    seed: 42
+    unit: "connected component after group-closure-v1"
+    stratification_dimensions: ["final_label", "canonical_platform"]
+    priority: "Keep components intact; minimize deviation from target proportions for label-by-platform counts where support permits."
+    group_order:
+      - "descending sum over label-platform cells of group_cell_count / total_cell_count (rarity-weighted contribution)"
+      - "descending component record count"
+      - "ascending SHA256(UTF-8(str(seed) || NUL || stable_component_id))"
+    assignment_objective: >-
+      For each next component, evaluate each split and choose the assignment that
+      minimizes the sum of squared normalized deviations from target counts over
+      all split x label-platform cells plus total split size. Normalize each
+      deviation by max(target_count, 1). Break equal-loss ties by ascending
+      SHA256(UTF-8(str(seed) || NUL || stable_component_id || NUL || split_name)).
+    record_order_invariant: true
+    split_proportions_for_development_pool:
+      train_real: 0.80
+      development: 0.10
+      calibration: 0.10
+    note: >-
+      These proportions apply only to the adjudicated development pool after
+      separate test cohorts are removed. Report unattainable strata and group
+      counts; never split a component or add synthetic records to evaluation.
+
+new_test_design:
+  target_platforms: ["Facebook", "X"]
+  target_labels: [0, 1, 2, 3]
+  planning_n: 800
+  planning_n_is_guarantee: false
+  planning_allocation:
+    type: "balanced coverage diagnostic"
+    initial_target_per_label_platform_cell: 100
+    cells: 8
+    interpretation: >-
+      This is a coverage and fieldwork budget (4 labels x 2 platforms), not an
+      estimate of real-use prevalence and not a guaranteed precision for model
+      metrics. Increase or revise it after the population frame, cluster design,
+      desired confidence-interval widths, and reporting cuts are specified.
+  representative_sample:
+    separate_from_balanced_diagnostic: true
+    selection: "probability sample from the defined target-use population; do not select by keywords or labels"
+    report: "primary prevalence-sensitive estimates, with design weights when inclusion probabilities differ"
+    size: "calculate from predeclared confidence interval precision for overall, class, platform, and required class-by-platform cuts; adjust for clustering and multiplicity"
+  balanced_diagnostic:
+    selection: "class x platform quotas; any keyword/phenomenon selection must be declared"
+    report: "per-cell diagnostics only; no prevalence claim"
+  sizing:
+    confidence_level: 0.95
+    half_width_target: null
+    final_n: null
+    rule: >-
+      Freeze target half-widths and required cuts before collection. Determine n
+      from the worst-supported reported cell using an appropriate interval or
+      simulation for the chosen metric, then adjust for group clustering,
+      unequal weights, multiplicity, and finite population where applicable.
+      Do not treat the nominal 800 as a statistical guarantee.
+
+release_gates:
+  before_assignment:
+    - "Taxonomy and annotation guide version frozen."
+    - "Deduplication and label adjudication closed for the release cohort."
+    - "All known author/thread/event/URL/exact/near-duplicate links resolved or conservatively grouped."
+    - "Real-only new-test cohort selected before model output is available."
+  before_training:
+    - "Freeze manifest, group components, assignment seed, and data hashes."
+    - "Verify no evaluation groups/texts are in train, synthetic parents, or DAPT corpus."
+  before_final_evaluation:
+    - "Freeze code commit, training data and synthetic recipe, model/checkpoint, tokenizer, normalizer, thresholds, and inference contract."
+    - "Hash and archive the frozen recipe before custodian releases the sealed test for one evaluation run."
+    - "Audit exact, URL, author, thread, event, and adjudicated near-duplicate overlap against every model-input corpus."
+
+manifest_schema:
+  required_fields:
+    - "release_id"
+    - "role"
+    - "record_id"
+    - "source_file"
+    - "source_file_sha256"
+    - "raw_text_sha256"
+    - "normalized_text_sha256"
+    - "label_id"
+    - "label_version"
+    - "canonical_platform"
+    - "origin"
+    - "author_group_id_hash"
+    - "thread_group_id_hash"
+    - "event_group_id_hash"
+    - "duplicate_component_id_hash"
+  legacy_snapshot_notes:
+    - "Current historical manifest uses release_id=historical_snapshot_2026-10-16_v1."
+    - "duplicate_component_id_hash is empty where complete event/near-duplicate components cannot be established from legacy metadata."
+  privacy:
+    - "Do not publish raw author handles or evaluation text in the public manifest."
+    - "Keep sealed-test labels and group mapping with the independent custodian until recipe freeze."
