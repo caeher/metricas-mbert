@@ -1,0 +1,147 @@
+version: "2.0.0"
+name: "discurso-odio-sv"
+language: "es"
+status: "operativa_para_calibracion_y_anotacion_humana"
+purpose: >-
+  Política contextual para anotación. No es un lexicón de bloqueo, una
+  definición jurídica ni una exportación de etiquetas gold.
+
+primary_label:
+  exclusive: true
+  precedence: [3, 2, 1, 0]
+  precedence_names:
+    - "Amenazas/Violencia"
+    - "Discurso de Odio"
+    - "Lenguaje Ofensivo"
+    - "No Tóxico"
+  classes:
+    - id: 0
+      name: "No Tóxico"
+      short_name: "no_toxico"
+      definition: >-
+        Comunicación neutral, descriptiva, amistosa, crítica de ideas o
+        informativa que no ataque por identidad ni promueva daño físico.
+    - id: 1
+      name: "Lenguaje Ofensivo"
+      short_name: "ofensivo"
+      definition: >-
+        Insulto, vulgaridad dirigida o descalificación sin base identitaria
+        discriminatoria ni promoción de daño físico.
+    - id: 2
+      name: "Discurso de Odio"
+      short_name: "odio"
+      definition: >-
+        Ataque, degradación, deshumanización, exclusión o trato desigual basado
+        en identidad; no requiere groserías.
+    - id: 3
+      name: "Amenazas/Violencia"
+      short_name: "amenazas"
+      definition: >-
+        Amenaza, exhortación, deseo inequívoco o aprobación explícita de daño
+        físico atribuible al autor del texto.
+
+annotation_status:
+  field: "annotation_status"
+  values:
+    - "anotado"
+    - "contexto_insuficiente"
+  insufficient_context:
+    primary_label: null
+    is_primary_class: false
+    export_as_final_label: false
+    reason_field: "insufficient_context_reason"
+    rule: >-
+      Usar cuando falta contexto necesario para decidir sentido, destinatario,
+      postura ante una cita, base identitaria o intención de daño. Nunca
+      convertir automáticamente en clase 0.
+
+decision_rules:
+  classify_author_act: true
+  mention_of_group_alone_is_hate: false
+  group_mention_plus_profanity_alone_is_hate: false
+  hate_requires_identity_basis_evidence: true
+  hate_requires_profanity: false
+  violence_requires_physical_harm_promotion: true
+  quoted_or_reported_content_is_automatically_primary: false
+  negation_is_automatically_threat: false
+  lexical_match_is_sufficient: false
+  class_overrides:
+    - when: "threat_or_promotion_of_physical_violence and identity_basis"
+      primary_label: 3
+      retain_attributes: ["identity_basis", "identity_targets", "violence_type"]
+    - when: "identity_based_attack_without_physical_violence_promotion"
+      primary_label: 2
+    - when: "directed_insult_without_identity_basis_or_physical_violence"
+      primary_label: 1
+    - when: "no_applicable_attack_or_physical_violence_promotion"
+      primary_label: 0
+
+identity_scope:
+  base_groups:
+    - "origen_nacionalidad"
+    - "raza_etnia"
+    - "religion"
+    - "genero_sexualidad"
+    - "discapacidad"
+  project_operational_extensions:
+    - group: "clase_socioeconomica"
+      label_2_threshold: >-
+        Trato degradante, exclusión o privación de derechos/servicios por clase
+        o pobreza. Una descripción neutral es 0; un insulto sin discriminación
+        de clase es 1.
+    - group: "afiliacion_politica"
+      label_2_threshold: >-
+        Exclusión, persecución, privación de derechos/servicios o trato desigual
+        por afiliación. La crítica de ideas, partidos, políticas o desempeño
+        no es odio; una descalificación sin discriminación es 1.
+  require_explicit_or_unambiguous_basis: true
+
+sexist_attack_terms:
+  forms: ["feminazi", "zorra", "perra"]
+  policy: >-
+    Etiqueta 2 si el uso contextual es un ataque sexista dirigido a una persona.
+    No etiquetar por coincidencia. Un insulto sin base sexista puede ser 1;
+    mención, cita no aprobatoria, sentido literal animal y reapropiación
+    afirmativa no son odio por sí solos.
+
+violence:
+  primary_precedence_over_hate: true
+  types:
+    - "direct_threat"
+    - "incitement"
+    - "wish"
+    - "endorsement"
+    - "report"
+    - "quoted_condemned"
+    - "metaphor"
+    - "none"
+  label_3_types: ["direct_threat", "incitement", "wish", "endorsement"]
+  non_label_3_without_other_evidence: ["report", "quoted_condemned", "metaphor", "none"]
+  require_attributable_physical_harm_promotion: true
+
+annotation_fields:
+  required:
+    label: "integer 0..3, or null only with contexto_insuficiente"
+    annotation_status: "anotado | contexto_insuficiente"
+    insufficient_context_reason: "string or null"
+    directed_at_person: "true | false | unknown"
+    identity_basis: "true | false | unknown"
+    identity_targets: "list of identity_scope group ids"
+    violence_type: "one value from violence.types"
+    quoted_or_reported: "boolean"
+    negated: "boolean"
+    reclaimed_or_affirming: "boolean"
+    rationale: "context-based explanation"
+    guideline_version: "2.0.0"
+
+traceability:
+  source_documents:
+    - "docs/lexico_taxonomia/README.md"
+    - "docs/lexico_taxonomia/00_no_toxico.md"
+    - "docs/lexico_taxonomia/01_lenguaje_ofensivo.md"
+    - "docs/lexico_taxonomia/02_discurso_de_odio.md"
+    - "docs/lexico_taxonomia/03_amenaza_violencia.md"
+    - "docs/lexico_taxonomia/04_ambiguas.md"
+  decision_register: "docs/taxonomy_decisions_v2.md"
+  annotation_guide: "docs/annotation_guidelines_v2.md"
+  calibration_cases: "docs/calibration_cases_v2.md"
