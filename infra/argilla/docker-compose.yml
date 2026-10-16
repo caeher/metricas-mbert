@@ -1,0 +1,83 @@
+name: cde-ml-argilla
+
+x-argilla-variables: &argilla-variables
+  ARGILLA_HOME_PATH: /var/lib/argilla
+  ARGILLA_ELASTICSEARCH: http://elasticsearch:9200
+  ARGILLA_DATABASE_URL: postgresql+asyncpg://argilla:${ARGILLA_DB_PASSWORD:?Copy .env.argilla.example to .env.argilla and set secrets}@postgres:5432/argilla
+  ARGILLA_REDIS_URL: redis://redis:6379/0
+
+services:
+  argilla:
+    image: argilla/argilla-server:v2.8.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6900:6900"
+    environment:
+      <<: *argilla-variables
+      USERNAME: ${ARGILLA_USERNAME:?Set ARGILLA_USERNAME in .env.argilla}
+      PASSWORD: ${ARGILLA_PASSWORD:?Set ARGILLA_PASSWORD in .env.argilla}
+      API_KEY: ${ARGILLA_API_KEY:?Set ARGILLA_API_KEY in .env.argilla}
+      ARGILLA_AUTH_SECRET_KEY: ${ARGILLA_AUTH_SECRET_KEY:?Set ARGILLA_AUTH_SECRET_KEY in .env.argilla}
+      WORKSPACE: ${ARGILLA_WORKSPACE:-annotations}
+      HF_HUB_DISABLE_TELEMETRY: "1"
+    volumes:
+      - argilla-home:/var/lib/argilla
+    depends_on:
+      - postgres
+      - elasticsearch
+      - redis
+
+  worker:
+    image: argilla/argilla-server:v2.8.0
+    restart: unless-stopped
+    environment:
+      <<: *argilla-variables
+      BACKGROUND_NUM_WORKERS: 2
+      HF_HUB_DISABLE_TELEMETRY: "1"
+    command: sh -c 'python -m argilla_server worker --num-workers $${BACKGROUND_NUM_WORKERS}'
+    volumes:
+      - argilla-home:/var/lib/argilla
+    depends_on:
+      - postgres
+      - elasticsearch
+      - redis
+
+  postgres:
+    image: postgres:14.17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: argilla
+      POSTGRES_PASSWORD: ${ARGILLA_DB_PASSWORD:?Set ARGILLA_DB_PASSWORD in .env.argilla}
+      POSTGRES_DB: argilla
+    volumes:
+      - argilla-postgres:/var/lib/postgresql/data
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
+    restart: unless-stopped
+    environment:
+      ES_JAVA_OPTS: -Xms512m -Xmx512m -XX:UseSVE=0
+      CLI_JAVA_OPTS: -XX:UseSVE=0
+      node.name: elasticsearch
+      cluster.name: es-argilla-local
+      discovery.type: single-node
+      cluster.routing.allocation.disk.threshold_enabled: "false"
+      xpack.security.enabled: "false"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - argilla-elasticsearch:/usr/share/elasticsearch/data
+
+  redis:
+    image: redis:7.4.2-alpine
+    restart: unless-stopped
+
+volumes:
+  argilla-home:
+    name: cde-ml-argilla-home
+  argilla-postgres:
+    name: cde-ml-argilla-postgres
+  argilla-elasticsearch:
+    name: cde-ml-argilla-elasticsearch

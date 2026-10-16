@@ -9,6 +9,9 @@ dist/
 *.egg-info/
 .eggs/
 .env
+.env.argilla
+backups/argilla/
+data/argilla_exports/
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 models/mbert-sv/
