@@ -1,0 +1,61 @@
+{
+  "balanced_block_class_platform_cells": {
+    "Facebook:0": 15,
+    "Facebook:1": 15,
+    "Facebook:2": 15,
+    "Facebook:3": 15,
+    "X:0": 15,
+    "X:1": 15,
+    "X:2": 15,
+    "X:3": 15
+  },
+  "blindness": {
+    "model_suggestions": false,
+    "old_labels_in_argilla_fields": false,
+    "sample_strata_sent_to_argilla": false
+  },
+  "canonical_records_sha256": "9abf6eb07e9dc4db5a26a247a4b793626583cc5e5d20733b157609f049668c49",
+  "eligible_historical_train_real_records": 2144,
+  "eligible_new_candidate_records": 2324,
+  "guideline_version": "2.0.0",
+  "historical_train_class_platform_cells_in_full_pilot": {
+    "Facebook:0": 17,
+    "Facebook:1": 15,
+    "Facebook:2": 15,
+    "Facebook:3": 17,
+    "X:0": 15,
+    "X:1": 15,
+    "X:2": 15,
+    "X:3": 17
+  },
+  "known_conflict_records_included": 4,
+  "record_count": 200,
+  "sample_version": "annotation-pilot-v1",
+  "sampling_note": "Las cuotas usan etiquetas históricas solo para muestreo estratificado; no se envían a Argilla. Esta muestra piloto no estima prevalencia ni reemplaza la revisión del corpus completo.",
+  "seed": "20261016",
+  "source_group_counts": {
+    "legacy_train_real": 126,
+    "new_lenguaje_ofensivo": 37,
+    "new_shared_conflict": 4,
+    "new_thenewdata_X": 33
+  },
+  "status": "pilot_sample_prepared_pending_human_annotation",
+  "stratum_counts": {
+    "borderline_hate_threat_boundary": 8,
+    "borderline_neutral_dialect": 8,
+    "borderline_offense_hate_boundary": 8,
+    "borderline_politics": 8,
+    "borderline_sexism": 8,
+    "known_source_label_conflict": 4,
+    "legacy_balance_Facebook_0": 15,
+    "legacy_balance_Facebook_1": 15,
+    "legacy_balance_Facebook_2": 15,
+    "legacy_balance_Facebook_3": 15,
+    "legacy_balance_X_0": 15,
+    "legacy_balance_X_1": 15,
+    "legacy_balance_X_2": 15,
+    "legacy_balance_X_3": 15,
+    "new_source_lenguaje_ofensivo": 18,
+    "new_source_thenewdata_X": 18
+  }
+}

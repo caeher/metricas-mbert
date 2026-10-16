@@ -56,6 +56,7 @@ El importador acepta el CSV canónico de `data/interim/canonical_records.csv`, n
 
 | `--campaign` | Cohorte | Workspace |
 |---|---|---|
+| `pilot` | 200 IDs del muestreo real ciego; requiere `reports/annotation/pilot_sample_v1.csv` | `ARGILLA_WORKSPACE` |
 | `legacy_train_real` | Reales de `data/raw/train.csv` | `ARGILLA_WORKSPACE` |
 | `legacy_train_synthetic` | Sintéticos históricos de train | `ARGILLA_WORKSPACE` |
 | `new_candidates` | Fuentes candidatas nuevas, sin duplicar train/evaluación | `ARGILLA_WORKSPACE` |
@@ -65,6 +66,8 @@ El importador acepta el CSV canónico de `data/interim/canonical_records.csv`, n
 | `historical_test_audit` | test histórico | `ARGILLA_AUDIT_WORKSPACE` |
 
 Las entidades con referencia a val/test nunca entran a train ni a la cola de candidatos. Val y test se separan en dos datasets de auditoría. Para ambas campañas restringidas, `ARGILLA_AUDIT_WORKSPACE` es obligatorio y cualquier `--workspace` explícito debe coincidir; no se permite redirigirlas al workspace de anotación. Estas campañas y calibración rechazan sugerencias del modelo. No se incluye `label_original`, `label_provisional_id`, metadatos del anotador fuente ni notas que puedan revelar etiquetas previas. La procedencia se conserva como metadatos extra accesibles por SDK, sin mostrarse en la interfaz. La campaña de calibración lee las filas del Markdown, asigna IDs sin clase y omite la columna de etiquetas esperadas; estos ejemplos no se reportan como prueba independiente ni prevalencia.
+
+La campaña `pilot` exige un manifiesto de exactamente 200 IDs generado por `scripts/prepare_annotation_pilot.py`; `pilot` rechaza sugerencias. Los estratos y las etiquetas usadas para balancear no se copian a los registros Argilla. El manifiesto local es información interna de muestreo: no se comparte con los anotadores. El piloto incluye reales históricos de train y candidatos nuevos; no incorpora val/test, sintéticos ni baterías diagnósticas.
 
 ## Crear las campañas
 
@@ -79,6 +82,8 @@ Simula antes cada importación; la simulación no necesita conexión ni credenci
 ```powershell
 python scripts/import_argilla.py --campaign legacy_train_real --limit 200 --dry-run
 python scripts/import_argilla.py --campaign legacy_train_real --limit 200
+python scripts/prepare_annotation_pilot.py
+python scripts/import_argilla.py --campaign pilot --dry-run
 python scripts/import_argilla.py --campaign calibration --dry-run
 ```
 
@@ -88,7 +93,7 @@ Antes de iniciar la anotación, verifica que el workspace tenga al menos dos cue
 
 ## Preguntas, guía y cegamiento
 
-Todos los datasets llevan los campos visibles `original_text` y `normalized_text`. Las preguntas recogen estado (`anotado` / `contexto_insuficiente`), etiqueta primaria 0–3, subclase, grupos objetivo, dialecto, cita/reporte, negación, tipo de violencia, calidad, motivo de contexto insuficiente y justificación. La etiqueta primaria es opcional para permitir `contexto_insuficiente` sin crear una quinta clase. La guía completa v2.0.0 se copia a las instrucciones del dataset y los metadatos guardan la versión.
+Todos los datasets llevan los campos visibles `original_text` y `normalized_text`. Las preguntas recogen estado (`anotado` / `contexto_insuficiente`), etiqueta primaria 0–3, subclase, grupos objetivo, dialecto, cita/reporte, negación, tipo de violencia, calidad, motivo de contexto insuficiente y justificación. La etiqueta primaria es opcional para permitir `contexto_insuficiente` sin crear una quinta clase. Argilla limita las instrucciones del dataset a 10,000 caracteres: se carga la [guía breve v2.0.0](annotation_guidelines_v2_argilla.md), mientras la [guía completa](annotation_guidelines_v2.md) y el [registro de decisiones](taxonomy_decisions_v2.md) permanecen versionados en el repositorio.
 
 El importador no convierte etiquetas de fuente en respuestas. Las sugerencias son optativas y viajan por `rg.Suggestion`, separadas de `rg.Response`. Si se usa un modelo para priorizar revisión en una campaña de train/candidatos, prepara un JSONL como este y pasa `--suggestions`:
 

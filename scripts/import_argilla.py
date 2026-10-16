@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 import sys
@@ -16,6 +17,7 @@ from argilla_workflow import (
     DEFAULT_RECORDS,
     GUIDELINES_PATH,
     MIN_SUBMITTED,
+    ROOT,
     SCHEMA_VERSION,
     SDK_VERSION,
     TAXONOMY_VERSION,
@@ -43,6 +45,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--workspace", help="Workspace Argilla; se infiere de .env.argilla si se omite.")
     parser.add_argument("--env-file", type=Path, default=Path(".env.argilla"), help="Archivo local ignorado por Git.")
     parser.add_argument("--limit", type=int, help="Limita la campaña para un piloto; conserva IDs estables.")
+    parser.add_argument(
+        "--pilot-manifest",
+        type=Path,
+        default=ROOT / "reports/annotation/pilot_sample_v1.csv",
+        help="Lista ciega de IDs preparada por scripts/prepare_annotation_pilot.py.",
+    )
     parser.add_argument("--dry-run", action="store_true", help="Imprime el plan sin conectar con Argilla.")
     parser.add_argument("--restore-export", type=Path, help="Restaura una exportación portable JSONL.")
     parser.add_argument("--batch-size", type=int, default=256, help="Tamaño de lote del SDK (1–1000).")
@@ -402,6 +410,36 @@ def main() -> int:
             source_path = GUIDELINES_PATH.with_name("calibration_cases_v2.md")
         else:
             rows = campaign_rows(load_canonical_rows(args.records), args.campaign)
+            if args.campaign == "pilot":
+                if args.limit is not None and args.limit != 200:
+                    raise WorkflowError("El piloto estratificado requiere exactamente 200 registros; no use otro --limit")
+                pilot_path = args.pilot_manifest
+                if not pilot_path.is_absolute():
+                    pilot_path = Path.cwd() / pilot_path
+                if not pilot_path.exists():
+                    raise WorkflowError(
+                        f"No existe {pilot_path}; ejecute scripts/prepare_annotation_pilot.py primero"
+                    )
+                summary_path = pilot_path.with_suffix(".json")
+                if not summary_path.exists():
+                    raise WorkflowError(f"Falta el resumen del muestreo: {summary_path}")
+                sample_summary = json.loads(summary_path.read_text(encoding="utf-8"))
+                records_sha = hashlib.sha256(args.records.read_bytes()).hexdigest()
+                if sample_summary.get("canonical_records_sha256") != records_sha:
+                    raise WorkflowError("El corpus canónico cambió después de crear la muestra; regenere el piloto")
+                if sample_summary.get("record_count") != 200:
+                    raise WorkflowError("El resumen del muestreo no acredita exactamente 200 registros")
+                with pilot_path.open("r", encoding="utf-8-sig", newline="") as stream:
+                    manifest_rows = list(csv.DictReader(stream))
+                ids = [item.get("canonical_id", "").strip() for item in manifest_rows]
+                if len(ids) != 200 or any(not item for item in ids) or len(ids) != len(set(ids)):
+                    raise WorkflowError("El manifiesto del piloto debe contener exactamente 200 IDs únicos")
+                by_id = {row["canonical_id"]: row for row in rows}
+                missing = sorted(set(ids).difference(by_id))
+                if missing:
+                    raise WorkflowError("El manifiesto incluye IDs fuera del piloto elegible: " + ", ".join(missing[:5]))
+                rows = [by_id[item] for item in ids]
+                source_path = pilot_path
         if args.limit is not None:
             if args.limit < 1:
                 raise WorkflowError("--limit debe ser positivo")

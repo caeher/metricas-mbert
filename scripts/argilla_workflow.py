@@ -18,6 +18,7 @@ from typing import Any, Iterable
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_RECORDS = ROOT / "data/interim/canonical_records.csv"
 GUIDELINES_PATH = ROOT / "docs/annotation_guidelines_v2.md"
+ARGILLA_GUIDELINES_PATH = ROOT / "docs/annotation_guidelines_v2_argilla.md"
 SDK_VERSION = "2.8.0"
 SCHEMA_VERSION = "argilla-issue04-v1"
 TAXONOMY_VERSION = "2.0.0"
@@ -67,6 +68,9 @@ class Campaign:
 
 
 CAMPAIGNS = {
+    "pilot": Campaign(
+        "pilot-v1", "Piloto ciego estratificado de 200 textos reales", "cde_annotation_pilot_v1", False, False
+    ),
     "legacy_train_real": Campaign(
         "legacy-train-real", "Reales antiguos de train", "cde_legacy_train_real_tax2"
     ),
@@ -190,6 +194,14 @@ def campaign_rows(rows: Iterable[dict[str, str]], name: str) -> list[dict[str, s
             name == "historical_test_audit"
             and "data/raw/test.csv" in files
             and "data/raw/val.csv" not in files
+        ):
+            selected.append(row)
+        elif (
+            name == "pilot"
+            and not has_eval
+            and not is_diagnostic
+            and not synthetic
+            and ((has_train and not has_candidate) or (has_candidate and "candidate_unvalidated" in roles))
         ):
             selected.append(row)
         elif has_eval:
@@ -350,7 +362,7 @@ def load_suggestions(path: Path | None, campaign_name: str) -> dict[str, dict[st
 
 def make_argilla_settings(rg: Any, campaign_name: str, client: Any | None = None) -> Any:
     campaign = CAMPAIGNS[campaign_name]
-    guidelines = GUIDELINES_PATH.read_text(encoding="utf-8")
+    guidelines = ARGILLA_GUIDELINES_PATH.read_text(encoding="utf-8")
     campaign_options = [item.slug for item in CAMPAIGNS.values()]
     suggestion_guidance = (
         "Las etiquetas de origen y decisiones anteriores están ocultas. Si aparece una sugerencia, "
