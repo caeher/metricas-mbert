@@ -1,0 +1,51 @@
+{
+  "test_oficial": {
+    "archivo": "data/dataset/test.csv",
+    "sha256": "b63a04906bedda1befb41a7d147c582dc0ebee2f02f0cb3617ab461bdf932294",
+    "n": 460
+  },
+  "militares": {
+    "archivo": "data/evaluation/frozen_bank/militares.csv",
+    "sha256": "30b70a1056b76b25d3af6a2a9095010357fd2227c1d2a56bf3a945877ba5e173",
+    "n": 202,
+    "clases": {
+      "No Tóxico": 84,
+      "Lenguaje Ofensivo": 11,
+      "Discurso de Odio": 1,
+      "Amenazas/Violencia": 106
+    }
+  },
+  "xenofobia": {
+    "archivo": "data/evaluation/frozen_bank/xenofobia.csv",
+    "sha256": "1faeef4158b039aed40fae254234efeafc3782e2e969af85d37c047125175796",
+    "n": 236,
+    "clases": {
+      "No Tóxico": 71,
+      "Lenguaje Ofensivo": 64,
+      "Discurso de Odio": 94,
+      "Amenazas/Violencia": 7
+    }
+  },
+  "externo2": {
+    "archivo": "data/evaluation/frozen_bank/externo2.csv",
+    "sha256": "853cd689f0e365cf8cd2b3256a1022a83252ce6f1f466900f56870c1dd167eef",
+    "n": 647,
+    "clases": {
+      "No Tóxico": 558,
+      "Lenguaje Ofensivo": 86,
+      "Discurso de Odio": 2,
+      "Amenazas/Violencia": 1
+    }
+  },
+  "migrantes": {
+    "archivo": "data/evaluation/frozen_bank/migrantes.csv",
+    "sha256": "484d9581d280be0a3e0a37de77ef43ddddfc77f3e4688a3d619ed148b40339f4",
+    "n": 306,
+    "clases": {
+      "No Tóxico": 142,
+      "Lenguaje Ofensivo": 128,
+      "Discurso de Odio": 33,
+      "Amenazas/Violencia": 3
+    }
+  }
+}

@@ -16,12 +16,12 @@
     "The new sealed test has not yet been collected or reserved."
   ],
   "manifest_csv": "reports/splits/historical_split_manifest.csv",
-  "manifest_csv_sha256": "bb6589ba3c510d2b774f562980f1a9483f6ad97d29576b02aca397d8e1efe8d7",
+  "manifest_csv_sha256": "972ed007751361438d40f7565de6b8dbc0a10c283f15c941031d37780f16cb12",
   "manifest_version": "historical-snapshot-v1",
   "model_test_input": {
     "byte_identical_to": "data/raw/test.csv",
     "path": "data/processed/test.csv",
-    "sha256": "3239eb4ca59720e1a7aaa574ad38bad53db18c54f5e1424b381f68d1d0b2f1d6"
+    "sha256": "b63a04906bedda1befb41a7d147c582dc0ebee2f02f0cb3617ab461bdf932294"
   },
   "overlap_audit": {
     "adjudicated_near_duplicate_components": "not_available_for_legacy_split_csvs",
@@ -42,7 +42,7 @@
   },
   "policy_version": "2.0.0",
   "release_id": "historical_snapshot_2026-10-16_v1",
-  "row_count": 4431,
+  "row_count": 13848,
   "splits": {
     "development_legacy": {
       "author_group_count": 459,
@@ -65,30 +65,30 @@
       "records_missing_author_group": 0,
       "role": "development_legacy",
       "row_count": 459,
-      "sha256": "33d89bf3686c302e9f8896abe68f7d4fc2468690abcd5142c538e9934bb1a4c3",
+      "sha256": "7967228844f8715a40e24668a2eec9b99137d36f53b303715e2dbf07cf0de383",
       "thread_group_count": 0
     },
     "diagnostic_adversarial_v1": {
       "author_group_count": 0,
       "event_group_count": 0,
-      "label_assignment_sha256": "e4c3a9a946202be928c959899b117a67c032f3526ddc133d946ac26cd637d09d",
+      "label_assignment_sha256": "3e0d8e9c135a88b0c054339b4007f35febf0658b620baf5b827e713a0c07d36a",
       "label_counts": {
-        "0": 29,
-        "1": 26,
-        "2": 4,
-        "3": 16
+        "0": 78,
+        "1": 34,
+        "2": 10,
+        "3": 22
       },
       "origin_counts": {
-        "diagnostic_curated_or_generated": 75
+        "diagnostic_curated_or_generated": 144
       },
       "path": "data/raw/test_adversarial.csv",
       "platform_counts": {
-        "unknown": 75
+        "unknown": 144
       },
-      "records_missing_author_group": 75,
+      "records_missing_author_group": 144,
       "role": "diagnostic_adversarial_v1",
-      "row_count": 75,
-      "sha256": "2ec62fe39ee3fa62401b4d6d1387eecb2f79205d695c277075b8894cb677a510",
+      "row_count": 144,
+      "sha256": "8b58f59bf0136418a496a9b9efb6d3343e13bbd25331871f2819fcdfebdf4f17",
       "thread_group_count": 0
     },
     "diagnostic_adversarial_v2": {
@@ -135,39 +135,56 @@
       "records_missing_author_group": 0,
       "role": "historical_test",
       "row_count": 460,
-      "sha256": "3239eb4ca59720e1a7aaa574ad38bad53db18c54f5e1424b381f68d1d0b2f1d6",
+      "sha256": "b63a04906bedda1befb41a7d147c582dc0ebee2f02f0cb3617ab461bdf932294",
       "thread_group_count": 0
     },
     "train_legacy": {
-      "author_group_count": 2145,
+      "author_group_count": 2144,
       "event_group_count": 0,
-      "label_assignment_sha256": "6e597c85614f47e322319d7b802b24c0a0f92901427899d25d27f3aa5f648e6b",
+      "label_assignment_sha256": "c6188b8a90b18e3365896867a505b04c05c1d05296203e1ea0f72bd595e85a02",
       "label_counts": {
-        "0": 895,
-        "1": 878,
-        "2": 847,
-        "3": 673
+        "0": 5148,
+        "1": 3224,
+        "2": 2549,
+        "3": 1720
       },
       "origin_counts": {
-        "real": 2144,
-        "sintetico_amenaza_ofuscada": 138,
-        "sintetico_emoji_amenaza": 130,
+        "caso_dificil": 88,
+        "real": 2143,
+        "real_hilo": 6158,
+        "sintetico_amenaza_ofuscada": 130,
+        "sintetico_emoji_amenaza": 120,
         "sintetico_emoji_notoxico": 125,
         "sintetico_emoji_odio": 179,
         "sintetico_emoji_ofensivo": 112,
-        "sintetico_jerga_notoxico": 100,
+        "sintetico_jerga_notoxico": 96,
         "sintetico_nacionalidad_notoxico": 96,
-        "sintetico_relleno_emoji": 269
+        "sintetico_relleno_emoji": 267,
+        "v3_amenaza_control": 219,
+        "v3_amenaza_eufemismo": 68,
+        "v3_amenaza_ofuscada": 348,
+        "v3_emoji_benigno": 166,
+        "v3_emoji_clase1": 30,
+        "v3_emoji_clase2": 368,
+        "v3_emoji_clase3": 80,
+        "v3_jerga_control": 142,
+        "v3_jerga_notoxico": 202,
+        "v3_jerga_ofensivo": 44,
+        "v3_nacionalidad_notoxico": 168,
+        "v3_odio_grupo": 156,
+        "v3_odio_ofuscado": 310,
+        "v3_ofensivo_ofuscado": 826
       },
       "path": "data/raw/train.csv",
       "platform_counts": {
-        "Facebook": 1656,
-        "X": 1637
+        "Facebook": 1642,
+        "X": 7872,
+        "sintetico": 3127
       },
-      "records_missing_author_group": 0,
+      "records_missing_author_group": 9373,
       "role": "train_legacy",
-      "row_count": 3293,
-      "sha256": "3240683d9f5ecc9a8ac4764eede1bcd87db366405eac3ca309b66416acaabf6a",
+      "row_count": 12641,
+      "sha256": "eb619ece927b75334ac90c5052f2b908aa620b7c3a2efd127f8303d1d31dd807",
       "thread_group_count": 0
     }
   },

@@ -22,7 +22,7 @@ from typing import Any, Iterable
 from urllib.parse import urlsplit, urlunsplit
 
 
-SCRIPT_VERSION = "1.0.0"
+SCRIPT_VERSION = "1.1.0"
 LABEL_TEXT_TO_ID = {
     "no toxico": "0",
     "no tóxico": "0",
@@ -51,6 +51,16 @@ REFERENCE_SOURCES = {
     "data/processed/corpus_completo.csv": "byte_identical_copy",
 }
 SOURCES = {**CORE_SOURCES, **CANDIDATE_SOURCES, **BATTERY_SOURCES, **REFERENCE_SOURCES}
+
+CANONICAL_IMPORT_ROLES = frozenset(
+    {
+        "core_split",
+        "candidate_unvalidated",
+        "diagnostic_battery",
+        "frozen_evaluation_bank",
+        "candidate_unlabeled_thread",
+    }
+)
 
 
 def sha256(value: str | bytes) -> str:
@@ -106,6 +116,21 @@ def canonical_label(value: str | None) -> str:
     if raw in {"0", "1", "2", "3"}:
         return raw
     return LABEL_TEXT_TO_ID.get(normalize_text(raw), "")
+
+
+def classify_core_origin(origin_raw: str) -> tuple[str, str]:
+    """Map dataset v1.8 `origen` values to origin_type and origin_original."""
+    raw = (origin_raw or "").strip()
+    lowered = raw.casefold()
+    if lowered.startswith("sintetico"):
+        return "synthetic", raw or "synthetic"
+    if lowered.startswith("v3_"):
+        return "synthetic_v3", raw or "synthetic_v3"
+    if lowered in {"real", "real_hilo", "caso_dificil"}:
+        return "real", raw or "real"
+    if not raw:
+        return "unknown", "unknown"
+    return "unknown", raw
 
 
 def parse_date(value: str | None) -> tuple[str, str]:
@@ -221,18 +246,56 @@ def make_observation(
         label = get_field(row, "label", "clase")
         label_class = get_field(row, "clase") or label
         origin_raw = get_field(row, "origen")
-        origin = "synthetic" if origin_raw.casefold().startswith("sintetico") else ("real" if origin_raw.casefold() == "real" else "unknown")
+        origin, origin_original = classify_core_origin(origin_raw)
         template = get_field(row, "plantilla_id")
-        validation = "not_recorded"
+        validation = get_field(row, "validado") or "not_recorded"
         readiness = "not_recorded"
         annotation_status = "legacy_split_label_unreviewed"
-        provenance_status = "synthetic_template_id_present" if origin == "synthetic" and template else (
-            "synthetic_template_id_missing" if origin == "synthetic" else "dataset_source_metadata_no_publication_url"
+        provenance_status = "synthetic_template_id_present" if origin in {"synthetic", "synthetic_v3"} and template else (
+            "synthetic_template_id_missing" if origin in {"synthetic", "synthetic_v3"} else "dataset_source_metadata_no_publication_url"
         )
         extras = {}
-        for name in ("Grupos_Afectados", "subclase"):
-            if row.get(name):
+        for name in ("Grupos_Afectados", "subclase", "recolector", "fuera_de_sv", "validado", "p0", "p1", "p2", "p3"):
+            if row.get(name, "") not in ("", None):
                 extras[name] = row[name]
+    elif role == "frozen_evaluation_bank":
+        source_id = get_field(row, "ID") or get_field(row, "hilo")
+        text = get_field(row, "texto_original", "texto")
+        text_versions = {key: row.get(key, "") for key in ("texto_original", "texto") if row.get(key, "")}
+        platform = "X"
+        date_raw = ""
+        author = ""
+        thread_group = get_field(row, "hilo")
+        url = ""
+        label = get_field(row, "label", "clase")
+        label_class = label
+        origin_raw = "frozen_evaluation_bank"
+        origin = "real"
+        template = ""
+        validation = "frozen_bank_manifest"
+        readiness = "frozen_evaluation_only"
+        annotation_status = "frozen_bank_label_unreviewed"
+        provenance_status = "frozen_bank_never_trainable"
+        extras = {key: row.get(key, "") for key in ("p0", "p1", "p2", "p3", "hilo") if row.get(key, "") not in ("", None)}
+    elif role == "candidate_unlabeled_thread":
+        source_id = get_field(row, "ID") or f"{get_field(row, 'hilo')}-{row_number}"
+        text = get_field(row, "texto", "Texto", "texto_original", "Texto_Original")
+        text_versions = {"texto": text} if text else {}
+        platform = "X"
+        date_raw = ""
+        author = ""
+        thread_group = get_field(row, "hilo", "thread_id", "thread_group_id")
+        url = get_field(row, "URL_Original", "url")
+        label = ""
+        label_class = ""
+        origin_raw = "unlabeled_thread_acquisition"
+        origin = "real"
+        template = ""
+        validation = "unlabeled"
+        readiness = "not_ready_for_training"
+        annotation_status = "unlabeled_acquisition_candidate"
+        provenance_status = "thread_source_without_label"
+        extras = {key: row.get(key, "") for key in row if key not in {"texto", "Texto", "texto_original", "ID", "hilo"} and row.get(key, "")}
     elif role == "candidate_unvalidated":
         source_id = get_field(row, "ID")
         text = get_field(row, "Texto_Original", "texto_original")
@@ -258,15 +321,15 @@ def make_observation(
         }
     else:
         source_id = get_field(row, "ID")
-        text = get_field(row, "texto_original", "Texto_Original")
-        text_versions = {key: row.get(key, "") for key in ("texto_original", "texto_modelo") if row.get(key, "")}
+        text = get_field(row, "texto_original", "Texto_Original", "texto", "text")
+        text_versions = {key: row.get(key, "") for key in ("texto_original", "texto_modelo", "texto", "text") if row.get(key, "")}
         platform = get_field(row, "Plataforma")
         date_raw = get_field(row, "fecha")
         author = get_field(row, "Usuario_ID_Anonimizado")
-        thread_group = get_field(row, "thread_group_id", "thread_id", "hilo_id", "conversation_id", "id_conversacion", "reply_to_id", "in_reply_to_status_id")
+        thread_group = get_field(row, "thread_group_id", "thread_id", "hilo_id", "conversation_id", "id_conversacion", "reply_to_id", "in_reply_to_status_id", "grupo_de_prueba", "subgrupo")
         url = get_field(row, "URL_Original")
-        label = get_field(row, "label", "clase")
-        label_class = get_field(row, "clase") or label
+        label = get_field(row, "label", "label_esperado", "clase")
+        label_class = get_field(row, "clase", "resultado_esperado") or label
         origin_raw = "curated_or_generated_diagnostic"
         origin = "synthetic"
         template = get_field(row, "plantilla_id", "base", "grupo")
@@ -296,7 +359,7 @@ def make_observation(
         "text_versions_json": json.dumps(text_versions, ensure_ascii=False, sort_keys=True),
         "platform_original": platform,
         "platform_canonical": canonical_platform(platform),
-        "origin_original": origin_raw,
+        "origin_original": origin_raw if role != "core_split" else origin_original,
         "origin_type": origin,
         "label_original": raw_label,
         "label_original_class": label_class,
@@ -388,7 +451,7 @@ def normalize_source_record(root: Path, rel: str, role: str) -> tuple[list[dict[
             bool(o["label_provisional_id"] and canonical_label(o["label_original_class"]) and o["label_provisional_id"] != canonical_label(o["label_original_class"]))
             for o in observations
         ),
-        "imported_into_canonical": role in {"core_split", "candidate_unvalidated", "diagnostic_battery"},
+        "imported_into_canonical": role in CANONICAL_IMPORT_ROLES,
     }
     return observations, inventory
 
@@ -455,6 +518,9 @@ def build_canonical_entities(observations: list[dict[str, Any]]) -> tuple[list[d
         split_members = [m for m in members if m["source_role"] == "core_split"]
         candidate_members = [m for m in members if m["source_role"] == "candidate_unvalidated"]
         battery_members = [m for m in members if m["source_role"] == "diagnostic_battery"]
+        frozen_members = [m for m in members if m["source_role"] == "frozen_evaluation_bank"]
+        unlabeled_members = [m for m in members if m["source_role"] == "candidate_unlabeled_thread"]
+        train_members = [m for m in split_members if m["source_file"].endswith("/train.csv")]
         has_label_conflict = len(labels) > 1
         exact_text_hashes = sorted({m["text_sha256"] for m in members if m["text_sha256"]})
         publication_hashes = sorted({m["publication_sha256"] for m in members if m["publication_sha256"]})
@@ -479,9 +545,18 @@ def build_canonical_entities(observations: list[dict[str, Any]]) -> tuple[list[d
         if has_label_conflict:
             disposition = "human_adjudication_required"
             annotation_status = "conflicting_provisional_labels"
+        elif train_members and frozen_members:
+            disposition = "human_adjudication_required"
+            annotation_status = "train_frozen_bank_text_overlap"
         elif candidate_members:
             disposition = "quarantine_unvalidated_candidate"
             annotation_status = "unvalidated_source_label"
+        elif unlabeled_members and not split_members and not frozen_members:
+            disposition = "quarantine_unlabeled_acquisition"
+            annotation_status = "unlabeled_acquisition_candidate"
+        elif frozen_members and not split_members:
+            disposition = "frozen_evaluation_bank_only"
+            annotation_status = "frozen_bank_label_unreviewed"
         elif battery_members and not split_members:
             disposition = "diagnostic_only"
             annotation_status = "diagnostic_label_unreviewed"
@@ -740,6 +815,59 @@ def geography_summary(observations: list[dict[str, Any]]) -> list[dict[str, Any]
     return rows
 
 
+def discover_extra_sources(root: Path) -> list[tuple[str, str]]:
+    """Return (relative_path, role) for frozen bank and unlabeled thread CSVs."""
+    discovered: list[tuple[str, str]] = []
+    frozen_dir = root / "data/evaluation/frozen_bank"
+    if frozen_dir.is_dir():
+        for path in sorted(frozen_dir.glob("*.csv")):
+            discovered.append((path.relative_to(root).as_posix(), "frozen_evaluation_bank"))
+    threads_dir = root / "data/sources/x_threads"
+    if threads_dir.is_dir():
+        for path in sorted(threads_dir.rglob("*.csv")):
+            discovered.append((path.relative_to(root).as_posix(), "candidate_unlabeled_thread"))
+    return discovered
+
+
+def compute_train_holdout_leakage(observations: list[dict[str, Any]]) -> dict[str, Any]:
+    train_observations = [
+        observation
+        for observation in observations
+        if observation["source_role"] == "core_split" and observation["source_file"].endswith("/train.csv")
+    ]
+    train_hashes = {o["text_sha256"] for o in train_observations if o["text_sha256"]}
+    train_raw_texts = {o["text_original"] for o in train_observations if o["text_original"]}
+
+    def holdout_bucket(observation: dict[str, Any]) -> str | None:
+        role = observation["source_role"]
+        stem = Path(observation["source_file"]).stem
+        if role == "core_split" and stem in {"val", "test"}:
+            return stem
+        if role == "diagnostic_battery":
+            return stem
+        if role == "frozen_evaluation_bank":
+            return f"frozen_bank:{stem}"
+        return None
+
+    normalized_counts: Counter[str] = Counter()
+    raw_counts: Counter[str] = Counter()
+    for observation in observations:
+        bucket = holdout_bucket(observation)
+        if not bucket:
+            continue
+        if observation["text_sha256"] and observation["text_sha256"] in train_hashes:
+            normalized_counts[bucket] += 1
+        if observation["text_original"] and observation["text_original"] in train_raw_texts:
+            raw_counts[bucket] += 1
+    return {
+        "normalized_text_overlap_counts": dict(sorted(normalized_counts.items())),
+        "raw_text_overlap_counts": dict(sorted(raw_counts.items())),
+        "normalized_overlap_total": int(sum(normalized_counts.values())),
+        "raw_overlap_total": int(sum(raw_counts.values())),
+        "expected_normalized_overlap_total": 0,
+    }
+
+
 def write_csv(path: Path, rows: list[dict[str, Any]], fieldnames: list[str] | None = None) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     if fieldnames is None:
@@ -763,8 +891,22 @@ def run_audit(root: Path, report_dir: Path, interim_dir: Path, similarity_thresh
         parsed_role = "core_split" if role in {"redundant_corpus_view", "byte_identical_copy"} else role
         rows, entry = normalize_source_record(root, rel_path, parsed_role)
         entry["source_role"] = role
-        entry["imported_into_canonical"] = role in {"core_split", "candidate_unvalidated", "diagnostic_battery"}
-        if role in {"core_split", "candidate_unvalidated", "diagnostic_battery"}:
+        entry["imported_into_canonical"] = role in CANONICAL_IMPORT_ROLES
+        if role in CANONICAL_IMPORT_ROLES:
+            observations.extend(rows)
+        inventory.append(entry)
+        loaded[rel_path] = rows
+
+    for rel_path, role in discover_extra_sources(root):
+        if rel_path in loaded or any(entry["source_file"] == rel_path for entry in inventory):
+            continue
+        path = root / rel_path
+        if not path.exists():
+            continue
+        rows, entry = normalize_source_record(root, rel_path, role)
+        entry["source_role"] = role
+        entry["imported_into_canonical"] = role in CANONICAL_IMPORT_ROLES
+        if role in CANONICAL_IMPORT_ROLES:
             observations.extend(rows)
         inventory.append(entry)
         loaded[rel_path] = rows
@@ -806,6 +948,40 @@ def run_audit(root: Path, report_dir: Path, interim_dir: Path, similarity_thresh
                 "source_record_refs_json": json.dumps([observation["source_record_ref"]], ensure_ascii=False),
                 "disposition": "excluded_from_trainable_corpus_pending_validation",
                 "human_adjudication_status": "pending_source_validation",
+                "human_resolution_label": "",
+                "human_resolved_by": "",
+                "human_resolved_at": "",
+                "human_rationale": "",
+            })
+        elif observation["source_role"] == "frozen_evaluation_bank":
+            duplicate_ledger.append({
+                "ledger_id": f"EXCL-{sha256(observation['source_record_ref'])[:16]}",
+                "canonical_id": "",
+                "event_type": "frozen_evaluation_bank_source",
+                "match_dimensions": "[]",
+                "member_count": 1,
+                "label_originals_json": json.dumps([observation["label_original"]], ensure_ascii=False),
+                "provisional_label_ids_json": json.dumps([observation["label_provisional_id"]] if observation["label_provisional_id"] else [], ensure_ascii=False),
+                "source_record_refs_json": json.dumps([observation["source_record_ref"]], ensure_ascii=False),
+                "disposition": "excluded_from_trainable_corpus_frozen_bank",
+                "human_adjudication_status": "not_applicable",
+                "human_resolution_label": "",
+                "human_resolved_by": "",
+                "human_resolved_at": "",
+                "human_rationale": "",
+            })
+        elif observation["source_role"] == "candidate_unlabeled_thread":
+            duplicate_ledger.append({
+                "ledger_id": f"EXCL-{sha256(observation['source_record_ref'])[:16]}",
+                "canonical_id": "",
+                "event_type": "unlabeled_thread_acquisition_source",
+                "match_dimensions": "[]",
+                "member_count": 1,
+                "label_originals_json": "[]",
+                "provisional_label_ids_json": "[]",
+                "source_record_refs_json": json.dumps([observation["source_record_ref"]], ensure_ascii=False),
+                "disposition": "excluded_from_trainable_corpus_pending_annotation",
+                "human_adjudication_status": "pending_annotation",
                 "human_resolution_label": "",
                 "human_resolved_by": "",
                 "human_resolved_at": "",
@@ -897,6 +1073,9 @@ def run_audit(root: Path, report_dir: Path, interim_dir: Path, similarity_thresh
     core = [o for o in observations if o["source_role"] == "core_split"]
     candidate = [o for o in observations if o["source_role"] == "candidate_unvalidated"]
     batteries = [o for o in observations if o["source_role"] == "diagnostic_battery"]
+    frozen_bank = [o for o in observations if o["source_role"] == "frozen_evaluation_bank"]
+    unlabeled_threads = [o for o in observations if o["source_role"] == "candidate_unlabeled_thread"]
+    leakages = compute_train_holdout_leakage(observations)
     conflict_rows = [row for row in duplicate_ledger if row["event_type"] == "label_conflict"]
     counts_by_class = group_counts(o["label_provisional_id"] for o in core)
     split_text_hashes = {o["text_sha256"] for o in core if o["text_sha256"]}
@@ -936,6 +1115,18 @@ def run_audit(root: Path, report_dir: Path, interim_dir: Path, similarity_thresh
             ),
         },
         "batteries": {"observations": len(batteries), "source_count": len(BATTERY_SOURCES), "diagnostic_only": True},
+        "frozen_evaluation_bank": {
+            "observations": len(frozen_bank),
+            "provisional_label_id_counts": group_counts(o["label_provisional_id"] for o in frozen_bank),
+            "thread_group_counts": group_counts(o["thread_group_id"] for o in frozen_bank),
+            "never_trainable": True,
+        },
+        "unlabeled_thread_candidates": {
+            "observations": len(unlabeled_threads),
+            "thread_group_counts": group_counts(o["thread_group_id"] for o in unlabeled_threads),
+            "source_file_counts": group_counts(o["source_file"] for o in unlabeled_threads),
+        },
+        "train_holdout_leakage": leakages,
         "canonical_entity_count": len(entities),
         "canonical_disposition_counts": group_counts(row["record_disposition"] for row in entities),
         "exact_duplicate_or_publication_groups": sum(row["event_type"] == "exact_text_duplicate" or row["event_type"] == "duplicate_publication_url" for row in duplicate_ledger),

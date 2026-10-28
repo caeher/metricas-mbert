@@ -67,6 +67,12 @@ def load_b2_metadata() -> dict[str, Any]:
 def get_b2_class_weights() -> dict[int, float]:
     """Pesos de clase fijos del dataset B2 (metadata.json), no recalculados."""
     metadata = load_b2_metadata()
+    version = str(metadata.get("version", "")).casefold()
+    if version not in {"b2", "1.1.0"} and "pesos_clase" not in metadata:
+        raise ValueError(
+            "metadata.json no trae pesos B2 (version "
+            f"{metadata.get('version')!r}). Use get_class_weights(train_df) para v1.8+."
+        )
     settings = load_settings()
     names = settings["labels"]["names"]
     pesos = metadata["pesos_clase"]

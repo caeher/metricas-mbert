@@ -98,9 +98,19 @@ def build_records(role: str, relative_path: str) -> tuple[list[dict[str, str]], 
             raise ValueError(f"Duplicate record ID {record_id!r} in {relative_path}")
         seen_ids.add(record_id)
 
-        text = row.get("texto_original") or row.get("Texto_Original") or row.get("text") or ""
-        label = (row.get("label") or row.get("clase") or row.get("Clase_Toxicidad") or "").strip()
-        if label not in LABEL_NAMES:
+        text = row.get("texto_original") or row.get("Texto_Original") or row.get("text") or row.get("texto") or ""
+        label = (
+            row.get("label")
+            or row.get("clase")
+            or row.get("Clase_Toxicidad")
+            or row.get("label_esperado")
+            or ""
+        ).strip()
+        if label in LABEL_NAMES:
+            label_id = label
+        elif label in LABEL_NAMES.values():
+            label_id = next(key for key, name in LABEL_NAMES.items() if name == label)
+        else:
             raise ValueError(f"Unexpected/missing label {label!r} in {relative_path}, record {record_id}")
         platform = (row.get("Plataforma") or row.get("plataforma") or "").strip()
         origin = (row.get("origen") or "real").strip()
@@ -122,8 +132,8 @@ def build_records(role: str, relative_path: str) -> tuple[list[dict[str, str]], 
                 "source_file_sha256": source_hash,
                 "record_id": record_id,
                 "origin": origin,
-                "label_id": label,
-                "label_name": LABEL_NAMES[label],
+                "label_id": label_id,
+                "label_name": LABEL_NAMES[label_id],
                 "label_version": (
                     "diagnostic_curated_not_independent"
                     if role.startswith("diagnostic_")
@@ -141,10 +151,10 @@ def build_records(role: str, relative_path: str) -> tuple[list[dict[str, str]], 
                 "source_row_number": str(line_no - 1),
             }
         )
-        label_counts[label] += 1
+        label_counts[label_id] += 1
+        label_pairs.append((record_id, label_id))
         platform_counts[canonical_platform(platform) or "unknown"] += 1
         origin_counts[origin or "unknown"] += 1
-        label_pairs.append((record_id, label))
 
     summary = {
         "path": relative_path.replace("\\", "/"),

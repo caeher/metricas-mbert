@@ -1,0 +1,59 @@
+{
+  "dataset_version": "1.8.0",
+  "frozen_bank_manifest": {
+    "files": [
+      {
+        "actual": "30b70a1056b76b25d3af6a2a9095010357fd2227c1d2a56bf3a945877ba5e173",
+        "expected": "30b70a1056b76b25d3af6a2a9095010357fd2227c1d2a56bf3a945877ba5e173",
+        "file": "militares.csv",
+        "sha256_match": true
+      },
+      {
+        "actual": "1faeef4158b039aed40fae254234efeafc3782e2e969af85d37c047125175796",
+        "expected": "1faeef4158b039aed40fae254234efeafc3782e2e969af85d37c047125175796",
+        "file": "xenofobia.csv",
+        "sha256_match": true
+      },
+      {
+        "actual": "853cd689f0e365cf8cd2b3256a1022a83252ce6f1f466900f56870c1dd167eef",
+        "expected": "853cd689f0e365cf8cd2b3256a1022a83252ce6f1f466900f56870c1dd167eef",
+        "file": "externo2.csv",
+        "sha256_match": true
+      },
+      {
+        "actual": "484d9581d280be0a3e0a37de77ef43ddddfc77f3e4688a3d619ed148b40339f4",
+        "expected": "484d9581d280be0a3e0a37de77ef43ddddfc77f3e4688a3d619ed148b40339f4",
+        "file": "migrantes.csv",
+        "sha256_match": true
+      }
+    ],
+    "ok": true
+  },
+  "historical_val_test": {
+    "mismatch_count": 0,
+    "mismatches": [],
+    "ok": true,
+    "reference_dir": "C:\\Users\\user6921\\Desktop\\cde-ml\\cde-project-ml-2026\\data\\history\\v1.3.1",
+    "test_ids": 460,
+    "val_ids": 459
+  },
+  "leakage_ok": true,
+  "ok": true,
+  "row_counts_ok": true,
+  "sync_manifest": {
+    "dataset_version": "1.8.0",
+    "mismatches": [],
+    "ok": true
+  },
+  "train_holdout_leakage": {
+    "normalized_overlap": 0,
+    "raw_overlap": 0
+  },
+  "train_por_clase_observed": {
+    "Amenazas/Violencia": 1720,
+    "Discurso de Odio": 2549,
+    "Lenguaje Ofensivo": 3224,
+    "No Tóxico": 5148
+  },
+  "train_por_clase_ok": true
+}

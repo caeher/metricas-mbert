@@ -165,7 +165,10 @@ def source_roles(row: dict[str, str]) -> set[str]:
 
 def is_synthetic(row: dict[str, str]) -> bool:
     origins = [origin.casefold() for origin in json_list(row, "origin_types_json")]
-    return any(origin.startswith(("sintetico", "synthetic")) for origin in origins)
+    return any(
+        origin.startswith(("sintetico", "synthetic")) or origin == "synthetic_v3"
+        for origin in origins
+    )
 
 
 def campaign_rows(rows: Iterable[dict[str, str]], name: str) -> list[dict[str, str]]:

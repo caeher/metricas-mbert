@@ -1,6 +1,22 @@
-# Dataset B2 — Corpus Salvadoreño de Toxicidad
+# Dataset — corpus salvadoreño de toxicidad
 
-Versión corregida y ampliada del dataset v1. **Para reentrenar mBERT y XLM-RoBERTa.**
+**Vigente:** dataset **v1.8.0** (`metadata.json`, train **12 641** / val **459** / test **460**).
+Sincronización reproducible desde el repo hermano:
+
+```powershell
+python scripts/sync_cde_dataset.py
+python scripts/validate_dataset_integration.py
+python scripts/audit_dataset_sources.py
+```
+
+La sección **B2** más abajo describe el corte histórico (3 293 train) usado en métricas
+mbert/XLM-R antiguas; val/test siguen siendo comparables entre B2 y v1.8.0.
+
+---
+
+# Dataset B2 — Corpus Salvadoreño de Toxicidad (histórico)
+
+Versión corregida y ampliada del dataset v1. **Para reentrenar mBERT y XLM-RoBERTa (corte 2026).**
 
 ---
 

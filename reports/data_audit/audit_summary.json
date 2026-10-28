@@ -1,9 +1,9 @@
 {
   "all_labels_final": false,
-  "author_thread_template_relation_groups": 223,
+  "author_thread_template_relation_groups": 526,
   "batteries": {
     "diagnostic_only": true,
-    "observations": 219,
+    "observations": 288,
     "source_count": 2
   },
   "candidate_sources": {
@@ -25,45 +25,101 @@
     }
   },
   "canonical_disposition_counts": {
-    "diagnostic_only": 104,
+    "diagnostic_only": 144,
+    "frozen_evaluation_bank_only": 1390,
     "human_adjudication_required": 4,
-    "legacy_split_label_unreviewed": 4212,
+    "legacy_split_label_unreviewed": 13559,
+    "quarantine_unlabeled_acquisition": 243,
     "quarantine_unvalidated_candidate": 2320
   },
-  "canonical_entity_count": 6640,
+  "canonical_entity_count": 17660,
   "core_splits": {
     "origin_type_counts": {
-      "real": 3063,
-      "synthetic": 1149
+      "real": 9308,
+      "synthetic": 1125,
+      "synthetic_v3": 3127
     },
     "provisional_label_id_counts": {
-      "0": 1140,
-      "1": 1196,
-      "2": 1036,
-      "3": 840
+      "0": 5393,
+      "1": 3542,
+      "2": 2738,
+      "3": 1887
     },
     "test": 460,
-    "total": 4212,
-    "train": 3293,
+    "total": 13560,
+    "train": 12641,
     "val": 459
   },
   "corpus_full_view": "same IDs and all fields as the union of train/val/test; imported zero extra rows",
   "date_audit_issue_counts": {
-    "collection_date_precedes_x_publication_date": 445
+    "collection_date_precedes_x_publication_date": 445,
+    "missing_date": 18557
   },
   "deduplication_ledger_event_counts": {
     "duplicate_publication_url": 1,
-    "exact_text_duplicate": 83,
+    "exact_text_duplicate": 7698,
+    "frozen_evaluation_bank_source": 1391,
     "label_conflict": 4,
     "source_view_not_imported": 5,
+    "unlabeled_thread_acquisition_source": 7793,
     "unvalidated_candidate_source": 2328
   },
   "empty_text_observations": 0,
-  "encoding_suspect_observation_count": 510,
-  "exact_duplicate_or_publication_groups": 84,
+  "encoding_suspect_observation_count": 535,
+  "exact_duplicate_or_publication_groups": 7699,
   "exact_match_limit": "Zero exact matches against historical splits does not establish absence of near-duplicates, URL/post overlap, author/thread leakage, or template leakage.",
   "exact_text_label_conflict_count": 3,
+  "frozen_evaluation_bank": {
+    "never_trainable": true,
+    "observations": 1391,
+    "provisional_label_id_counts": {
+      "0": 855,
+      "1": 289,
+      "2": 130,
+      "3": 117
+    },
+    "thread_group_counts": {
+      "bachelet": 235,
+      "homicidios": 197,
+      "migrantes": 306,
+      "militares_pandilleros": 202,
+      "selecta": 215,
+      "xenofobia_federico": 236
+    }
+  },
   "geography_and_language_by_source": {
+    "data/evaluation/frozen_bank/externo2.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 647,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 647
+    },
+    "data/evaluation/frozen_bank/migrantes.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 306,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 306
+    },
+    "data/evaluation/frozen_bank/militares.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 202,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 202
+    },
+    "data/evaluation/frozen_bank/xenofobia.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 236,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 236
+    },
     "data/processed/test_adversarial_144.csv": {
       "country_confirmed": 0,
       "country_inferred": 0,
@@ -91,10 +147,10 @@
     "data/raw/test_adversarial.csv": {
       "country_confirmed": 0,
       "country_inferred": 0,
-      "country_unknown": 75,
+      "country_unknown": 144,
       "dialect_confirmed": 0,
       "dialect_inferred": 0,
-      "dialect_unknown": 75
+      "dialect_unknown": 144
     },
     "data/raw/thenewdata_X.csv": {
       "country_confirmed": 0,
@@ -107,10 +163,10 @@
     "data/raw/train.csv": {
       "country_confirmed": 0,
       "country_inferred": 0,
-      "country_unknown": 3293,
+      "country_unknown": 12641,
       "dialect_confirmed": 0,
       "dialect_inferred": 0,
-      "dialect_unknown": 3293
+      "dialect_unknown": 12641
     },
     "data/raw/val.csv": {
       "country_confirmed": 0,
@@ -119,6 +175,70 @@
       "dialect_confirmed": 0,
       "dialect_inferred": 0,
       "dialect_unknown": 459
+    },
+    "data/sources/x_threads/hilos_1_a_5_limpios_todos.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 1320,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 1320
+    },
+    "data/sources/x_threads/hilos_nuevos_sin_etiquetar.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 536,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 536
+    },
+    "data/sources/x_threads/migrantes_sin_etiquetar.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 308,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 308
+    },
+    "data/sources/x_threads/phase1/fase1_ronda1_sin_etiquetar.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 2115,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 2115
+    },
+    "data/sources/x_threads/phase1/fase1_ronda2_sin_etiquetar.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 1387,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 1387
+    },
+    "data/sources/x_threads/test_externo_2_sin_etiquetar.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 650,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 650
+    },
+    "data/sources/x_threads/test_externo_3_sin_etiquetar.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 590,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 590
+    },
+    "data/sources/x_threads/test_externo_4_sin_etiquetar.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 887,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 887
     }
   },
   "known_limitations": [
@@ -142,20 +262,92 @@
     }
   },
   "same_publication_text_version_label_conflict_count": 1,
-  "script_version": "1.0.0",
-  "similarity_candidate_count": 1728,
+  "script_version": "1.1.0",
+  "similarity_candidate_count": 1365,
   "source_row_counts": {
+    "data/evaluation/frozen_bank/externo2.csv": 647,
+    "data/evaluation/frozen_bank/migrantes.csv": 306,
+    "data/evaluation/frozen_bank/militares.csv": 202,
+    "data/evaluation/frozen_bank/xenofobia.csv": 236,
     "data/processed/corpus_completo.csv": 4212,
     "data/processed/test.csv": 460,
     "data/processed/test_adversarial_144.csv": 144,
-    "data/processed/train.csv": 3293,
+    "data/processed/train.csv": 12641,
     "data/processed/val.csv": 459,
-    "data/raw/corpus_completo.csv": 4212,
+    "data/raw/corpus_completo.csv": 13560,
     "data/raw/lenguaje_ofensivo.csv": 1328,
     "data/raw/test.csv": 460,
-    "data/raw/test_adversarial.csv": 75,
+    "data/raw/test_adversarial.csv": 144,
     "data/raw/thenewdata_X.csv": 1000,
-    "data/raw/train.csv": 3293,
-    "data/raw/val.csv": 459
+    "data/raw/train.csv": 12641,
+    "data/raw/val.csv": 459,
+    "data/sources/x_threads/hilos_1_a_5_limpios_todos.csv": 1320,
+    "data/sources/x_threads/hilos_nuevos_sin_etiquetar.csv": 536,
+    "data/sources/x_threads/migrantes_sin_etiquetar.csv": 308,
+    "data/sources/x_threads/phase1/fase1_ronda1_sin_etiquetar.csv": 2115,
+    "data/sources/x_threads/phase1/fase1_ronda2_sin_etiquetar.csv": 1387,
+    "data/sources/x_threads/test_externo_2_sin_etiquetar.csv": 650,
+    "data/sources/x_threads/test_externo_3_sin_etiquetar.csv": 590,
+    "data/sources/x_threads/test_externo_4_sin_etiquetar.csv": 887
+  },
+  "train_holdout_leakage": {
+    "expected_normalized_overlap_total": 0,
+    "normalized_overlap_total": 0,
+    "normalized_text_overlap_counts": {},
+    "raw_overlap_total": 0,
+    "raw_text_overlap_counts": {}
+  },
+  "unlabeled_thread_candidates": {
+    "observations": 7793,
+    "source_file_counts": {
+      "data/sources/x_threads/hilos_1_a_5_limpios_todos.csv": 1320,
+      "data/sources/x_threads/hilos_nuevos_sin_etiquetar.csv": 536,
+      "data/sources/x_threads/migrantes_sin_etiquetar.csv": 308,
+      "data/sources/x_threads/phase1/fase1_ronda1_sin_etiquetar.csv": 2115,
+      "data/sources/x_threads/phase1/fase1_ronda2_sin_etiquetar.csv": 1387,
+      "data/sources/x_threads/test_externo_2_sin_etiquetar.csv": 650,
+      "data/sources/x_threads/test_externo_3_sin_etiquetar.csv": 590,
+      "data/sources/x_threads/test_externo_4_sin_etiquetar.csv": 887
+    },
+    "thread_group_counts": {
+      "bachelet": 236,
+      "canje": 189,
+      "cecot": 236,
+      "conductor_25_ninos": 224,
+      "cubanos_rusos": 149,
+      "deportacion_senora": 274,
+      "espana_regulariza": 276,
+      "feminismo": 288,
+      "feministas_ganaron": 210,
+      "homicidios": 198,
+      "infierno_tierra": 194,
+      "invasion": 218,
+      "lgbt_bandera": 131,
+      "lgbt_ferriz": 285,
+      "lgbt_palestina_tv": 197,
+      "lgbt_ultimahora": 212,
+      "lgbt_vandalismo_cdmx": 239,
+      "migrantes": 308,
+      "migrantes_inmigracion": 184,
+      "militares_pandilleros": 203,
+      "miss_el_salvador": 255,
+      "mujeres_iran": 56,
+      "musulman_berlin": 255,
+      "orgullo_los_angeles": 108,
+      "pandilleros_traslado": 193,
+      "paraguayos_terreno": 282,
+      "presos_90mil": 122,
+      "racismo": 163,
+      "racismo_orgullo": 306,
+      "repatriados": 134,
+      "salvadoreno_bukele": 44,
+      "selecta": 216,
+      "sicarios_rusos_cubanos": 226,
+      "trans": 143,
+      "venezolanos2": 230,
+      "violadores_pena_muerte": 179,
+      "wokismo_occidente": 192,
+      "xenofobia_federico": 238
+    }
   }
 }

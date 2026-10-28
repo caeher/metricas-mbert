@@ -1,76 +1,145 @@
-﻿ID,grupo,base,variante,texto_original,texto_modelo,clase,label
-ADV-0001,A. Ofuscación de groserías,Sos una puta barata,original,Sos una puta barata,Sos una puta barata,Lenguaje Ofensivo,1
-ADV-0002,A. Ofuscación de groserías,Sos una puta barata,asterisco,Sos una p*ta barata,Sos una p*ta barata,Lenguaje Ofensivo,1
-ADV-0003,A. Ofuscación de groserías,Sos una puta barata,arroba,Sos una put@ barata,Sos una put@ barata,Lenguaje Ofensivo,1
-ADV-0004,A. Ofuscación de groserías,Sos una puta barata,numeral,Sos una p#ta barata,Sos una p#ta barata,Lenguaje Ofensivo,1
-ADV-0005,A. Ofuscación de groserías,Sos una puta barata,leetspeak,Sos una pu74 barata,Sos una pu74 barata,Lenguaje Ofensivo,1
-ADV-0006,A. Ofuscación de groserías,Sos una puta barata,vocal_v,Sos una pvta barata,Sos una pvta barata,Lenguaje Ofensivo,1
-ADV-0007,A. Ofuscación de groserías,Sos una puta barata,espaciado,Sos una p u t a barata,Sos una p u t a barata,Lenguaje Ofensivo,1
-ADV-0008,A. Ofuscación de groserías,Sos una puta barata,repeticion,Sos una puuuta barata,Sos una puuuta barata,Lenguaje Ofensivo,1
-ADV-0009,A. Ofuscación de groserías,Qué mierda de gente,original,Qué mierda de gente,Qué mierda de gente,Lenguaje Ofensivo,1
-ADV-0010,A. Ofuscación de groserías,Qué mierda de gente,leetspeak,Qué m13rda de gente,Qué m13rda de gente,Lenguaje Ofensivo,1
-ADV-0011,A. Ofuscación de groserías,Qué mierda de gente,asterisco,Qué m*erda de gente,Qué m*erda de gente,Lenguaje Ofensivo,1
-ADV-0012,A. Ofuscación de groserías,Qué mierda de gente,arroba,Qué mierd@ de gente,Qué mierd@ de gente,Lenguaje Ofensivo,1
-ADV-0013,A. Ofuscación de groserías,Andate a la verga pendejo,original,Andate a la verga pendejo,Andate a la verga pendejo,Lenguaje Ofensivo,1
-ADV-0014,A. Ofuscación de groserías,Andate a la verga pendejo,leetspeak,Andate a la v3rg4 p3nd3j0,Andate a la v3rg4 p3nd3j0,Lenguaje Ofensivo,1
-ADV-0015,A. Ofuscación de groserías,Andate a la verga pendejo,asterisco,Andate a la v*rga p*ndejo,Andate a la v*rga p*ndejo,Lenguaje Ofensivo,1
-ADV-0016,A. Ofuscación de groserías,Andate a la verga pendejo,numeral,Andate a la v#rga p#ndejo,Andate a la v#rga p#ndejo,Lenguaje Ofensivo,1
-ADV-0017,A. Ofuscación de groserías,Son unos hijos de puta,original,Son unos hijos de puta,Son unos hijos de puta,Lenguaje Ofensivo,1
-ADV-0018,A. Ofuscación de groserías,Son unos hijos de puta,sigla,Son unos HDP,Son unos HDP,Lenguaje Ofensivo,1
-ADV-0019,A. Ofuscación de groserías,Son unos hijos de puta,leetspeak,Son unos hij0s d3 pu74,Son unos hij0s d3 pu74,Lenguaje Ofensivo,1
-ADV-0020,A. Ofuscación de groserías,Son unos hijos de puta,asterisco,Son unos hijos de p***,Son unos hijos de p***,Lenguaje Ofensivo,1
-ADV-0021,B. Emojis,Insulto por emoji,solo_texto,Mira a este tipo,Mira a este tipo,Lenguaje Ofensivo,1
-ADV-0022,B. Emojis,Insulto por emoji,con_payaso,Mira a este tipo 🤡,Mira a este tipo :cara_de_payaso:,Lenguaje Ofensivo,1
-ADV-0023,B. Emojis,Insulto por emoji,con_caca,Mira a este tipo 💩,Mira a este tipo :caca_con_ojos:,Lenguaje Ofensivo,1
-ADV-0024,B. Emojis,Insulto por emoji,con_dedo,Mira a este tipo 🖕,Mira a este tipo :dedo_corazón_hacia_arriba:,Lenguaje Ofensivo,1
-ADV-0025,B. Emojis,Insulto por emoji,con_dedo_tono,Mira a este tipo 🖕🏽,Mira a este tipo :dedo_corazón_hacia_arriba:,Lenguaje Ofensivo,1
-ADV-0026,B. Emojis,Insulto por emoji,multiple,Mira a este tipo 🤡💩🖕,Mira a este tipo :cara_de_payaso: :caca_con_ojos: :dedo_corazón_hacia_arriba:,Lenguaje Ofensivo,1
-ADV-0027,B. Emojis,Odio racial por emoji,neutro,Los jugadores de ese equipo,Los jugadores de ese equipo,Discurso de Odio,2
-ADV-0028,B. Emojis,Odio racial por emoji,mono,Los jugadores de ese equipo 🐒,Los jugadores de ese equipo :mono:,Discurso de Odio,2
-ADV-0029,B. Emojis,Odio racial por emoji,mono_bandera,Los jugadores de ese equipo 🐒🇸🇻,Los jugadores de ese equipo :mono: :bandera_el_salvador:,Discurso de Odio,2
-ADV-0030,B. Emojis,Odio racial por emoji,bestializacion,Esos 🐒🐒 no merecen jugar,Esos :mono: :mono: no merecen jugar,Discurso de Odio,2
-ADV-0031,B. Emojis,Amenaza por emoji,neutro,Te espero afuera,Te espero afuera,Amenazas/Violencia,3
-ADV-0032,B. Emojis,Amenaza por emoji,pistola,Te espero afuera 🔫,Te espero afuera :pistola_de_agua:,Amenazas/Violencia,3
-ADV-0033,B. Emojis,Amenaza por emoji,cuchillo,Te espero afuera 🔪,Te espero afuera :cuchillo_de_cocina:,Amenazas/Violencia,3
-ADV-0034,B. Emojis,Amenaza por emoji,ataud,Te espero afuera ⚰️,Te espero afuera :ataúd:,Amenazas/Violencia,3
-ADV-0035,B. Emojis,Amenaza por emoji,combo,Te espero afuera 🔫⚰️,Te espero afuera :pistola_de_agua: :ataúd:,Amenazas/Violencia,3
-ADV-0036,B. Emojis,Positivo con emoji,neutro,Qué alegre verte de nuevo,Qué alegre verte de nuevo,No Tóxico,0
-ADV-0037,B. Emojis,Positivo con emoji,corazon,Qué alegre verte de nuevo ❤️,Qué alegre verte de nuevo :corazón_rojo:,No Tóxico,0
-ADV-0038,B. Emojis,Positivo con emoji,risa,Qué alegre verte de nuevo 😂,Qué alegre verte de nuevo :cara_llorando_de_risa:,No Tóxico,0
-ADV-0039,C. Amenazas ofuscadas,Te voy a matar,original,Te voy a matar,Te voy a matar,Amenazas/Violencia,3
-ADV-0040,C. Amenazas ofuscadas,Te voy a matar,leetspeak,Te voy a m4t4r,Te voy a m4t4r,Amenazas/Violencia,3
-ADV-0041,C. Amenazas ofuscadas,Te voy a matar,asterisco,Te voy a m*tar,Te voy a m*tar,Amenazas/Violencia,3
-ADV-0042,C. Amenazas ofuscadas,Te voy a matar,eufemismo,Te voy a dar piso,Te voy a dar piso,Amenazas/Violencia,3
-ADV-0043,C. Amenazas ofuscadas,Te voy a matar,indirecta,Ya sabés lo que te va a pasar,Ya sabés lo que te va a pasar,Amenazas/Violencia,3
-ADV-0044,C. Amenazas ofuscadas,Hay que matarlos a todos,original,Hay que matarlos a todos,Hay que matarlos a todos,Amenazas/Violencia,3
-ADV-0045,C. Amenazas ofuscadas,Hay que matarlos a todos,leetspeak,Hay que m4t4rl0s a todos,Hay que m4t4rl0s a todos,Amenazas/Violencia,3
-ADV-0046,C. Amenazas ofuscadas,Hay que matarlos a todos,eufemismo_sv,Hay que darles cuello a todos,Hay que darles cuello a todos,Amenazas/Violencia,3
-ADV-0047,C. Amenazas ofuscadas,Hay que matarlos a todos,celebracion,"Bien hecho que lo mataron, uno menos","Bien hecho que lo mataron, uno menos",Amenazas/Violencia,3
-ADV-0048,C. Amenazas ofuscadas,Ojalá se muera,original,Ojalá se muera ese maldito,Ojalá se muera ese maldito,Amenazas/Violencia,3
-ADV-0049,C. Amenazas ofuscadas,Ojalá se muera,asterisco,Ojalá se m*era ese maldito,Ojalá se m*era ese maldito,Amenazas/Violencia,3
-ADV-0050,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"Qué verga, maje, qué alegre verte","Qué verga, maje, qué alegre verte",No Tóxico,0
-ADV-0051,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"Puta, qué rico estuvo el almuerzo","Puta, qué rico estuvo el almuerzo",No Tóxico,0
-ADV-0052,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"A huevo que sí, vamos a la playa","A huevo que sí, vamos a la playa",No Tóxico,0
-ADV-0053,D. Jerga salvadoreña inofensiva,neutro con jerga,-,Ese cerote es mi mejor amigo desde la escuela,Ese cerote es mi mejor amigo desde la escuela,No Tóxico,0
-ADV-0054,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"Qué chivo tu carro, maje","Qué chivo tu carro, maje",No Tóxico,0
-ADV-0055,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"No sea bicho, ayudame con esto","No sea bicho, ayudame con esto",No Tóxico,0
-ADV-0056,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"Vaya pues, nos vemos mañana cabal","Vaya pues, nos vemos mañana cabal",No Tóxico,0
-ADV-0057,D. Jerga salvadoreña inofensiva,neutro con jerga,-,Está bien vergón el concierto,Está bien vergón el concierto,No Tóxico,0
-ADV-0058,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"Qué onda maje, todo tranquilo","Qué onda maje, todo tranquilo",No Tóxico,0
-ADV-0059,D. Jerga salvadoreña inofensiva,neutro con jerga,-,Mi cipote ya cumplió los quince,Mi cipote ya cumplió los quince,No Tóxico,0
-ADV-0060,D. Jerga salvadoreña inofensiva,neutro con jerga,-,Andaba bien pedo pero llegó bien,Andaba bien pedo pero llegó bien,No Tóxico,0
-ADV-0061,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"Puchica, se me olvidó la cita","Puchica, se me olvidó la cita",No Tóxico,0
-ADV-0062,D. Jerga salvadoreña inofensiva,neutro con jerga,-,Vamos a comer pupusas al mercado,Vamos a comer pupusas al mercado,No Tóxico,0
-ADV-0063,D. Jerga salvadoreña inofensiva,neutro con jerga,-,Ese bayunco no sabe ni manejar,Ese bayunco no sabe ni manejar,No Tóxico,0
-ADV-0064,E. Control sin jerga,neutro estándar,-,Qué bueno verte de nuevo,Qué bueno verte de nuevo,No Tóxico,0
-ADV-0065,E. Control sin jerga,neutro estándar,-,Estuvo muy rico el almuerzo,Estuvo muy rico el almuerzo,No Tóxico,0
-ADV-0066,E. Control sin jerga,neutro estándar,-,"Claro que sí, vamos a la playa","Claro que sí, vamos a la playa",No Tóxico,0
-ADV-0067,E. Control sin jerga,neutro estándar,-,Ese muchacho es mi mejor amigo desde la escuela,Ese muchacho es mi mejor amigo desde la escuela,No Tóxico,0
-ADV-0068,E. Control sin jerga,neutro estándar,-,Qué bonito tu carro,Qué bonito tu carro,No Tóxico,0
-ADV-0069,E. Control sin jerga,neutro estándar,-,Por favor ayudame con esto,Por favor ayudame con esto,No Tóxico,0
-ADV-0070,E. Control sin jerga,neutro estándar,-,"Está bien, nos vemos mañana","Está bien, nos vemos mañana",No Tóxico,0
-ADV-0071,E. Control sin jerga,neutro estándar,-,Estuvo excelente el concierto,Estuvo excelente el concierto,No Tóxico,0
-ADV-0072,E. Control sin jerga,neutro estándar,-,"Hola, todo tranquilo","Hola, todo tranquilo",No Tóxico,0
-ADV-0073,E. Control sin jerga,neutro estándar,-,Mi hijo ya cumplió los quince,Mi hijo ya cumplió los quince,No Tóxico,0
-ADV-0074,E. Control sin jerga,neutro estándar,-,Se me olvidó la cita,Se me olvidó la cita,No Tóxico,0
-ADV-0075,E. Control sin jerga,neutro estándar,-,Vamos a comer al mercado,Vamos a comer al mercado,No Tóxico,0
+ID,grupo_de_prueba,subgrupo,variante,texto,texto_normalizado,resultado_esperado,label_esperado,por_que
+ADV-0001,A. Ofuscación de groserías,Sos una puta barata,original,Sos una puta barata,Sos una puta barata,Lenguaje Ofensivo,1,
+ADV-0002,A. Ofuscación de groserías,Sos una puta barata,asterisco,Sos una p*ta barata,Sos una p*ta barata,Lenguaje Ofensivo,1,
+ADV-0003,A. Ofuscación de groserías,Sos una puta barata,arroba,Sos una put@ barata,Sos una put@ barata,Lenguaje Ofensivo,1,
+ADV-0004,A. Ofuscación de groserías,Sos una puta barata,numeral,Sos una p#ta barata,Sos una p#ta barata,Lenguaje Ofensivo,1,
+ADV-0005,A. Ofuscación de groserías,Sos una puta barata,leetspeak,Sos una pu74 barata,Sos una pu74 barata,Lenguaje Ofensivo,1,
+ADV-0006,A. Ofuscación de groserías,Sos una puta barata,vocal_v,Sos una pvta barata,Sos una pvta barata,Lenguaje Ofensivo,1,
+ADV-0007,A. Ofuscación de groserías,Sos una puta barata,espaciado,Sos una p u t a barata,Sos una p u t a barata,Lenguaje Ofensivo,1,
+ADV-0008,A. Ofuscación de groserías,Sos una puta barata,repeticion,Sos una puuuta barata,Sos una puuuta barata,Lenguaje Ofensivo,1,
+ADV-0009,A. Ofuscación de groserías,Qué mierda de gente,original,Qué mierda de gente,Qué mierda de gente,Lenguaje Ofensivo,1,
+ADV-0010,A. Ofuscación de groserías,Qué mierda de gente,leetspeak,Qué m13rda de gente,Qué m13rda de gente,Lenguaje Ofensivo,1,
+ADV-0011,A. Ofuscación de groserías,Qué mierda de gente,asterisco,Qué m*erda de gente,Qué m*erda de gente,Lenguaje Ofensivo,1,
+ADV-0012,A. Ofuscación de groserías,Qué mierda de gente,arroba,Qué mierd@ de gente,Qué mierd@ de gente,Lenguaje Ofensivo,1,
+ADV-0013,A. Ofuscación de groserías,Andate a la verga pendejo,original,Andate a la verga pendejo,Andate a la verga pendejo,Lenguaje Ofensivo,1,
+ADV-0014,A. Ofuscación de groserías,Andate a la verga pendejo,leetspeak,Andate a la v3rg4 p3nd3j0,Andate a la v3rg4 p3nd3j0,Lenguaje Ofensivo,1,
+ADV-0015,A. Ofuscación de groserías,Andate a la verga pendejo,asterisco,Andate a la v*rga p*ndejo,Andate a la v*rga p*ndejo,Lenguaje Ofensivo,1,
+ADV-0016,A. Ofuscación de groserías,Andate a la verga pendejo,numeral,Andate a la v#rga p#ndejo,Andate a la v#rga p#ndejo,Lenguaje Ofensivo,1,
+ADV-0017,A. Ofuscación de groserías,Son unos hijos de puta,original,Son unos hijos de puta,Son unos hijos de puta,Lenguaje Ofensivo,1,
+ADV-0018,A. Ofuscación de groserías,Son unos hijos de puta,sigla,Son unos HDP,Son unos HDP,Lenguaje Ofensivo,1,
+ADV-0019,A. Ofuscación de groserías,Son unos hijos de puta,leetspeak,Son unos hij0s d3 pu74,Son unos hij0s d3 pu74,Lenguaje Ofensivo,1,
+ADV-0020,A. Ofuscación de groserías,Son unos hijos de puta,asterisco,Son unos hijos de p***,Son unos hijos de p***,Lenguaje Ofensivo,1,
+ADV-0021,B. Emojis,Insulto por emoji,solo_texto,Mira a este tipo,Mira a este tipo,Lenguaje Ofensivo,1,
+ADV-0022,B. Emojis,Insulto por emoji,con_payaso,Mira a este tipo 🤡,Mira a este tipo :cara_de_payaso:,Lenguaje Ofensivo,1,
+ADV-0023,B. Emojis,Insulto por emoji,con_caca,Mira a este tipo 💩,Mira a este tipo :caca_con_ojos:,Lenguaje Ofensivo,1,
+ADV-0024,B. Emojis,Insulto por emoji,con_dedo,Mira a este tipo 🖕,Mira a este tipo :dedo_corazón_hacia_arriba:,Lenguaje Ofensivo,1,
+ADV-0025,B. Emojis,Insulto por emoji,con_dedo_tono,Mira a este tipo 🖕🏽,Mira a este tipo :dedo_corazón_hacia_arriba:,Lenguaje Ofensivo,1,
+ADV-0026,B. Emojis,Insulto por emoji,multiple,Mira a este tipo 🤡💩🖕,Mira a este tipo :cara_de_payaso: :caca_con_ojos: :dedo_corazón_hacia_arriba:,Lenguaje Ofensivo,1,
+ADV-0027,B. Emojis,Odio racial por emoji,neutro,Los jugadores de ese equipo,Los jugadores de ese equipo,Discurso de Odio,2,
+ADV-0028,B. Emojis,Odio racial por emoji,mono,Los jugadores de ese equipo 🐒,Los jugadores de ese equipo :mono:,Discurso de Odio,2,
+ADV-0029,B. Emojis,Odio racial por emoji,mono_bandera,Los jugadores de ese equipo 🐒🇸🇻,Los jugadores de ese equipo :mono: :bandera_el_salvador:,Discurso de Odio,2,
+ADV-0030,B. Emojis,Odio racial por emoji,bestializacion,Esos 🐒🐒 no merecen jugar,Esos :mono: :mono: no merecen jugar,Discurso de Odio,2,
+ADV-0031,B. Emojis,Amenaza por emoji,neutro,Te espero afuera,Te espero afuera,Amenazas/Violencia,3,
+ADV-0032,B. Emojis,Amenaza por emoji,pistola,Te espero afuera 🔫,Te espero afuera :pistola_de_agua:,Amenazas/Violencia,3,
+ADV-0033,B. Emojis,Amenaza por emoji,cuchillo,Te espero afuera 🔪,Te espero afuera :cuchillo_de_cocina:,Amenazas/Violencia,3,
+ADV-0034,B. Emojis,Amenaza por emoji,ataud,Te espero afuera ⚰️,Te espero afuera :ataúd:,Amenazas/Violencia,3,
+ADV-0035,B. Emojis,Amenaza por emoji,combo,Te espero afuera 🔫⚰️,Te espero afuera :pistola_de_agua: :ataúd:,Amenazas/Violencia,3,
+ADV-0036,B. Emojis,Positivo con emoji,neutro,Qué alegre verte de nuevo,Qué alegre verte de nuevo,No Tóxico,0,
+ADV-0037,B. Emojis,Positivo con emoji,corazon,Qué alegre verte de nuevo ❤️,Qué alegre verte de nuevo :corazón_rojo:,No Tóxico,0,
+ADV-0038,B. Emojis,Positivo con emoji,risa,Qué alegre verte de nuevo 😂,Qué alegre verte de nuevo :cara_llorando_de_risa:,No Tóxico,0,
+ADV-0039,C. Amenazas ofuscadas,Te voy a matar,original,Te voy a matar,Te voy a matar,Amenazas/Violencia,3,
+ADV-0040,C. Amenazas ofuscadas,Te voy a matar,leetspeak,Te voy a m4t4r,Te voy a m4t4r,Amenazas/Violencia,3,
+ADV-0041,C. Amenazas ofuscadas,Te voy a matar,asterisco,Te voy a m*tar,Te voy a m*tar,Amenazas/Violencia,3,
+ADV-0042,C. Amenazas ofuscadas,Te voy a matar,eufemismo,Te voy a dar piso,Te voy a dar piso,Amenazas/Violencia,3,
+ADV-0043,C. Amenazas ofuscadas,Te voy a matar,indirecta,Ya sabés lo que te va a pasar,Ya sabés lo que te va a pasar,Amenazas/Violencia,3,
+ADV-0044,C. Amenazas ofuscadas,Hay que matarlos a todos,original,Hay que matarlos a todos,Hay que matarlos a todos,Amenazas/Violencia,3,
+ADV-0045,C. Amenazas ofuscadas,Hay que matarlos a todos,leetspeak,Hay que m4t4rl0s a todos,Hay que m4t4rl0s a todos,Amenazas/Violencia,3,
+ADV-0046,C. Amenazas ofuscadas,Hay que matarlos a todos,eufemismo_sv,Hay que darles cuello a todos,Hay que darles cuello a todos,Amenazas/Violencia,3,
+ADV-0047,C. Amenazas ofuscadas,Hay que matarlos a todos,celebracion,"Bien hecho que lo mataron, uno menos","Bien hecho que lo mataron, uno menos",Amenazas/Violencia,3,
+ADV-0048,C. Amenazas ofuscadas,Ojalá se muera,original,Ojalá se muera ese maldito,Ojalá se muera ese maldito,Amenazas/Violencia,3,
+ADV-0049,C. Amenazas ofuscadas,Ojalá se muera,asterisco,Ojalá se m*era ese maldito,Ojalá se m*era ese maldito,Amenazas/Violencia,3,
+ADV-0050,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"Qué verga, maje, qué alegre verte","Qué verga, maje, qué alegre verte",No Tóxico,0,
+ADV-0051,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"Puta, qué rico estuvo el almuerzo","Puta, qué rico estuvo el almuerzo",No Tóxico,0,
+ADV-0052,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"A huevo que sí, vamos a la playa","A huevo que sí, vamos a la playa",No Tóxico,0,
+ADV-0053,D. Jerga salvadoreña inofensiva,neutro con jerga,-,Ese cerote es mi mejor amigo desde la escuela,Ese cerote es mi mejor amigo desde la escuela,No Tóxico,0,
+ADV-0054,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"Qué chivo tu carro, maje","Qué chivo tu carro, maje",No Tóxico,0,
+ADV-0055,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"No sea bicho, ayudame con esto","No sea bicho, ayudame con esto",No Tóxico,0,
+ADV-0056,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"Vaya pues, nos vemos mañana cabal","Vaya pues, nos vemos mañana cabal",No Tóxico,0,
+ADV-0057,D. Jerga salvadoreña inofensiva,neutro con jerga,-,Está bien vergón el concierto,Está bien vergón el concierto,No Tóxico,0,
+ADV-0058,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"Qué onda maje, todo tranquilo","Qué onda maje, todo tranquilo",No Tóxico,0,
+ADV-0059,D. Jerga salvadoreña inofensiva,neutro con jerga,-,Mi cipote ya cumplió los quince,Mi cipote ya cumplió los quince,No Tóxico,0,
+ADV-0060,D. Jerga salvadoreña inofensiva,neutro con jerga,-,Andaba bien pedo pero llegó bien,Andaba bien pedo pero llegó bien,No Tóxico,0,
+ADV-0061,D. Jerga salvadoreña inofensiva,neutro con jerga,-,"Puchica, se me olvidó la cita","Puchica, se me olvidó la cita",No Tóxico,0,
+ADV-0062,D. Jerga salvadoreña inofensiva,neutro con jerga,-,Vamos a comer pupusas al mercado,Vamos a comer pupusas al mercado,No Tóxico,0,
+ADV-0063,D. Jerga salvadoreña inofensiva,neutro con jerga,-,Ese bayunco no sabe ni manejar,Ese bayunco no sabe ni manejar,No Tóxico,0,
+ADV-0064,E. Control sin jerga,neutro estándar,-,Qué bueno verte de nuevo,Qué bueno verte de nuevo,No Tóxico,0,
+ADV-0065,E. Control sin jerga,neutro estándar,-,Estuvo muy rico el almuerzo,Estuvo muy rico el almuerzo,No Tóxico,0,
+ADV-0066,E. Control sin jerga,neutro estándar,-,"Claro que sí, vamos a la playa","Claro que sí, vamos a la playa",No Tóxico,0,
+ADV-0067,E. Control sin jerga,neutro estándar,-,Ese muchacho es mi mejor amigo desde la escuela,Ese muchacho es mi mejor amigo desde la escuela,No Tóxico,0,
+ADV-0068,E. Control sin jerga,neutro estándar,-,Qué bonito tu carro,Qué bonito tu carro,No Tóxico,0,
+ADV-0069,E. Control sin jerga,neutro estándar,-,Por favor ayudame con esto,Por favor ayudame con esto,No Tóxico,0,
+ADV-0070,E. Control sin jerga,neutro estándar,-,"Está bien, nos vemos mañana","Está bien, nos vemos mañana",No Tóxico,0,
+ADV-0071,E. Control sin jerga,neutro estándar,-,Estuvo excelente el concierto,Estuvo excelente el concierto,No Tóxico,0,
+ADV-0072,E. Control sin jerga,neutro estándar,-,"Hola, todo tranquilo","Hola, todo tranquilo",No Tóxico,0,
+ADV-0073,E. Control sin jerga,neutro estándar,-,Mi hijo ya cumplió los quince,Mi hijo ya cumplió los quince,No Tóxico,0,
+ADV-0074,E. Control sin jerga,neutro estándar,-,Se me olvidó la cita,Se me olvidó la cita,No Tóxico,0,
+ADV-0075,E. Control sin jerga,neutro estándar,-,Vamos a comer al mercado,Vamos a comer al mercado,No Tóxico,0,
+ADV-0076,F. Falsos amigos dialectales,pajero,cotidiano,"No sea pajero, contame la verdad","No sea pajero, contame la verdad",No Tóxico,0,En SV «pajero» = mentiroso. Reproche coloquial entre amigos
+ADV-0077,F. Falsos amigos dialectales,pajero,cotidiano,"Ese maje es bien pajero, nunca cumple","Ese maje es bien pajero, nunca cumple",No Tóxico,0,"Describe a alguien poco confiable, registro cotidiano"
+ADV-0078,F. Falsos amigos dialectales,paja,cotidiano,Qué paja tan buena la que contó anoche,Qué paja tan buena la que contó anoche,No Tóxico,0,"«Paja» = cuento, anécdota. Elogio, no insulto"
+ADV-0079,F. Falsos amigos dialectales,paja,cotidiano,Dejate de pajas y andá a trabajar,Dejate de pajas y andá a trabajar,No Tóxico,0,«Dejate de pajas» = deja de perder el tiempo
+ADV-0080,F. Falsos amigos dialectales,paja,cotidiano,Puras pajas las que dice ese noticiero,Puras pajas las que dice ese noticiero,No Tóxico,0,"Crítica a un medio, sin insulto a persona"
+ADV-0081,F. Falsos amigos dialectales,cerote,cotidiano,Ese cerote me ayudó cuando más lo necesitaba,Ese cerote me ayudó cuando más lo necesitaba,No Tóxico,0,"Uso afectivo entre amigos, muy común en SV"
+ADV-0082,F. Falsos amigos dialectales,cerote,cotidiano,"Qué onda cerote, cómo has estado","Qué onda cerote, cómo has estado",No Tóxico,0,Saludo entre conocidos
+ADV-0083,F. Falsos amigos dialectales,bicho,cotidiano,Los bichos ya salieron de vacaciones,Los bichos ya salieron de vacaciones,No Tóxico,0,«Bicho» = niño en SV. En Puerto Rico es vulgar
+ADV-0084,F. Falsos amigos dialectales,cipote,cotidiano,Mi cipote entra a la universidad este año,Mi cipote entra a la universidad este año,No Tóxico,0,«Cipote» = niño en SV. En España es vulgar
+ADV-0085,F. Falsos amigos dialectales,bicho,cotidiano,"No sea bicho, présteme el cuaderno un ratito","No sea bicho, présteme el cuaderno un ratito",No Tóxico,0,"Aquí «bicho» = tonto, en tono de broma"
+ADV-0086,F. Falsos amigos dialectales,vergón,cotidiano,Está bien vergón el carro que te compraste,Está bien vergón el carro que te compraste,No Tóxico,0,«Vergón» = excelente. Elogio pese a la raíz vulgar
+ADV-0087,F. Falsos amigos dialectales,verga,cotidiano,"Qué verga, ni me acordaba de la reunión","Qué verga, ni me acordaba de la reunión",No Tóxico,0,"Interjección de sorpresa, sin destinatario"
+ADV-0088,F. Falsos amigos dialectales,puta,cotidiano,"A la gran puta, qué frío está haciendo","A la gran puta, qué frío está haciendo",No Tóxico,0,"Interjección meteorológica, no dirigida a nadie"
+ADV-0089,F. Falsos amigos dialectales,puchica,cotidiano,"Puchica, se me olvidó el cumpleaños","Puchica, se me olvidó el cumpleaños",No Tóxico,0,"Eufemismo suavizado, equivale a «caramba»"
+ADV-0090,F. Falsos amigos dialectales,pedo,cotidiano,Anoche andaba bien pedo en la fiesta del barrio,Anoche andaba bien pedo en la fiesta del barrio,No Tóxico,0,"«Pedo» = ebrio. Descripción, no insulto"
+ADV-0091,F. Falsos amigos dialectales,chero,cotidiano,Mi chero me acompañó al hospital toda la noche,Mi chero me acompañó al hospital toda la noche,No Tóxico,0,«Chero» = amigo
+ADV-0092,F. Falsos amigos dialectales,pisto,cotidiano,Prestame pisto para el pasaje porfa,Prestame pisto para el pasaje porfa,No Tóxico,0,«Pisto» = dinero
+ADV-0093,F. Falsos amigos dialectales,chivo,cotidiano,Qué chivo quedó el mural de la escuela,Qué chivo quedó el mural de la escuela,No Tóxico,0,"«Chivo» = bonito, chévere"
+ADV-0094,F. Falsos amigos dialectales,bayunco,cotidiano,Ese bayunco no sabe bailar pero se anima,Ese bayunco no sabe bailar pero se anima,No Tóxico,0,"«Bayunco» = torpe, en tono cariñoso"
+ADV-0095,F. Falsos amigos dialectales,chucho,cotidiano,El chucho de la vecina ladra toda la noche,El chucho de la vecina ladra toda la noche,No Tóxico,0,"«Chucho» = perro, literal"
+ADV-0096,F. Falsos amigos dialectales,chucho,cotidiano,No sea chucho y convide del almuerzo,No sea chucho y convide del almuerzo,No Tóxico,0,"«Chucho» = tacaño, reproche leve"
+ADV-0097,F. Falsos amigos dialectales,guaro,cotidiano,Vamos por unos guaros el viernes,Vamos por unos guaros el viernes,No Tóxico,0,«Guaro» = licor
+ADV-0098,F. Falsos amigos dialectales,chuco,cotidiano,Quedó bien chuco el patio con el lodo,Quedó bien chuco el patio con el lodo,No Tóxico,0,"«Chuco» = sucio, describe un patio"
+ADV-0099,F. Falsos amigos dialectales,cabal,cotidiano,Cabal a las seis nos vemos entonces,Cabal a las seis nos vemos entonces,No Tóxico,0,"«Cabal» = exacto, confirmación"
+ADV-0100,F. Falsos amigos dialectales,cachimbo,cotidiano,Había un cachimbo de gente en el mercado,Había un cachimbo de gente en el mercado,No Tóxico,0,«Cachimbo» = mucho
+ADV-0101,F. Falsos amigos dialectales,chele,cotidiano,Mi chele ya cumplió el añito,Mi chele ya cumplió el añito,No Tóxico,0,«Chele» = de piel clara. Aquí afectivo hacia un bebé
+ADV-0102,F. Falsos amigos dialectales,chibola,cotidiano,Se nos reventó la chibola en pleno partido,Se nos reventó la chibola en pleno partido,No Tóxico,0,«Chibola» = pelota
+ADV-0103,F. Falsos amigos dialectales,desmadre,cotidiano,Se armó el desmadre en la fiesta pero todo bien,Se armó el desmadre en la fiesta pero todo bien,No Tóxico,0,"«Desmadre» = alboroto, sin agresión"
+ADV-0104,F. Falsos amigos dialectales,codo,cotidiano,"Ese maje es bien codo, nunca invita","Ese maje es bien codo, nunca invita",No Tóxico,0,"«Codo» = tacaño, comentario ligero"
+ADV-0105,F. Falsos amigos dialectales,minutas,cotidiano,Nos tomamos unas minutas en el parque ayer,Nos tomamos unas minutas en el parque ayer,No Tóxico,0,«Minuta» = raspado de hielo
+ADV-0106,F. Falsos amigos dialectales,pajero,agresivo,"Sos un pajero de mierda, no volvás a hablarme","Sos un pajero de mierda, no volvás a hablarme",Lenguaje Ofensivo,1,CONTRASTE: la misma palabra dirigida como agresión
+ADV-0107,F. Falsos amigos dialectales,cerote,agresivo,Callate cerote hijo de puta,Callate cerote hijo de puta,Lenguaje Ofensivo,1,CONTRASTE: «cerote» como insulto real
+ADV-0108,F. Falsos amigos dialectales,bicho,agresivo,"Ese bicho no sirve para nada, es un inútil","Ese bicho no sirve para nada, es un inútil",Lenguaje Ofensivo,1,CONTRASTE: descalificación directa a una persona
+ADV-0109,F. Falsos amigos dialectales,verga,agresivo,Andá a la gran verga vos y tu familia,Andá a la gran verga vos y tu familia,Lenguaje Ofensivo,1,CONTRASTE: mandar a la verga a alguien es ofensivo
+ADV-0110,G. Pares mínimos de emoji,Ya sabés lo que te espera,(sin emoji),Ya sabés lo que te espera,Ya sabés lo que te espera,No Tóxico,0,Sin emoji es ambiguo pero inocuo: puede ser una sorpresa
+ADV-0111,G. Pares mínimos de emoji,Ya sabés lo que te espera,🎂,Ya sabés lo que te espera 🎂,Ya sabés lo que te espera :tarta_de_cumpleaños:,No Tóxico,0,El pastel lo vuelve claramente una sorpresa de cumpleaños
+ADV-0112,G. Pares mínimos de emoji,Ya sabés lo que te espera,🎉,Ya sabés lo que te espera 🎉,Ya sabés lo que te espera :cañón_de_confeti:,No Tóxico,0,Celebración
+ADV-0113,G. Pares mínimos de emoji,Ya sabés lo que te espera,🔫,Ya sabés lo que te espera 🔫,Ya sabés lo que te espera :pistola_de_agua:,Amenazas/Violencia,3,El arma lo convierte en amenaza explícita
+ADV-0114,G. Pares mínimos de emoji,Ya sabés lo que te espera,⚰️,Ya sabés lo que te espera ⚰️,Ya sabés lo que te espera :ataúd:,Amenazas/Violencia,3,El ataúd lo convierte en amenaza de muerte
+ADV-0115,G. Pares mínimos de emoji,Te voy a buscar mañana,(sin emoji),Te voy a buscar mañana,Te voy a buscar mañana,No Tóxico,0,Frase cotidiana: pasar a recoger a alguien
+ADV-0116,G. Pares mínimos de emoji,Te voy a buscar mañana,❤️,Te voy a buscar mañana ❤️,Te voy a buscar mañana :corazón_rojo:,No Tóxico,0,Afectivo: una cita
+ADV-0117,G. Pares mínimos de emoji,Te voy a buscar mañana,🚗,Te voy a buscar mañana 🚗,Te voy a buscar mañana :coche:,No Tóxico,0,Literal: ir en carro
+ADV-0118,G. Pares mínimos de emoji,Te voy a buscar mañana,🔪,Te voy a buscar mañana 🔪,Te voy a buscar mañana :cuchillo_de_cocina:,Amenazas/Violencia,3,El cuchillo lo convierte en amenaza
+ADV-0119,G. Pares mínimos de emoji,Te voy a buscar mañana,💀,Te voy a buscar mañana 💀,Te voy a buscar mañana :calavera:,Amenazas/Violencia,3,La calavera señala amenaza de muerte
+ADV-0120,G. Pares mínimos de emoji,Mirá a este,(sin emoji),Mirá a este,Mirá a este,No Tóxico,0,"Señalar a alguien, neutro"
+ADV-0121,G. Pares mínimos de emoji,Mirá a este,😍,Mirá a este 😍,Mirá a este :cara_sonriendo_con_ojos_de_corazón:,No Tóxico,0,Admiración
+ADV-0122,G. Pares mínimos de emoji,Mirá a este,👏,Mirá a este 👏,Mirá a este :manos_aplaudiendo:,No Tóxico,0,Reconocimiento
+ADV-0123,G. Pares mínimos de emoji,Mirá a este,🤡,Mirá a este 🤡,Mirá a este :cara_de_payaso:,Lenguaje Ofensivo,1,El payaso lo convierte en burla
+ADV-0124,G. Pares mínimos de emoji,Mirá a este,💩,Mirá a este 💩,Mirá a este :caca_con_ojos:,Lenguaje Ofensivo,1,Desprecio explícito
+ADV-0125,G. Pares mínimos de emoji,Los que vienen del sur,(sin emoji),Los que vienen del sur,Los que vienen del sur,No Tóxico,0,Descripción geográfica neutra
+ADV-0126,G. Pares mínimos de emoji,Los que vienen del sur,⚽,Los que vienen del sur ⚽,Los que vienen del sur :balón_de_fútbol:,No Tóxico,0,Contexto deportivo
+ADV-0127,G. Pares mínimos de emoji,Los que vienen del sur,🇸🇻,Los que vienen del sur 🇸🇻,Los que vienen del sur :bandera_el_salvador:,No Tóxico,0,Referencia nacional neutra
+ADV-0128,G. Pares mínimos de emoji,Los que vienen del sur,🐒,Los que vienen del sur 🐒,Los que vienen del sur :mono:,Discurso de Odio,2,El mono deshumaniza: bestialización racial
+ADV-0129,G. Pares mínimos de emoji,Los que vienen del sur,🪳,Los que vienen del sur 🪳,Los que vienen del sur :cucaracha:,Discurso de Odio,2,La cucaracha deshumaniza al grupo
+ADV-0130,G. Pares mínimos de emoji,Ahí viene el grupo de siempre,(sin emoji),Ahí viene el grupo de siempre,Ahí viene el grupo de siempre,No Tóxico,0,Comentario cotidiano
+ADV-0131,G. Pares mínimos de emoji,Ahí viene el grupo de siempre,🙌,Ahí viene el grupo de siempre 🙌,Ahí viene el grupo de siempre :manos_levantadas_celebrando:,No Tóxico,0,Entusiasmo por ver a los amigos
+ADV-0132,G. Pares mínimos de emoji,Ahí viene el grupo de siempre,🐀,Ahí viene el grupo de siempre 🐀,Ahí viene el grupo de siempre :rata:,Discurso de Odio,2,Las ratas deshumanizan al colectivo
+ADV-0133,G. Pares mínimos de emoji,Ahí viene el grupo de siempre,🧹,Ahí viene el grupo de siempre 🧹,Ahí viene el grupo de siempre :escoba:,Amenazas/Violencia,3,La escoba evoca «limpieza» eliminacionista
+ADV-0134,G. Pares mínimos de emoji,No lo quiero ver más por aquí,(sin emoji),No lo quiero ver más por aquí,No lo quiero ver más por aquí,Lenguaje Ofensivo,1,Rechazo fuerte pero sin ataque a grupo
+ADV-0135,G. Pares mínimos de emoji,No lo quiero ver más por aquí,🙏,No lo quiero ver más por aquí 🙏,No lo quiero ver más por aquí :manos_en_oración:,No Tóxico,0,Con el rezo suena a hartazgo resignado
+ADV-0136,G. Pares mínimos de emoji,No lo quiero ver más por aquí,🔫,No lo quiero ver más por aquí 🔫,No lo quiero ver más por aquí :pistola_de_agua:,Amenazas/Violencia,3,El arma lo vuelve amenaza
+ADV-0137,G. Pares mínimos de emoji,Qué bonita familia,(sin emoji),Qué bonita familia,Qué bonita familia,No Tóxico,0,Elogio
+ADV-0138,G. Pares mínimos de emoji,Qué bonita familia,❤️,Qué bonita familia ❤️,Qué bonita familia :corazón_rojo:,No Tóxico,0,Elogio afectuoso
+ADV-0139,G. Pares mínimos de emoji,Qué bonita familia,🤮,Qué bonita familia 🤮,Qué bonita familia :cara_vomitando:,Lenguaje Ofensivo,1,El vómito lo convierte en burla despectiva
+ADV-0140,G. Pares mínimos de emoji,Qué bonita familia,🐷,Qué bonita familia 🐷,Qué bonita familia :cara_de_cerdo:,Discurso de Odio,2,El cerdo señala gordofobia hacia la familia
+ADV-0141,G. Pares mínimos de emoji,Ese es el vecino nuevo,(sin emoji),Ese es el vecino nuevo,Ese es el vecino nuevo,No Tóxico,0,Presentación neutra
+ADV-0142,G. Pares mínimos de emoji,Ese es el vecino nuevo,👋,Ese es el vecino nuevo 👋,Ese es el vecino nuevo :mano_saludando:,No Tóxico,0,Saludo cordial
+ADV-0143,G. Pares mínimos de emoji,Ese es el vecino nuevo,🌑,Ese es el vecino nuevo 🌑,Ese es el vecino nuevo :luna_nueva:,Discurso de Odio,2,La luna negra alude despectivamente a la tez
+ADV-0144,G. Pares mínimos de emoji,Ese es el vecino nuevo,🦶,Ese es el vecino nuevo 🦶,Ese es el vecino nuevo :pie:,Discurso de Odio,2,Referencia despectiva racializada

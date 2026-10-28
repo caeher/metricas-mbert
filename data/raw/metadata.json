@@ -1,61 +1,60 @@
 {
-  "version": "b2",
-  "generado": "2026-08-14T15:50:22",
-  "semilla": 42,
-  "base": "dataset v1 (3,063 reales) + aumento sintético dirigido",
-  "totales": {
-    "train": 3293,
-    "val": 459,
-    "test": 460
-  },
-  "composicion_train": {
-    "reales": 2144,
-    "sinteticos": 1149,
-    "por_origen": {
-      "sintetico_relleno_emoji": 269,
-      "sintetico_emoji_odio": 179,
-      "sintetico_amenaza_ofuscada": 138,
-      "sintetico_emoji_amenaza": 130,
-      "sintetico_emoji_notoxico": 125,
-      "sintetico_emoji_ofensivo": 112,
-      "sintetico_jerga_notoxico": 100,
-      "sintetico_nacionalidad_notoxico": 96
-    }
-  },
-  "distribucion_train": {
-    "No Tóxico": 895,
-    "Lenguaje Ofensivo": 878,
-    "Discurso de Odio": 847,
-    "Amenazas/Violencia": 673
-  },
-  "emojis": {
-    "train_con_emoji": 1125,
-    "train_con_emoji_v1": 143,
-    "por_clase": {
-      "No Tóxico": 282,
-      "Lenguaje Ofensivo": 263,
-      "Discurso de Odio": 409,
-      "Amenazas/Violencia": 171
-    }
-  },
-  "pesos_clase": {
-    "No Tóxico": 0.9198,
-    "Lenguaje Ofensivo": 0.9376,
-    "Discurso de Odio": 0.972,
-    "Amenazas/Violencia": 1.2233
-  },
-  "campo_texto": "texto_modelo",
-  "reglas": [
-    "Los sintéticos están solo en train; val y test son 100% reales e idénticos al v1",
-    "Las métricas de B2 son comparables con las del v1 porque el test no cambió",
-    "Filtrar con df[df.origen=='real'] para excluir sintéticos de cualquier análisis",
-    "test_adversarial.csv es diagnóstico: se reporta aparte, nunca como métrica principal"
+  "version": "1.8.0",
+  "train_total": 12641,
+  "base_y_casos": 6483,
+  "filas_hilos_pool": 6158,
+  "hilos_en_pool": [
+    "canje",
+    "cecot",
+    "conductor_25_ninos",
+    "cubanos_rusos",
+    "deportacion_senora",
+    "espana_regulariza",
+    "feminismo",
+    "feministas_ganaron",
+    "infierno_tierra",
+    "invasion",
+    "lgbt_bandera",
+    "lgbt_ferriz",
+    "lgbt_palestina_tv",
+    "lgbt_ultimahora",
+    "lgbt_vandalismo_cdmx",
+    "migrantes_inmigracion",
+    "miss_el_salvador",
+    "mujeres_iran",
+    "musulman_berlin",
+    "orgullo_los_angeles",
+    "pandilleros_traslado",
+    "paraguayos_terreno",
+    "presos_90mil",
+    "racismo",
+    "racismo_orgullo",
+    "repatriados",
+    "salvadoreno_bukele",
+    "sicarios_rusos_cubanos",
+    "trans",
+    "venezolanos2",
+    "violadores_pena_muerte",
+    "wokismo_occidente"
   ],
-  "correcciones_incluidas": [
-    "Catálogo de emojis reconstruido (glifos perdidos por codificación cp850)",
-    "Cobertura de emoji equilibrada entre las cuatro clases",
-    "Amenazas con ofuscación leetspeak y eufemismos salvadoreños",
-    "No tóxicos con jerga salvadoreña, contra el sesgo dialectal",
-    "No tóxicos mencionando nacionalidades, contra el sobreetiquetado de odio"
-  ]
+  "pool_por_clase": {
+    "No Tóxico": 3321,
+    "Lenguaje Ofensivo": 1428,
+    "Discurso de Odio": 850,
+    "Amenazas/Violencia": 559
+  },
+  "train_por_clase": {
+    "No Tóxico": 5148,
+    "Lenguaje Ofensivo": 3224,
+    "Discurso de Odio": 2549,
+    "Amenazas/Violencia": 1720
+  },
+  "retiradas_por_coincidir_con_test_o_banco": 1,
+  "banco_n": {
+    "militares": 202,
+    "xenofobia": 236,
+    "externo2": 647,
+    "migrantes": 306
+  },
+  "verificacion": "0 textos de train en val, test, batería ni banco congelado (crudo y normalizado)"
 }

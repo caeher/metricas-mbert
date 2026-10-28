@@ -1,8 +1,20 @@
 ﻿source_file,records,country_confirmed,country_inferred,country_unknown,dialect_confirmed,dialect_inferred,dialect_unknown,policy
+data/evaluation/frozen_bank/externo2.csv,647,0,0,647,0,0,647,no country/dialect promotion from archive membership or platform name
+data/evaluation/frozen_bank/migrantes.csv,306,0,0,306,0,0,306,no country/dialect promotion from archive membership or platform name
+data/evaluation/frozen_bank/militares.csv,202,0,0,202,0,0,202,no country/dialect promotion from archive membership or platform name
+data/evaluation/frozen_bank/xenofobia.csv,236,0,0,236,0,0,236,no country/dialect promotion from archive membership or platform name
 data/processed/test_adversarial_144.csv,144,0,0,144,0,0,144,no country/dialect promotion from archive membership or platform name
 data/raw/lenguaje_ofensivo.csv,1328,0,0,1328,0,196,1132,no country/dialect promotion from archive membership or platform name
 data/raw/test.csv,460,0,0,460,0,0,460,no country/dialect promotion from archive membership or platform name
-data/raw/test_adversarial.csv,75,0,0,75,0,0,75,no country/dialect promotion from archive membership or platform name
+data/raw/test_adversarial.csv,144,0,0,144,0,0,144,no country/dialect promotion from archive membership or platform name
 data/raw/thenewdata_X.csv,1000,0,497,503,0,317,683,no country/dialect promotion from archive membership or platform name
-data/raw/train.csv,3293,0,0,3293,0,0,3293,no country/dialect promotion from archive membership or platform name
+data/raw/train.csv,12641,0,0,12641,0,0,12641,no country/dialect promotion from archive membership or platform name
 data/raw/val.csv,459,0,0,459,0,0,459,no country/dialect promotion from archive membership or platform name
+data/sources/x_threads/hilos_1_a_5_limpios_todos.csv,1320,0,0,1320,0,0,1320,no country/dialect promotion from archive membership or platform name
+data/sources/x_threads/hilos_nuevos_sin_etiquetar.csv,536,0,0,536,0,0,536,no country/dialect promotion from archive membership or platform name
+data/sources/x_threads/migrantes_sin_etiquetar.csv,308,0,0,308,0,0,308,no country/dialect promotion from archive membership or platform name
+data/sources/x_threads/phase1/fase1_ronda1_sin_etiquetar.csv,2115,0,0,2115,0,0,2115,no country/dialect promotion from archive membership or platform name
+data/sources/x_threads/phase1/fase1_ronda2_sin_etiquetar.csv,1387,0,0,1387,0,0,1387,no country/dialect promotion from archive membership or platform name
+data/sources/x_threads/test_externo_2_sin_etiquetar.csv,650,0,0,650,0,0,650,no country/dialect promotion from archive membership or platform name
+data/sources/x_threads/test_externo_3_sin_etiquetar.csv,590,0,0,590,0,0,590,no country/dialect promotion from archive membership or platform name
+data/sources/x_threads/test_externo_4_sin_etiquetar.csv,887,0,0,887,0,0,887,no country/dialect promotion from archive membership or platform name

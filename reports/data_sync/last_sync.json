@@ -1,0 +1,128 @@
+{
+  "cde_root": "C:\\Users\\user6921\\Desktop\\cde-ml\\cde-project-ml-2026",
+  "corpus_completo": {
+    "action": "written",
+    "path": "data/raw/corpus_completo.csv",
+    "row_count": 13560,
+    "sha256": "1a64555786d6ceab717b8e057f7078ef08752e250f74f58ec97dd960ff42daf3"
+  },
+  "dataset_version": "1.8.0",
+  "files": [
+    {
+      "action": "copied",
+      "path": "data/raw/train.csv",
+      "sha256": "eb619ece927b75334ac90c5052f2b908aa620b7c3a2efd127f8303d1d31dd807"
+    },
+    {
+      "action": "copied",
+      "path": "data/raw/val.csv",
+      "sha256": "7967228844f8715a40e24668a2eec9b99137d36f53b303715e2dbf07cf0de383"
+    },
+    {
+      "action": "copied",
+      "path": "data/raw/test.csv",
+      "sha256": "b63a04906bedda1befb41a7d147c582dc0ebee2f02f0cb3617ab461bdf932294"
+    },
+    {
+      "action": "copied",
+      "path": "data/raw/test_adversarial.csv",
+      "sha256": "8b58f59bf0136418a496a9b9efb6d3343e13bbd25331871f2819fcdfebdf4f17"
+    },
+    {
+      "action": "copied",
+      "path": "data/raw/metadata.json",
+      "sha256": "f4c9f80b2c24f5955d9875e786266db19c049d2c3e34d38061455329c1be0011"
+    },
+    {
+      "action": "copied",
+      "path": "data/processed/train.csv",
+      "sha256": "eb619ece927b75334ac90c5052f2b908aa620b7c3a2efd127f8303d1d31dd807"
+    },
+    {
+      "action": "copied",
+      "path": "data/processed/val.csv",
+      "sha256": "7967228844f8715a40e24668a2eec9b99137d36f53b303715e2dbf07cf0de383"
+    },
+    {
+      "action": "copied",
+      "path": "data/processed/test.csv",
+      "sha256": "b63a04906bedda1befb41a7d147c582dc0ebee2f02f0cb3617ab461bdf932294"
+    },
+    {
+      "action": "copied",
+      "path": "data/processed/test_adversarial.csv",
+      "sha256": "8b58f59bf0136418a496a9b9efb6d3343e13bbd25331871f2819fcdfebdf4f17"
+    },
+    {
+      "action": "copied",
+      "path": "data/processed/test_adversarial_144.csv",
+      "sha256": "8b58f59bf0136418a496a9b9efb6d3343e13bbd25331871f2819fcdfebdf4f17"
+    },
+    {
+      "action": "copied",
+      "path": "data/evaluation/frozen_bank/externo2.csv",
+      "sha256": "853cd689f0e365cf8cd2b3256a1022a83252ce6f1f466900f56870c1dd167eef"
+    },
+    {
+      "action": "copied",
+      "path": "data/evaluation/frozen_bank/MANIFEST.json",
+      "sha256": "eb1fd1ffb92037491fe1f196c5afcda2bc326ad08817770e8c13d302baa2f6c3"
+    },
+    {
+      "action": "copied",
+      "path": "data/evaluation/frozen_bank/migrantes.csv",
+      "sha256": "484d9581d280be0a3e0a37de77ef43ddddfc77f3e4688a3d619ed148b40339f4"
+    },
+    {
+      "action": "copied",
+      "path": "data/evaluation/frozen_bank/militares.csv",
+      "sha256": "30b70a1056b76b25d3af6a2a9095010357fd2227c1d2a56bf3a945877ba5e173"
+    },
+    {
+      "action": "copied",
+      "path": "data/evaluation/frozen_bank/xenofobia.csv",
+      "sha256": "1faeef4158b039aed40fae254234efeafc3782e2e969af85d37c047125175796"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/hilos_1_a_5_limpios_todos.csv",
+      "sha256": "5c6dcf2ad272059dbee2c01919f56fb811d91eb0b8298649f4e95ea33b520278"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/hilos_nuevos_sin_etiquetar.csv",
+      "sha256": "7e620bef5e1ac2eccf5778d5266eb22fa1c7a67bbeed89bfed01667d50f1e8d7"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/migrantes_sin_etiquetar.csv",
+      "sha256": "683d72c869558a63bbebf0ae3828e39366e788536a0d51f0cb664f1fc862b136"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase1/fase1_ronda1_sin_etiquetar.csv",
+      "sha256": "6b51715110c535749d376c9195c2ec37b3bacaab28c5f621d3f9f4befc156bef"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase1/fase1_ronda2_sin_etiquetar.csv",
+      "sha256": "7876d3427a34e3279966d416010ea6d06e2b6a6f3656d362b1759bc0388710fb"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/test_externo_2_sin_etiquetar.csv",
+      "sha256": "6bfd8e74b589e551e65ca33b01698be5cc1093e2c9f1a77f7eea26f56588877e"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/test_externo_3_sin_etiquetar.csv",
+      "sha256": "d211c1184c94f14caf3235119441c31c72334b06a58664dc04cdcf182e8eff84"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/test_externo_4_sin_etiquetar.csv",
+      "sha256": "70467150e7a75f4e1d957b39ea441da4ba8b66cd64ca9de93231255cb59463e2"
+    }
+  ],
+  "synced_at_utc": "2026-10-28T18:54:06+00:00"
+}
