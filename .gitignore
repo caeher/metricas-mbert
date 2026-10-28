@@ -12,6 +12,7 @@ dist/
 .env.argilla
 backups/argilla/
 data/argilla_exports/
+reports/annotation/retrain_*/
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 models/mbert-sv/
