@@ -1,0 +1,26 @@
+{
+  "release_id": "v3-pilot-argilla-20261031",
+  "taxonomy_version": "2.0.0",
+  "seed": 42,
+  "source_adjudicated": "reports/annotation/adjudicated_records.csv",
+  "adjudicated_record_count": 180,
+  "label_overrides": {
+    "train": 88,
+    "val": 0,
+    "test": 0
+  },
+  "class_weights": {
+    "0": 0.6050641393834961,
+    "1": 0.9832762912258868,
+    "2": 1.2555621771950736,
+    "3": 1.8732957913455839
+  },
+  "train_rows": 12641,
+  "val_rows": 459,
+  "test_rows": 460,
+  "files": {
+    "train": "train.csv",
+    "val": "val.csv",
+    "test": "test.csv"
+  }
+}

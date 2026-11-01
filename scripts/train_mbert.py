@@ -16,6 +16,8 @@ from discurso_odio.data.loaders import (
     filter_train_by_synthetic_policy,
     get_b2_class_weights,
     get_class_weights,
+    get_release_class_weights,
+    load_release_split,
     load_split,
     load_train_excluding_adversarial_overlap,
 )
@@ -78,6 +80,12 @@ def main():
     parser.add_argument("--classifier-dropout", type=float, default=None)
     parser.add_argument("--use-v1-class-weights", action="store_true")
     parser.add_argument("--init-model-dir", type=Path, default=None, help="Checkpoint DAPT previo")
+    parser.add_argument(
+        "--release",
+        type=str,
+        default=None,
+        help="Release ISSUE-08 en data/releases/<id> (sustituye train/val procesados).",
+    )
     args = parser.parse_args()
 
     settings = load_settings()
@@ -86,7 +94,11 @@ def main():
 
     use_b2 = args.b2 or args.exclude_adversarial_overlap
 
-    if args.exclude_adversarial_overlap or args.b2:
+    if args.release:
+        train_df = load_release_split(args.release, "train")
+        val_df = load_release_split(args.release, "val")
+        logger.info("Release %s: train=%d val=%d", args.release, len(train_df), len(val_df))
+    elif args.exclude_adversarial_overlap or args.b2:
         train_df = load_train_excluding_adversarial_overlap()
         overlaps = find_train_overlaps()
         logger.info(
@@ -94,11 +106,12 @@ def main():
             len(train_df),
             len(overlaps),
         )
+        val_df = load_split("val")
     else:
         train_df = load_split("train")
+        val_df = load_split("val")
 
     train_df = filter_train_by_synthetic_policy(train_df, args.synthetic_policy)
-    val_df = load_split("val")
     logger.info(
         "Train: %d (policy=%s) | Val: %d",
         len(train_df),
@@ -113,6 +126,8 @@ def main():
     class_weights = None
     if args.use_v1_class_weights:
         class_weights = get_class_weights(train_df)
+    elif args.release:
+        class_weights = get_release_class_weights(args.release)
     elif use_b2:
         class_weights = get_b2_class_weights()
 

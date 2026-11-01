@@ -143,10 +143,6 @@ function decide(text) {
 async function submit(dec) {
   const before = await getInfo();
   if (before.empty) return { ok: false, empty: true, before };
-  await page.evaluate(() =>
-    [...document.querySelectorAll('button,[role=button]')].find(b => b.textContent?.includes('Descartar'))?.click()
-  );
-  await page.waitForTime(110);
   await page.evaluate(() => {
     document.querySelector('form')?.scrollIntoView({ block: 'center' });
     window.scrollBy(0, 150);
@@ -178,12 +174,16 @@ async function submit(dec) {
     await fill('insufficient_context_reason', 'N/A');
   }
   await fill('rationale', dec.r);
-  await page.waitForTime(150);
-  const dis = await page.evaluate(
-    () =>
-      [...document.querySelectorAll('button,[role=button]')].find(x => (x.textContent || '').includes('Enviar'))
-        ?.disabled
-  );
+  let dis = true;
+  for (let attempt = 0; attempt < 8; attempt++) {
+    await page.waitForTime(200);
+    dis = await page.evaluate(
+      () =>
+        [...document.querySelectorAll('button,[role=button]')].find(x => (x.textContent || '').includes('Enviar'))
+          ?.disabled
+    );
+    if (!dis) break;
+  }
   if (dis) return { ok: false, before, dec, dis };
   await page.evaluate(() => {
     [...document.querySelectorAll('button,[role=button]')]
@@ -194,10 +194,22 @@ async function submit(dec) {
   const after = await getInfo();
   return { ok: after.n > before.n || after.empty, before, after, dec };
 }
+async function clearDraftIfNeeded() {
+  const hasDraft = await page.evaluate(() => {
+    const checked = document.querySelector('form input:checked, form [aria-checked="true"]');
+    return !!checked;
+  });
+  if (!hasDraft) return;
+  await page.evaluate(() =>
+    [...document.querySelectorAll('button,[role=button]')].find(b => b.textContent?.includes('Descartar'))?.click()
+  );
+  await page.waitForTime(200);
+}
 const batch = [];
-for (let k = 0; k < 8; k++) {
+for (let k = 0; k < 6; k++) {
   const info = await getInfo();
   if (info.empty) break;
+  await clearDraftIfNeeded();
   const dec = decide(info.text);
   const r = await submit(dec);
   batch.push({

@@ -484,6 +484,15 @@ def make_argilla_settings(rg: Any, campaign_name: str, client: Any | None = None
     return settings
 
 
+def normalize_api_url(api_url: str) -> str:
+    if os.environ.get("ARGILLA_DOCKER_HOST", "").strip().lower() in {"1", "true", "yes"}:
+        return (
+            api_url.replace("localhost", "host.docker.internal")
+            .replace("127.0.0.1", "host.docker.internal")
+        )
+    return api_url
+
+
 def argilla_client(rg: Any) -> Any:
     configured_version = getattr(rg, "__version__", "")
     if configured_version != SDK_VERSION:
@@ -491,7 +500,7 @@ def argilla_client(rg: Any) -> Any:
             f"Se requiere argilla=={SDK_VERSION}; se encontró {configured_version or 'versión desconocida'}. "
             "Instale el extra opcional: pip install -e '.[argilla]'"
         )
-    api_url = os.environ.get("ARGILLA_API_URL", "").strip()
+    api_url = normalize_api_url(os.environ.get("ARGILLA_API_URL", "").strip())
     api_key = os.environ.get("ARGILLA_API_KEY", "").strip()
     if not api_url or not api_key:
         raise WorkflowError("Configure ARGILLA_API_URL y ARGILLA_API_KEY en el entorno o .env.argilla")

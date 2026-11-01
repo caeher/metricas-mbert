@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 from functools import lru_cache
+from pathlib import Path
 from typing import Any
 
 import pandas as pd
@@ -12,6 +13,7 @@ from discurso_odio.config import load_settings
 from discurso_odio.paths import (
     CORPUS_CSV,
     DATASET_METADATA_JSON,
+    RELEASES_DIR,
     TEST_ADVERSARIAL_CSV,
     TEST_ADVERSARIAL_144_CSV,
     TEST_CSV,
@@ -37,7 +39,9 @@ TEMPLATE_HEAVY_ORIGINS = frozenset(
 REAL_ORIGIN = "real"
 
 
-def load_split(name: str) -> pd.DataFrame:
+def load_split(name: str, *, release: str | None = None) -> pd.DataFrame:
+    if release:
+        return load_release_split(release, name)
     paths = {
         "train": TRAIN_CSV,
         "val": VAL_CSV,
@@ -52,6 +56,40 @@ def load_split(name: str) -> pd.DataFrame:
     if not path.exists():
         raise FileNotFoundError(f"Split no encontrado: {path}")
     return pd.read_csv(path)
+
+
+def release_dir(release_id: str) -> Path:
+    path = RELEASES_DIR / release_id
+    if not path.is_dir():
+        raise FileNotFoundError(f"Release no encontrada: {path}")
+    return path
+
+
+def load_release_metadata(release_id: str) -> dict[str, Any]:
+    manifest = release_dir(release_id) / "metadata.json"
+    if not manifest.exists():
+        raise FileNotFoundError(f"Falta metadata de release: {manifest}")
+    with open(manifest, encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def load_release_split(release_id: str, split: str) -> pd.DataFrame:
+    metadata = load_release_metadata(release_id)
+    files = metadata.get("files", {})
+    if split not in files:
+        raise ValueError(f"Split {split!r} no definido en release {release_id}")
+    path = release_dir(release_id) / files[split]
+    if not path.exists():
+        raise FileNotFoundError(f"Split no encontrado: {path}")
+    return pd.read_csv(path)
+
+
+def get_release_class_weights(release_id: str) -> dict[int, float]:
+    metadata = load_release_metadata(release_id)
+    raw = metadata.get("class_weights")
+    if not isinstance(raw, dict):
+        raise ValueError(f"Release {release_id} no define class_weights")
+    return {int(key): float(value) for key, value in raw.items()}
 
 
 def load_all_splits() -> dict[str, pd.DataFrame]:

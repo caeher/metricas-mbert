@@ -2,7 +2,7 @@
 
 ## Estado de ejecución
 
-El piloto tiene una muestra reproducible de 200 registros reales, una campaña ciega importada en el servidor Argilla local (`cde_annotation_pilot_v1`) y herramientas para calcular acuerdo y preparar el release adjudicado. **La anotación humana sigue pendiente.** Aún no existen dos cuentas humanas de anotación ni exportaciones con respuestas, por lo que no hay kappa, matriz observada ni clases finales adjudicadas. El acceso inicial del propietario está guardado en `.env.argilla`, ignorado por Git.
+El piloto tiene muestra reproducible (200), cuentas **cde-rater-a** / **cde-rater-b**, exportación dual versionada bajo `data/argilla_exports/`, acuerdo en `reports/annotation/agreement.json` y release parcial en `adjudicated_records.csv` (ver [`STATUS.md`](../reports/annotation/STATUS.md)). Las cohortes completas se importan con `scripts/import_all_annotation_campaigns.py`. Kappa piloto puede quedar por debajo del objetivo 0.75: recalibrar guía antes de escalar.
 
 La muestra contiene un bloque balanceado de 120 textos históricos reales de `train` (15 por cada combinación de las cuatro etiquetas antiguas y Facebook/X), 18 textos exclusivos por cada una de las dos fuentes nuevas, las cuatro colisiones de rótulos compartidos encontradas en la cola canónica y 40 casos adicionales de frontera. Algunos casos de frontera vuelven a subir el total de históricos o de una fuente sobre su cuota base. Los estratos históricos solo sirven para muestreo y no se envían a Argilla. La muestra no estima prevalencia ni sustituye revisar los corpus completos.
 
