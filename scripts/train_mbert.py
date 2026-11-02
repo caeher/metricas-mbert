@@ -156,6 +156,30 @@ def main():
         MODELS_DIR / "mbert-sv-f1" if use_b2 else MODELS_DIR / "mbert-sv"
     )
 
+    training_recipe = {
+        "release": args.release,
+        "synthetic_policy": args.synthetic_policy,
+        "synthetic_effective_fraction": args.synthetic_effective_fraction,
+        "threat_synthetic_effective_n": args.threat_synthetic_effective_n,
+        "platform_class_boost": args.platform_class_boost,
+        "label_smoothing": label_smoothing,
+        "loss_type": args.loss_type,
+        "ordinal_weight": args.ordinal_weight,
+        "focal_gamma": args.focal_gamma,
+        "layerwise_lr_decay": args.layerwise_lr_decay,
+        "classifier_dropout": args.classifier_dropout,
+        "learning_rate": args.learning_rate,
+        "epochs": args.epochs,
+        "early_stopping_patience": args.early_stopping_patience,
+        "seed": seed,
+        "use_b2": use_b2,
+        "exclude_adversarial_overlap": args.exclude_adversarial_overlap,
+        "use_v1_class_weights": args.use_v1_class_weights,
+        "init_model_dir": str(args.init_model_dir) if args.init_model_dir else None,
+        "train_rows": len(train_df),
+        "val_rows": len(val_df),
+    }
+
     trainer = train_mbert(
         train_df,
         val_df,
@@ -166,6 +190,7 @@ def main():
         use_b2_class_weights=use_b2 and not args.use_v1_class_weights,
         training_config=training_config,
         init_model_dir=args.init_model_dir,
+        training_recipe=training_recipe,
     )
     logger.info("Entrenamiento completado. Métricas val: %s", trainer.evaluate())
 

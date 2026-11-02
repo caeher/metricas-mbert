@@ -1,0 +1,23 @@
+{
+  "batch_id": "legacy_train_real_retrain_priority",
+  "record_count": 150,
+  "target_total": 150,
+  "seed": 42,
+  "source_batch": "reports/annotation/legacy_train_real_batch_v1.csv",
+  "source_discrepancy": "reports/annotation/legacy_train_real_heuristic_vs_mbert.csv",
+  "p0_discrepancy_count": 71,
+  "selection_reason_counts": {
+    "p0_heuristic_vs_mbert_discrepancy": 71,
+    "p1_facebook_or_weak_class": 79
+  },
+  "platform_counts": {
+    "Facebook": 110,
+    "X": 40
+  },
+  "provisional_label_counts": {
+    "0": 65,
+    "1": 30,
+    "2": 27,
+    "3": 28
+  }
+}

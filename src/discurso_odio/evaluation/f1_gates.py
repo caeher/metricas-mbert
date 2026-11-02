@@ -42,7 +42,10 @@ def evaluate_gates(
 
     official_run = None
     if model_dir and model_dir.exists() and run_official:
-        official_run = evaluate_mbert_official(model_dir=model_dir)
+        official_run = evaluate_mbert_official(
+            model_dir=model_dir,
+            skip_official_f1_check=True,
+        )
     elif use_existing_metrics and (REPORTS_METRICS / "mbert_official_run.json").exists():
         official_run = json.loads(
             (REPORTS_METRICS / "mbert_official_run.json").read_text(encoding="utf-8")

@@ -1,0 +1,12 @@
+{
+  "release": "v4",
+  "release_id": "training-v3-20261101",
+  "dataset_version": "1.9.0",
+  "train_rows": 21585,
+  "platform_class_boost": "none",
+  "synthetic_policy": "b2_full",
+  "loss_type": "ce",
+  "seed": 42,
+  "init_model_dir": null,
+  "note": "CDE v1.9.0 baseline checkpoint versiones/v4/model"
+}

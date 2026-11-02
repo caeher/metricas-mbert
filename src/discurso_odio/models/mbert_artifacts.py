@@ -37,6 +37,7 @@ OPTIONAL_FILES = (
     "vocab.txt",
     "train_metrics.json",
     "test_metrics.json",
+    "training_run.json",
 )
 GENERATED_FILES = (
     "inference_contract.json",
@@ -232,6 +233,11 @@ def build_manifest(
     identity = read_checkpoint_identity(source_dir)
     hashed_names = [name for name in file_names if name != "MANIFEST.json"]
     sha_map = {name: sha256_file(staged_dir / name) for name in hashed_names}
+    training_run_extra: dict[str, Any] = {}
+    training_run_path = source_dir / "training_run.json"
+    if training_run_path.is_file():
+        with training_run_path.open(encoding="utf-8") as handle:
+            training_run_extra = json.load(handle)
     return {
         "git_commit": git_commit(),
         "packaged_at": datetime.now(timezone.utc).isoformat(),
@@ -258,6 +264,12 @@ def build_manifest(
         "artifact_channel": "Google Drive (tesina / auditoría)",
         "artifact_url": artifact_url,
         "artifact_local": f"artifacts/{ZIP_NAME}",
+        "training_run": {
+            "parameters": training_run_extra.get("parameters"),
+            "runtime": training_run_extra.get("runtime"),
+            "training_recipe": training_run_extra.get("training_recipe"),
+            "dataset": training_run_extra.get("dataset"),
+        },
     }
 
 

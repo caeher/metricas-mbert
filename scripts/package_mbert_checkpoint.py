@@ -89,11 +89,18 @@ def package_mbert_checkpoint(
 def main():
     parser = argparse.ArgumentParser(description="Empaqueta el checkpoint mBERT de auditoría")
     parser.add_argument("--source-dir", type=Path, default=None)
+    parser.add_argument(
+        "--model-dir",
+        type=Path,
+        default=None,
+        help="Alias de --source-dir (directorio del checkpoint).",
+    )
     parser.add_argument("--output-zip", type=Path, default=None)
     parser.add_argument("--artifact-url", type=str, default="", help="URL de Drive u otro canal")
     args = parser.parse_args()
+    source = args.model_dir or args.source_dir
     package_mbert_checkpoint(
-        source_dir=args.source_dir,
+        source_dir=source,
         output_zip=args.output_zip,
         artifact_url=args.artifact_url,
     )

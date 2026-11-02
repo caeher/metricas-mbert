@@ -411,6 +411,7 @@ def train_mbert(
     use_b2_class_weights: bool = False,
     training_config: MbertTrainingConfig | None = None,
     init_model_dir: str | Path | None = None,
+    training_recipe: dict | None = None,
 ) -> MbertTrainer:
     settings = load_settings()
     output_dir = Path(output_dir or settings["model"]["output_dir"])
@@ -439,6 +440,15 @@ def train_mbert(
     eval_metrics = trainer.evaluate()
     with open(output_dir / "train_metrics.json", "w", encoding="utf-8") as f:
         json.dump(eval_metrics, f, indent=2)
+
+    from discurso_odio.models.training_run import write_training_run
+
+    write_training_run(
+        output_dir,
+        trainer=trainer,
+        training_recipe=training_recipe,
+        eval_metrics=eval_metrics,
+    )
 
     return trainer
 

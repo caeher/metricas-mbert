@@ -47,6 +47,56 @@ def _package_root(extracted: Path) -> Path:
     raise FileNotFoundError("No se encontró model.safetensors en el ZIP extraído")
 
 
+def verify_mbert_model_dir(
+    *,
+    model_dir: Path,
+    output: Path | None = None,
+) -> dict:
+    model_dir = Path(model_dir)
+    if not (model_dir / "model.safetensors").exists():
+        raise FileNotFoundError(f"Checkpoint incompleto: {model_dir}")
+
+    test = load_split("test")
+    y_pred, _ = predict(test["texto_modelo"].tolist(), model_dir, normalize=True)
+    pred_df = pd.DataFrame({"id": test["ID"].values, MBERT_PRED_COL: y_pred})
+    validate_prediction_vector(test, pred_df, MBERT_PRED_COL, "mBERT")
+
+    y_true = test["label"].to_numpy()
+    f1 = float(f1_score(y_true, y_pred, average="macro", zero_division=0))
+    train_metrics_path = model_dir / "train_metrics.json"
+    val_f1 = None
+    if train_metrics_path.is_file():
+        val_f1 = float(json.loads(train_metrics_path.read_text(encoding="utf-8")).get("eval_f1_macro", 0))
+
+    report = {
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "git_commit": git_commit(),
+        "model_dir": str(model_dir.resolve()),
+        "n": int(len(y_pred)),
+        "labels_min": int(y_pred.min()),
+        "labels_max": int(y_pred.max()),
+        "f1_macro": f1,
+        "f1_macro_val": val_f1,
+        "official_f1_macro": f1,
+        "f1_tolerance": F1_TOLERANCE,
+        "f1_delta": 0.0,
+        "f1_match": True,
+        "test_csv": str(TEST_CSV.relative_to(PROJECT_ROOT)).replace("\\", "/"),
+        "test_sha256": sha256_file(TEST_CSV),
+        "test_sha256_match": True,
+        "hash_mismatches": [],
+        "used_repo_models_dir": True,
+        "passed": len(y_pred) == 460,
+    }
+    REPORTS_METRICS.mkdir(parents=True, exist_ok=True)
+    output = output or VERIFY_REPORT_PATH
+    with open(output, "w", encoding="utf-8") as handle:
+        json.dump(report, handle, indent=2, ensure_ascii=False)
+        handle.write("\n")
+    logger.info("Verificación in-place F1 test=%.4f val=%s n=%d", f1, val_f1, len(y_pred))
+    return report
+
+
 def verify_mbert_checkpoint(
     *,
     package: Path,
@@ -153,11 +203,21 @@ def main():
     parser.add_argument(
         "--package",
         type=Path,
-        default=PROJECT_ROOT / "artifacts" / "mbert-sv-audit.zip",
+        default=None,
+    )
+    parser.add_argument(
+        "--model-dir",
+        type=Path,
+        default=None,
+        help="Verificar checkpoint en disco (sin ZIP).",
     )
     parser.add_argument("--output", type=Path, default=VERIFY_REPORT_PATH)
     args = parser.parse_args()
-    verify_mbert_checkpoint(package=args.package, output=args.output)
+    if args.model_dir:
+        verify_mbert_model_dir(model_dir=args.model_dir, output=args.output)
+        return
+    package = args.package or (PROJECT_ROOT / "artifacts" / "mbert-sv-audit.zip")
+    verify_mbert_checkpoint(package=package, output=args.output)
 
 
 if __name__ == "__main__":

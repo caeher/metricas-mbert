@@ -1,24 +1,25 @@
 {
-  "git_commit": "9ee042a6900a2c55d6ba9c122e63a422bd48089f",
-  "packaged_at": "2026-08-16T01:41:39.952316+00:00",
+  "git_commit": "e3f5856329b252b822b2b8946059c2af7ff13ddf",
+  "packaged_at": "2026-11-02T05:33:08.951269+00:00",
   "seed": 42,
   "base_model": "bert-base-multilingual-cased",
-  "checkpoint": "checkpoint-1072",
-  "epoch": 4.0,
-  "global_step": 1072,
-  "best_metric_val_f1_macro": 0.771461875533477,
-  "best_model_checkpoint": "checkpoint-1072",
-  "source_dir": "C:\\Users\\echoe\\Desktop\\metricas-proyecto-ml\\models\\mbert-sv",
+  "checkpoint": "checkpoint-2700",
+  "epoch": 5.0,
+  "global_step": 2700,
+  "best_metric_val_f1_macro": 0.8124760173011624,
+  "best_model_checkpoint": "checkpoint-2700",
+  "source_dir": "C:\\Users\\user6921\\Desktop\\cde-ml\\ml-metricas\\versiones\\v4\\model",
   "sha256": {
-    "README.md": "90090a944667bb52a22e073843ec01b3c8c7b0375f560bf7fe26027b614938a0",
+    "README.md": "d406ad596a7a43f00585255a4ef8c61fd082621cc1320b79c1de1e79017b908f",
     "config.json": "05bff5087cf13ac0e649d9f530785812724b36375afb04660782221af9edfeb4",
     "inference_contract.json": "925022b8a611252f883f91ed537909bd0109cc65e1067ff3fd4bf89ab23009eb",
-    "model.safetensors": "b2de91405b7c094368073b9b15e5a61287a987f7a4e308e1acd414dfbf36451f",
-    "test_metrics.json": "75b40738e9c3d5b4d6d9da4ac6192428169ee65de88986b22ffdac9c6a145874",
+    "model.safetensors": "39dcc4f3b344b825d6014abfe4e6272e5cb38ca4de0508a063ffe510e8c82f6f",
+    "test_metrics.json": "c88e297d461dfdbedfbd83f1f6a7a5a9c256323d6958265fe3247916678394d8",
     "tokenizer.json": "68376ce5e989db0c0bdb282422a99e12e449c1f97a1a18daf705626db0d57b83",
     "tokenizer_config.json": "55f686f3c1111e477bcd12bd9736d6b554fa2e3f94f1c3fbd2c16c467cdbf0eb",
-    "train_metrics.json": "0d01c3e1164828c44ca64f4ee5c2a16bd4568496a92512a9c125d60f93f95d44",
-    "training_args.bin": "be351f95ce0b99bab71f3fe9f100d435804bd29fc6ce4f857bce35a9a1603d7c"
+    "train_metrics.json": "b3a470247bf29f7bb227c76eae974cf53c3c79072eed0e50d5ed077d12511f37",
+    "training_args.bin": "3b3a44fa8512ba448a598495a817ba6a11e198df7cddb826d405ebe351dd6099",
+    "training_run.json": "9498b996f67aa039c727b51896038c1b4d5294e7cca9152cdab7e5687a9124e7"
   },
   "max_length": 128,
   "text_column": "texto_modelo",
@@ -26,8 +27,8 @@
   "normalizer_version": "1.1",
   "test_csv": "data/processed/test.csv",
   "test_n": 460,
-  "test_sha256": "5d1284efcc7df20f8a720318aed02dad7eb074e05d9428f646512d391aa9c471",
-  "official_f1_macro": 0.7777,
+  "test_sha256": "b63a04906bedda1befb41a7d147c582dc0ebee2f02f0cb3617ab461bdf932294",
+  "official_f1_macro": 0.7708,
   "f1_tolerance": 0.0001,
   "num_labels": 4,
   "labels": [
@@ -38,5 +39,37 @@
   ],
   "artifact_channel": "Google Drive (tesina / auditoría)",
   "artifact_url": "",
-  "artifact_local": "artifacts/mbert-sv-audit.zip"
+  "artifact_local": "artifacts/mbert-sv-audit.zip",
+  "training_run": {
+    "parameters": {
+      "total_params": 177856516,
+      "trainable_params": 177856516
+    },
+    "runtime": {
+      "global_step": 2700,
+      "epoch": 2.0,
+      "best_metric": 0.8124760173011624,
+      "best_model_checkpoint": "models\\mbert-sv-training-v3\\checkpoint-2700"
+    },
+    "training_recipe": {
+      "release": "v4",
+      "release_id": "training-v3-20261101",
+      "dataset_version": "1.9.0",
+      "train_rows": 21585,
+      "platform_class_boost": "none",
+      "synthetic_policy": "b2_full",
+      "loss_type": "ce",
+      "seed": 42,
+      "init_model_dir": null,
+      "note": "CDE v1.9.0 baseline checkpoint versiones/v4/model"
+    },
+    "dataset": {
+      "dataset_metadata_path": "data\\processed\\metadata.json",
+      "dataset_version": "1.9.0",
+      "train_total": 21585,
+      "train.csv_sha256": "7ab0ad17422624b674bc12e06cbbb1b796c1ed389d0e4aa872efcd0d3a2111d4",
+      "val.csv_sha256": "7967228844f8715a40e24668a2eec9b99137d36f53b303715e2dbf07cf0de383",
+      "test.csv_sha256": "b63a04906bedda1befb41a7d147c582dc0ebee2f02f0cb3617ab461bdf932294"
+    }
+  }
 }

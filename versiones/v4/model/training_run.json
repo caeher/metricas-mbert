@@ -1,0 +1,54 @@
+{
+  "recorded_at": "2026-11-02T05:27:08.915720+00:00",
+  "git_commit": "e3f5856329b252b822b2b8946059c2af7ff13ddf",
+  "base_model": "bert-base-multilingual-cased",
+  "model_dir": "C:\\Users\\user6921\\Desktop\\cde-ml\\ml-metricas\\versiones\\v4\\model",
+  "seed": 42,
+  "checkpoint_identity": {
+    "checkpoint": "checkpoint-2700",
+    "epoch": 5.0,
+    "global_step": 2700,
+    "best_metric_val_f1_macro": 0.8124760173011624,
+    "best_model_checkpoint": "checkpoint-2700"
+  },
+  "parameters": {
+    "total_params": 177856516,
+    "trainable_params": 177856516
+  },
+  "training_arguments": {},
+  "runtime": {
+    "global_step": 2700,
+    "epoch": 2.0,
+    "best_metric": 0.8124760173011624,
+    "best_model_checkpoint": "models\\mbert-sv-training-v3\\checkpoint-2700"
+  },
+  "dataset": {
+    "dataset_metadata_path": "data\\processed\\metadata.json",
+    "dataset_version": "1.9.0",
+    "train_total": 21585,
+    "train.csv_sha256": "7ab0ad17422624b674bc12e06cbbb1b796c1ed389d0e4aa872efcd0d3a2111d4",
+    "val.csv_sha256": "7967228844f8715a40e24668a2eec9b99137d36f53b303715e2dbf07cf0de383",
+    "test.csv_sha256": "b63a04906bedda1befb41a7d147c582dc0ebee2f02f0cb3617ab461bdf932294"
+  },
+  "training_recipe": {
+    "release": "v4",
+    "release_id": "training-v3-20261101",
+    "dataset_version": "1.9.0",
+    "train_rows": 21585,
+    "platform_class_boost": "none",
+    "synthetic_policy": "b2_full",
+    "loss_type": "ce",
+    "seed": 42,
+    "init_model_dir": null,
+    "note": "CDE v1.9.0 baseline checkpoint versiones/v4/model"
+  },
+  "eval_metrics": {
+    "eval_loss": 0.660574197769165,
+    "eval_f1_macro": 0.8124760173011624,
+    "eval_accuracy": 0.8169934640522876,
+    "eval_runtime": 44.8425,
+    "eval_samples_per_second": 10.236,
+    "eval_steps_per_second": 0.335,
+    "epoch": 5.0
+  }
+}

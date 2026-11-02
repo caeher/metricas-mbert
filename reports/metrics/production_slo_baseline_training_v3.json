@@ -1,5 +1,5 @@
 {
-  "evaluated_at": "2026-11-01T19:49:34.291700+00:00",
+  "evaluated_at": "2026-11-02T05:29:37.979876+00:00",
   "slo_id": "production_slo_v1",
   "slo_path": "reports/metrics/production_slo_v1.json",
   "target_operational_score": 0.9,
@@ -35,7 +35,7 @@
     "adv75_correct": 73,
     "adv75_min_correct": 45,
     "adv75_n": 75,
-    "adv144_correct": 134,
+    "adv144_correct": 127,
     "fpr_dialectal_gap": 0.0,
     "fpr_dialectal_gap_max": 0.17,
     "pass": {
@@ -52,7 +52,7 @@
   },
   "adversarial_output_prefix": "mbert_slo",
   "constraints_evaluated": true,
-  "model_dir": "C:\\Users\\user6921\\Desktop\\cde-ml\\ml-metricas\\models\\mbert-sv-training-v3",
+  "model_dir": "C:\\Users\\user6921\\Desktop\\cde-ml\\ml-metricas\\versiones\\v4\\model",
   "checkpoint": "checkpoint-2700",
   "notes": "Score operativo 0.7016 (meta 0.90). Cuello de botella: min_required_slice_f1_macro=0.7016. Gap score 0.1984."
 }

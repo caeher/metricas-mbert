@@ -1,0 +1,7 @@
+{
+  "batch_id": "legacy_train_real_batch_v1",
+  "record_count": 500,
+  "seed": 42,
+  "pool_size": 17330,
+  "canonical_records_sha256": "29b12fb1fb0145d9c7faa8a3afb34eaeb294fe76906f7c7fefeb5b1b1c7aa4a9"
+}

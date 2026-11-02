@@ -15,9 +15,10 @@ sys.path.insert(0, str(ROOT / "argilla" / "scripts"))
 
 from argilla_workflow import DEFAULT_RECORDS, WorkflowError, load_canonical_rows
 from discurso_odio.models.mbert import predict
+from discurso_odio.models.mbert_artifacts import read_checkpoint_identity
 
 DEFAULT_MANIFEST = ROOT / "reports/annotation/facebook_willian_batch_v1.csv"
-DEFAULT_MODEL = ROOT / "versiones" / "v2" / "model"
+DEFAULT_MODEL = ROOT / "versiones" / "v4" / "model"
 DEFAULT_JSONL = ROOT / "data/interim/facebook_willian_batch_v1_suggestions.jsonl"
 DEFAULT_DISCREPANCY = ROOT / "reports/annotation/facebook_willian_heuristic_vs_mbert.csv"
 
@@ -29,8 +30,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model-dir", type=Path, default=DEFAULT_MODEL)
     parser.add_argument("--output", type=Path, default=DEFAULT_JSONL)
     parser.add_argument("--discrepancy-csv", type=Path, default=DEFAULT_DISCREPANCY)
-    parser.add_argument("--agent", default="mbert-v4-gold")
-    parser.add_argument("--checkpoint", default="checkpoint-3955")
+    parser.add_argument("--agent", default="mbert-training-v3-v4")
+    parser.add_argument("--checkpoint", default=None)
     parser.add_argument("--batch-size", type=int, default=32)
     return parser.parse_args()
 
@@ -56,6 +57,7 @@ def main() -> int:
     args = parse_args()
     if not args.model_dir.is_dir():
         raise WorkflowError(f"No existe el checkpoint: {args.model_dir}")
+    checkpoint = args.checkpoint or read_checkpoint_identity(args.model_dir).get("checkpoint", "unknown")
     ids = load_manifest_ids(args.manifest)
     if not ids:
         raise WorkflowError(f"Manifiesto vacío: {args.manifest}")
@@ -97,7 +99,7 @@ def main() -> int:
                         "label": label,
                         "score": round(score, 6),
                         "agent": args.agent,
-                        "checkpoint": args.checkpoint,
+                        "checkpoint": checkpoint,
                     },
                     ensure_ascii=False,
                 )

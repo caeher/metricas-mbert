@@ -24,8 +24,13 @@ SDK_VERSION = "2.8.0"
 SCHEMA_VERSION = "argilla-issue04-v1"
 TAXONOMY_VERSION = "2.0.0"
 MIN_SUBMITTED = 2
-EVALUATION_FILES = {"data/processed/val.csv", "data/processed/test.csv"}
-TRAIN_FILE = "data/processed/train.csv"
+EVALUATION_FILES = {
+    "data/processed/val.csv",
+    "data/processed/test.csv",
+    "data/raw/val.csv",
+    "data/raw/test.csv",
+}
+TRAIN_FILES = {"data/processed/train.csv", "data/raw/train.csv"}
 CANDIDATE_FILES = {
     "data/sources/candidates/lenguaje_ofensivo.csv",
     "data/sources/candidates/thenewdata_X.csv",
@@ -182,7 +187,7 @@ def campaign_rows(rows: Iterable[dict[str, str]], name: str) -> list[dict[str, s
     for row in rows:
         files = source_files(row)
         has_eval = bool(files.intersection(EVALUATION_FILES))
-        has_train = TRAIN_FILE in files
+        has_train = bool(files.intersection(TRAIN_FILES))
         has_candidate = bool(files.intersection(CANDIDATE_FILES))
         roles = source_roles(row)
         is_diagnostic = "diagnostic_battery" in roles

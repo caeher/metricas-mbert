@@ -1,0 +1,8 @@
+{
+  "campaign": "legacy_train_real",
+  "manifest": "legacy_train_real_retrain_priority.csv",
+  "manifest_record_count": 150,
+  "target_raters": ["cde-rater-a", "cde-rater-b"],
+  "sessions": [],
+  "notes": "Actualizar sessions[] con {rater, canonical_ids[], completed_at} tras cada bloque BrowserOS neo o UI manual."
+}

@@ -1,7 +1,7 @@
 {
-  "run_id": "f0334cde-3a0e-43ba-8f11-503abbeee8a1",
-  "evaluated_at": "2026-11-02T04:45:36.967955+00:00",
-  "git_commit": "beb92e4cd5bb1d664ceae6f0fadf920ab5f4f0b9",
+  "run_id": "639ceeed-4e1c-41eb-b895-8d3965d90225",
+  "evaluated_at": "2026-11-02T05:32:50.923327+00:00",
+  "git_commit": "e3f5856329b252b822b2b8946059c2af7ff13ddf",
   "seed": 42,
   "base_model": "bert-base-multilingual-cased",
   "checkpoint": "checkpoint-2700",
