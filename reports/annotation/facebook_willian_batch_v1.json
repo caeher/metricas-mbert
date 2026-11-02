@@ -1,0 +1,22 @@
+{
+  "batch_id": "facebook_willian_batch_v1",
+  "record_count": 500,
+  "seed": 42,
+  "source_file": "data/raw/dataset_willian_facebook.csv",
+  "canonical_records_path": "data/interim/canonical_records.csv",
+  "canonical_records_sha256": "c1e8597c55b26eda50bad27ac0e5f98b69cf30669190a3b178cb250eb148052c",
+  "holdout_blocked_count": 7,
+  "stratum_counts": {
+    "class_0_hard": 50,
+    "class_1": 100,
+    "class_2": 115,
+    "class_3": 118,
+    "filler": 117
+  },
+  "provisional_label_counts": {
+    "0": 164,
+    "1": 103,
+    "2": 115,
+    "3": 118
+  }
+}

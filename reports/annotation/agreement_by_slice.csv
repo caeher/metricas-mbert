@@ -1,25 +1,13 @@
 ﻿campaign,cut_type,cut_value,n,percent_agreement,estimator,kappa_or_alpha,pairwise_comparisons
-pilot,source_file,data/raw/lenguaje_ofensivo.csv,30,90.0,cohen_kappa,0.0,30
-pilot,source_file,data/raw/thenewdata_X.csv,28,32.142857142857146,cohen_kappa,0.11920529801324506,28
-pilot,source_file,data/raw/train.csv,141,34.751773049645394,cohen_kappa,0.09866592551417451,141
-pilot,source_file,data/sources/x_threads/hilos_1_a_5_limpios_todos.csv,13,53.84615384615385,cohen_kappa,0.19587628865979373,13
-pilot,source_file,data/sources/x_threads/hilos_nuevos_sin_etiquetar.csv,7,28.57142857142857,cohen_kappa,-0.06060606060606059,7
-pilot,source_file,data/sources/x_threads/phase1/fase1_ronda1_sin_etiquetar.csv,21,23.809523809523807,cohen_kappa,0.08196721311475409,21
-pilot,source_file,data/sources/x_threads/phase1/fase1_ronda2_sin_etiquetar.csv,13,38.46153846153847,cohen_kappa,0.07142857142857145,13
-pilot,source_file,data/sources/x_threads/test_externo_3_sin_etiquetar.csv,8,62.5,cohen_kappa,0.0,8
-pilot,source_file,data/sources/x_threads/test_externo_4_sin_etiquetar.csv,7,42.857142857142854,cohen_kappa,0.09677419354838702,7
-pilot,platform,Facebook,57,29.82456140350877,cohen_kappa,0.06824683285655903,57
-pilot,platform,X,138,46.3768115942029,cohen_kappa,0.2793225123500353,138
-pilot,provisional_label,label_0,40,100.0,cohen_kappa,,40
-pilot,provisional_label,label_1,63,53.96825396825397,cohen_kappa,0.0,63
-pilot,provisional_label,label_2,62,16.129032258064516,cohen_kappa,0.05064782096584216,62
-pilot,provisional_label,label_3,34,2.941176470588235,cohen_kappa,0.0,34
-pilot,subclass,Antigitanismo,1,0.0,cohen_kappa,0.0,1
-pilot,subclass,Clasismo,1,100.0,cohen_kappa,,1
-pilot,subclass,Discriminación política,12,25.0,cohen_kappa,0.1627906976744186,12
-pilot,subclass,Insulto Directo,20,90.0,cohen_kappa,0.0,20
-pilot,subclass,Palabras Obscenas,10,90.0,cohen_kappa,0.0,10
-pilot,subclass,Racismo,2,50.0,cohen_kappa,0.0,2
-pilot,subclass,Sexismo,4,50.0,cohen_kappa,0.0,4
-pilot,subclass,Xenofobia,8,25.0,cohen_kappa,0.04,8
-pilot,subclass,unspecified,141,34.751773049645394,cohen_kappa,0.09866592551417451,141
+new_candidates,source_file,data/raw/dataset_willian_facebook.csv,470,94.04255319148936,cohen_kappa,0.9152313103075118,470
+new_candidates,platform,Facebook,470,94.04255319148936,cohen_kappa,0.9152313103075118,470
+new_candidates,provisional_label,label_0,143,94.4055944055944,cohen_kappa,0.8959621680611132,143
+new_candidates,provisional_label,label_1,100,93.0,cohen_kappa,0.8866947232113953,100
+new_candidates,provisional_label,label_2,115,93.91304347826087,cohen_kappa,0.9189243629771379,115
+new_candidates,provisional_label,label_3,117,94.87179487179486,cohen_kappa,0.919375215343976,117
+new_candidates,subclass,Animalización,73,94.52054794520548,cohen_kappa,0.9268170426065163,73
+new_candidates,subclass,Denigración grupal,39,92.3076923076923,cohen_kappa,0.8952551477170995,39
+new_candidates,subclass,Incitación colectiva,117,94.87179487179486,cohen_kappa,0.919375215343976,117
+new_candidates,subclass,Insulto o vulgaridad,100,93.0,cohen_kappa,0.8866947232113953,100
+new_candidates,subclass,N/A,143,94.4055944055944,cohen_kappa,0.8959621680611132,143
+new_candidates,subclass,Odio grupal,3,100.0,cohen_kappa,1.0,3

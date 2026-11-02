@@ -1,5 +1,5 @@
 {
-  "dataset_version": "1.8.0",
+  "dataset_version": "1.9.0",
   "frozen_bank_manifest": {
     "files": [
       {
@@ -41,7 +41,7 @@
   "ok": true,
   "row_counts_ok": true,
   "sync_manifest": {
-    "dataset_version": "1.8.0",
+    "dataset_version": "1.9.0",
     "mismatches": [],
     "ok": true
   },
@@ -50,10 +50,10 @@
     "raw_overlap": 0
   },
   "train_por_clase_observed": {
-    "Amenazas/Violencia": 1720,
-    "Discurso de Odio": 2549,
-    "Lenguaje Ofensivo": 3224,
-    "No Tóxico": 5148
+    "Amenazas/Violencia": 3072,
+    "Discurso de Odio": 2949,
+    "Lenguaje Ofensivo": 5903,
+    "No Tóxico": 9661
   },
   "train_por_clase_ok": true
 }

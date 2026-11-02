@@ -1,0 +1,58 @@
+{
+  "evaluated_at": "2026-11-01T05:52:49.442668+00:00",
+  "slo_id": "production_slo_v1",
+  "slo_path": "reports/metrics/production_slo_v1.json",
+  "target_operational_score": 0.9,
+  "operational_score": 0.6866,
+  "slo_pass": false,
+  "test_f1_macro": 0.7801,
+  "components": {
+    "weighted_platform_f1_macro": 0.7615,
+    "min_required_slice_f1_macro": 0.6866,
+    "min_required_class_recall": 0.6867
+  },
+  "platform_f1_macro": {
+    "plataforma_Facebook": 0.6866,
+    "plataforma_X": 0.8377
+  },
+  "slice_f1_macro": {
+    "plataforma_Facebook": 0.6866,
+    "plataforma_X": 0.8377,
+    "con_jerga": 0.7718
+  },
+  "class_recall": {
+    "Amenazas/Violencia": 0.6867
+  },
+  "slice_threshold_pass": {
+    "plataforma_Facebook": false,
+    "plataforma_X": false,
+    "con_jerga": true
+  },
+  "recall_threshold_pass": {
+    "Amenazas/Violencia": false
+  },
+  "constraints": {
+    "adv75_correct": 71,
+    "adv75_min_correct": 45,
+    "adv75_n": 75,
+    "adv144_correct": 133,
+    "fpr_dialectal_gap": 0.14285714285714285,
+    "fpr_dialectal_gap_max": 0.17,
+    "pass": {
+      "adv75_min_correct": true,
+      "fpr_dialectal_gap_max": true
+    }
+  },
+  "gaps_to_slo": {
+    "operational_score_to_target": 0.2134,
+    "slice_plataforma_Facebook": 0.0634,
+    "slice_plataforma_X": 0.0123,
+    "slice_con_jerga": -0.0018,
+    "recall_Amenazas/Violencia": 0.1133
+  },
+  "adversarial_output_prefix": "mbert_slo",
+  "constraints_evaluated": true,
+  "model_dir": "C:\\Users\\user6921\\Desktop\\cde-ml\\ml-metricas\\models\\mbert-sv-v3-pilot",
+  "checkpoint": "checkpoint-3164",
+  "notes": "Score operativo 0.6866 (meta 0.90). Cuello de botella: min_required_slice_f1_macro=0.6866. Gap score 0.2134."
+}

@@ -1,10 +1,10 @@
 {
-  "created_at": "2026-09-07T19:57:43.979014+00:00",
+  "created_at": "2026-11-02T04:46:00.526832+00:00",
   "official_status": "official",
-  "official_f1_macro": 0.761,
+  "official_f1_macro": 0.7708,
   "rows": [
     {
-      "f1_macro_published": 0.761,
+      "f1_macro_published": 0.7708,
       "rounding": "4dp",
       "source_file": "reports/metrics/mbert_test_metrics.csv",
       "checkpoint": "checkpoint-1072",
@@ -17,7 +17,7 @@
       "notes": "Checkpoint B2 (mbert-sv-b2): mejor F1-val antes de evaluar test una vez; tolerancia 0.0001"
     },
     {
-      "f1_macro_published": 0.761,
+      "f1_macro_published": 0.771,
       "rounding": "3dp",
       "source_file": "reports/latex/chapters (histórico)",
       "checkpoint": "checkpoint-1072",
@@ -50,7 +50,7 @@
       "git_commit": null,
       "seed": 42,
       "split": "test",
-      "test_sha256": "5d1284efcc7df20f8a720318aed02dad7eb074e05d9428f646512d391aa9c471",
+      "test_sha256": "b63a04906bedda1befb41a7d147c582dc0ebee2f02f0cb3617ab461bdf932294",
       "evaluated_at": "2026-08-16",
       "status": "historical_reproducible",
       "notes": "Checkpoint v1 (train 2,144); sustituido por B2 en sept 2026"

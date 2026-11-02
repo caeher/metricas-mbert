@@ -1,22 +1,22 @@
 {
   "campaigns": {
-    "pilot": {
+    "new_candidates": {
       "annotators": [
         "1c1f2c2e-4b76-4c12-a58c-e3168b3c36c7",
         "36a85e1d-dd1e-41dd-87a6-551736fb96b4"
       ],
       "estimator": "cohen_kappa",
-      "expected_agreement": 0.24323471400394478,
-      "kappa": 0.22748123436196835,
-      "meets_operational_target": false,
-      "n": 195,
-      "observed_agreement": 0.4153846153846154,
-      "pairwise_comparisons": 195,
-      "percent_agreement": 41.53846153846154,
-      "record_count": 200,
-      "records_flagged_insufficient_context": 5,
-      "records_flagged_quality_review": 134,
-      "records_with_two_submitted_annotators": 200,
+      "expected_agreement": 0.29721140787686734,
+      "kappa": 0.9152313103075118,
+      "meets_operational_target": true,
+      "n": 470,
+      "observed_agreement": 0.9404255319148936,
+      "pairwise_comparisons": 470,
+      "percent_agreement": 94.04255319148936,
+      "record_count": 500,
+      "records_flagged_insufficient_context": 30,
+      "records_flagged_quality_review": 61,
+      "records_with_two_submitted_annotators": 500,
       "unique_annotator_count": 2,
       "unique_annotators": [
         "1c1f2c2e-4b76-4c12-a58c-e3168b3c36c7",
@@ -26,24 +26,24 @@
   },
   "exports": [
     {
-      "campaign": "pilot",
-      "export_id": "pilot-v1__20261101T021448156600Z",
-      "path": "data/argilla_exports/pilot-v1__20261101T021448156600Z",
-      "record_count": 200,
-      "response_count": 4006
+      "campaign": "new_candidates",
+      "export_id": "new-candidates-willian-batch-v1__20261101T101145980164Z",
+      "path": "C:\\Users\\user6921\\Desktop\\cde-ml\\ml-metricas\\data\\argilla_exports\\new-candidates-willian-batch-v1__20261101T101145980164Z",
+      "record_count": 500,
+      "response_count": 9940
     }
   ],
   "guideline_version": "2.0.0",
   "operational_kappa_target": 0.75,
   "qualitative_analysis": {
-    "cases_for_human_review": 134,
+    "cases_for_human_review": 64,
     "cases_with_human_theme": 0,
-    "queue_path": "/work/reports/annotation/qualitative_review.csv",
+    "queue_path": "C:\\Users\\user6921\\Desktop\\cde-ml\\ml-metricas\\reports\\annotation\\qualitative_review.csv",
     "status": "pending_human_coding"
   },
   "release": {
-    "eligible_records": 180,
-    "held_records": 20,
+    "eligible_records": 644,
+    "held_records": 56,
     "qc_gates": [
       "dos o más respuestas humanas enviadas",
       "estado final anotado y clase final 0..3",
@@ -52,7 +52,7 @@
       "guía 2.0.0",
       "procedencia verificada para fuentes candidatas nuevas"
     ],
-    "release_path": "/work/reports/annotation/adjudicated_records.csv"
+    "release_path": "C:\\Users\\user6921\\Desktop\\cde-ml\\ml-metricas\\reports\\annotation\\adjudicated_records.csv"
   },
   "status": "computed_from_human_argilla_exports",
   "target_note": "Objetivo operativo inicial; no es garantía ni estimador de F1."

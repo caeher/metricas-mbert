@@ -1,10 +1,10 @@
 {
   "battery_version": "adversarial_v1",
-  "created_at": "2026-09-06T15:28:23.714454+00:00",
+  "created_at": "2026-11-02T04:45:10.434575+00:00",
   "seed": 42,
   "path": "data\\processed\\test_adversarial.csv",
   "n_cases": 75,
-  "sha256": "fa0d02819800c9c6ce62f0a7f446d1b0d6b44b1471883a5d25e5e0e799c7f0d4",
+  "sha256": "8b58f59bf0136418a496a9b9efb6d3343e13bbd25331871f2819fcdfebdf4f17",
   "families": {
     "A. Ofuscación de groserías": 20,
     "B. Emojis": 18,
@@ -13,5 +13,5 @@
     "E. Control sin jerga": 12
   },
   "rule": "diagnóstico: se reporta aparte, nunca como métrica principal",
-  "git_commit": "af6d23145cf55b3a5f26549aad9861da3d653582"
+  "git_commit": "beb92e4cd5bb1d664ceae6f0fadf920ab5f4f0b9"
 }

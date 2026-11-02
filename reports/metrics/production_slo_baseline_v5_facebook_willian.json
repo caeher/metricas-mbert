@@ -1,0 +1,58 @@
+{
+  "evaluated_at": "2026-11-01T11:20:06.518322+00:00",
+  "slo_id": "production_slo_v1",
+  "slo_path": "reports/metrics/production_slo_v1.json",
+  "target_operational_score": 0.9,
+  "operational_score": 0.6829,
+  "slo_pass": false,
+  "test_f1_macro": 0.7678,
+  "components": {
+    "weighted_platform_f1_macro": 0.7535,
+    "min_required_slice_f1_macro": 0.6829,
+    "min_required_class_recall": 0.7349
+  },
+  "platform_f1_macro": {
+    "plataforma_Facebook": 0.6829,
+    "plataforma_X": 0.8253
+  },
+  "slice_f1_macro": {
+    "plataforma_Facebook": 0.6829,
+    "plataforma_X": 0.8253,
+    "con_jerga": 0.7767
+  },
+  "class_recall": {
+    "Amenazas/Violencia": 0.7349
+  },
+  "slice_threshold_pass": {
+    "plataforma_Facebook": false,
+    "plataforma_X": false,
+    "con_jerga": true
+  },
+  "recall_threshold_pass": {
+    "Amenazas/Violencia": false
+  },
+  "constraints": {
+    "adv75_correct": 70,
+    "adv75_min_correct": 45,
+    "adv75_n": 75,
+    "adv144_correct": 132,
+    "fpr_dialectal_gap": 0.14285714285714285,
+    "fpr_dialectal_gap_max": 0.17,
+    "pass": {
+      "adv75_min_correct": true,
+      "fpr_dialectal_gap_max": true
+    }
+  },
+  "gaps_to_slo": {
+    "operational_score_to_target": 0.2171,
+    "slice_plataforma_Facebook": 0.0671,
+    "slice_plataforma_X": 0.0247,
+    "slice_con_jerga": -0.0067,
+    "recall_Amenazas/Violencia": 0.0651
+  },
+  "adversarial_output_prefix": "mbert_slo",
+  "constraints_evaluated": true,
+  "model_dir": "C:\\Users\\user6921\\Desktop\\cde-ml\\ml-metricas\\models\\mbert-sv-v5-facebook-willian",
+  "checkpoint": "checkpoint-500",
+  "notes": "Score operativo 0.6829 (meta 0.90). Cuello de botella: min_required_slice_f1_macro=0.6829. Gap score 0.2171."
+}

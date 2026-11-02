@@ -1,34 +1,34 @@
 {
-  "created_at": "2026-09-07T19:57:43.964444+00:00",
-  "git_commit": "7471b3b0e52eb4de59ff25e7a8947dfadf25f17f",
+  "created_at": "2026-11-02T04:46:00.365304+00:00",
+  "git_commit": "beb92e4cd5bb1d664ceae6f0fadf920ab5f4f0b9",
   "jerga_definition": "n_jerga > 0",
   "rows": [
     {
-      "run_id": "5ff7f3a3-fc32-4db1-ae1b-a2052085a461",
+      "run_id": "f0334cde-3a0e-43ba-8f11-503abbeee8a1",
       "model": "mbert",
-      "checkpoint": "checkpoint-1644",
+      "checkpoint": "checkpoint-2700",
       "split": "test.csv",
       "n_test": 460,
       "group": "con_jerga",
       "n": 29,
-      "fp": 12,
-      "fpr": 0.41379310344827586,
-      "fpr_ci_lo": 0.25513177341322396,
-      "fpr_ci_hi": 0.5926216401212141,
+      "fp": 11,
+      "fpr": 0.3793103448275862,
+      "fpr_ci_lo": 0.22688022100809843,
+      "fpr_ci_hi": 0.5599745579401147,
       "jerga_definition": "n_jerga > 0"
     },
     {
-      "run_id": "5ff7f3a3-fc32-4db1-ae1b-a2052085a461",
+      "run_id": "f0334cde-3a0e-43ba-8f11-503abbeee8a1",
       "model": "mbert",
-      "checkpoint": "checkpoint-1644",
+      "checkpoint": "checkpoint-2700",
       "split": "test.csv",
       "n_test": 460,
       "group": "sin_jerga",
       "n": 94,
-      "fp": 15,
-      "fpr": 0.1595744680851064,
-      "fpr_ci_lo": 0.09915613688605258,
-      "fpr_ci_hi": 0.24672442569542474,
+      "fp": 16,
+      "fpr": 0.1702127659574468,
+      "fpr_ci_lo": 0.10757621191020428,
+      "fpr_ci_hi": 0.25874558309060186,
       "jerga_definition": "n_jerga > 0"
     },
     {
@@ -60,8 +60,8 @@
       "jerga_definition": "n_jerga > 0"
     }
   ],
-  "run_id": "5ff7f3a3-fc32-4db1-ae1b-a2052085a461",
-  "checkpoint": "checkpoint-1644",
-  "evaluated_at": "2026-09-07T19:57:37.811840+00:00",
-  "official_f1_macro": 0.761
+  "run_id": "f0334cde-3a0e-43ba-8f11-503abbeee8a1",
+  "checkpoint": "checkpoint-2700",
+  "evaluated_at": "2026-11-02T04:45:36.967955+00:00",
+  "official_f1_macro": 0.7708
 }

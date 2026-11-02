@@ -1,9 +1,9 @@
 {
-  "evaluated_at": "2026-09-10T16:08:23.665851+00:00",
+  "evaluated_at": "2026-11-02T04:33:12.112435+00:00",
   "model_dir": null,
   "checkpoint": "unknown",
   "target_f1_macro": 0.8,
-  "test_f1_macro": 0.7610125879515741,
+  "test_f1_macro": 0.7707676452942657,
   "primary_pass": false,
   "secondary_gates": {
     "adv75_not_below_v1": true,
@@ -15,7 +15,7 @@
   "adv75_n": 75,
   "adv144_correct": 120,
   "fpr_dialectal_gap": 0.07142857142857142,
-  "facebook_f1_macro": 0.6648450448760046,
-  "official_run_id": "5ff7f3a3-fc32-4db1-ae1b-a2052085a461",
-  "notes": "F1 test 0.7610 < meta 0.80 (gap 0.0390). Adversarial 75: 64/75. Sesgo dialectal dentro de tolerancia B2."
+  "facebook_f1_macro": 0.7016420588568009,
+  "official_run_id": "b84f06ef-41bf-4a70-b71a-429a866c3c71",
+  "notes": "F1 test 0.7708 < meta 0.80 (gap 0.0292). Adversarial 75: 64/75. Sesgo dialectal dentro de tolerancia B2."
 }

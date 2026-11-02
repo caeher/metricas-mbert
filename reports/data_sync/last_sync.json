@@ -2,16 +2,16 @@
   "cde_root": "C:\\Users\\user6921\\Desktop\\cde-ml\\cde-project-ml-2026",
   "corpus_completo": {
     "action": "written",
-    "path": "data/raw/corpus_completo.csv",
-    "row_count": 13560,
-    "sha256": "1a64555786d6ceab717b8e057f7078ef08752e250f74f58ec97dd960ff42daf3"
+    "path": "data/interim/corpus_completo.csv",
+    "row_count": 22504,
+    "sha256": "2b18d5e15ff0e6b296b8ddbf1a153f14c1758053dc154a0ac766ec144bbb18da"
   },
-  "dataset_version": "1.8.0",
+  "dataset_version": "1.9.0",
   "files": [
     {
       "action": "copied",
       "path": "data/raw/train.csv",
-      "sha256": "eb619ece927b75334ac90c5052f2b908aa620b7c3a2efd127f8303d1d31dd807"
+      "sha256": "7ab0ad17422624b674bc12e06cbbb1b796c1ed389d0e4aa872efcd0d3a2111d4"
     },
     {
       "action": "copied",
@@ -25,18 +25,13 @@
     },
     {
       "action": "copied",
-      "path": "data/raw/test_adversarial.csv",
-      "sha256": "8b58f59bf0136418a496a9b9efb6d3343e13bbd25331871f2819fcdfebdf4f17"
-    },
-    {
-      "action": "copied",
       "path": "data/raw/metadata.json",
-      "sha256": "f4c9f80b2c24f5955d9875e786266db19c049d2c3e34d38061455329c1be0011"
+      "sha256": "2e3e2f5dc5a63ef039272fe2b9dc9d81512cc919817eab41f28932626568c4c8"
     },
     {
       "action": "copied",
       "path": "data/processed/train.csv",
-      "sha256": "eb619ece927b75334ac90c5052f2b908aa620b7c3a2efd127f8303d1d31dd807"
+      "sha256": "7ab0ad17422624b674bc12e06cbbb1b796c1ed389d0e4aa872efcd0d3a2111d4"
     },
     {
       "action": "copied",
@@ -55,8 +50,13 @@
     },
     {
       "action": "copied",
+      "path": "data/processed/metadata.json",
+      "sha256": "2e3e2f5dc5a63ef039272fe2b9dc9d81512cc919817eab41f28932626568c4c8"
+    },
+    {
+      "action": "regenerated_adversarial_144",
       "path": "data/processed/test_adversarial_144.csv",
-      "sha256": "8b58f59bf0136418a496a9b9efb6d3343e13bbd25331871f2819fcdfebdf4f17"
+      "sha256": "9c31526b26dbfa625c89ad98c164e3f948b3b0a9d6fdaaf8c2c5429dfbf0e5b6"
     },
     {
       "action": "copied",
@@ -110,6 +110,591 @@
     },
     {
       "action": "copied",
+      "path": "data/sources/x_threads/phase3/A10_tercer_aniversario_regimen.csv",
+      "sha256": "e559cd95facb6545c340013563c84bab7372bfa70d37b935c1c36a38c64b4f17"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A11_casi_600_capturas.csv",
+      "sha256": "ea87611aa8967018785f489b34ab7820ef6768a1dad48fd8543e4a19ce63a013"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A12_emma_dejar_morir_hambre.csv",
+      "sha256": "973a574fdc184f1185eb26d2fc061d62d9cde6af467c904e6c2a254c0bd86827"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A13_megacarcel_12000.csv",
+      "sha256": "7369207bd0693ce92a8f8cfdfbd85e80f27316d9e03a9ab54d3f1a5522458f68"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A14_movilizacion_70.csv",
+      "sha256": "73b48269d7b4bae74c3988f4918d19c48878dd13ed9e1b1ac23be6d8e25f43ad"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A15_duro_golpe_pandilleros.csv",
+      "sha256": "9a8d55e8635a7bb9a53bca21f44c3fe7c2f45f47f795c8e55226d179411b2992"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A16_cecot_pandilleros_esto_es.csv",
+      "sha256": "71302a20a92e2a97d4ddf639a127b71bd1914d2645d79fe6628a6d98cc50e896"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A17_solicito_regimen_asamblea.csv",
+      "sha256": "1f43d4231a15c3478e1499241794c84858382e67b67f65b756d6e832d79e4f71"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A18_cena_navidad_cecot.csv",
+      "sha256": "ccaab1aeca60ffc930027f7907210fc06fc240ca3dfab02e1a5bdd638d851a76"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A19_convoca_consejo_ministros.csv",
+      "sha256": "6058f715746852a5104fbd4d7cf24b9a704fbdb693d7e932a19f630c57f6a7f2"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A1_capturas_4_dias.csv",
+      "sha256": "381e6bfc5445151bc93d646b5a7111ecfdc6be30096086f8a8fcfc7b23330209"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A1_cecot_inauguracion.csv",
+      "sha256": "8b54b76fc57dc362dba0539b7bd37aff74335c4529000300e9d38712abe2c574"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A1_mensaje_criminales.csv",
+      "sha256": "8fac446a164bc10847e56b6903ee453d7514d577c5d32ee28dacc27628b45a88"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A20_brutal_venganza.csv",
+      "sha256": "84840ec553b29f0a606b60d46687f4743f63451109ca7819320edcf98e656aab"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A21_te_gustaria_delincuentes.csv",
+      "sha256": "2fa1cd5b70adcd14b890ebcdda8cc11125a7d3d753d3f9487b09700075f78a48"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A22_mega_carcel_40000.csv",
+      "sha256": "5fd45991b38c275f3a5d83dd80b7ecdd5170d6106564d2e864c2c0c84261fab5"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A23_ropa_interior.csv",
+      "sha256": "03598ae300a018095abefe4320d454ec881edf25212711a64f252d36e31c968e"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A24_mano_dura.csv",
+      "sha256": "598186557ef6207b775598392ece3e02ace21832261516dd11e6ae32c74c1b3e"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A25_duro_golpe_criminales.csv",
+      "sha256": "8142595a3cbe29658cce6b58a6fcfc09d0ed68f7388cedacffa5984d64b26b2a"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A26_ocho_reclusos.csv",
+      "sha256": "124c016bfe029cc8399e8beee4b0fe314563d6a5d812218f836e4c6c5a747987"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A27_candidato_arena_carcel.csv",
+      "sha256": "47d8522440498f6722b908e52c51676c4fbfe62f60811ebf4df8a0f299b451f9"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A28_criminales_carcel.csv",
+      "sha256": "4db4bd31206df5c8973583830536d702b8700c4999dd18a857ccb964148590ea"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A29_sobreviviente_terror.csv",
+      "sha256": "e2eb525365e2542527889b53e6b003308bd7eb494de3057b98c1660b9d93a256"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A2_enfrentamiento_guatajiagua.csv",
+      "sha256": "c19984834173f8bfebbc40b309361493cdf7888168757c81ae01a0fb976b042d"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A30_segundo_grupo_traslado.csv",
+      "sha256": "c312ec228fa2fbd3e3b6668df0b7d794b4da39d04c0f41cdf45cb0eeb01c3cb8"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A31_cecot_familia.csv",
+      "sha256": "223dc85250a234f9a8e749a3082be3e8ac96291ccebd6847cb15a0b59c94b080"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A32_pandilleros_cecot_piensan.csv",
+      "sha256": "89f48482b5dd08ae9aef088f6468e37c76b4aceb62a12f520efff69cde15e9fe"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A33_madrugada_ejecuta.csv",
+      "sha256": "ec473a80e21b899a42998cfad6a5f201cbcb6bb0c849413e280f23140e049980"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A34_regimen_se_rien.csv",
+      "sha256": "5a5828415eb56327084f401ba2c75db0981aaffec3558110a748414c818eefc8"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A35_confinamiento_terrorismo.csv",
+      "sha256": "4d0045fcff5f273b70b258249171e5efbc0080793b3ba4486a0355ddfac56f39"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A36_mega_carcel_mensaje.csv",
+      "sha256": "93c3112f2a24257bf40f1fc25f31034a13c216d7ba79ed31e7a067ca21907b5f"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A3_ladron_poste_bogota.csv",
+      "sha256": "c626ca867909c4777d603de87a80d454f010d5ba61d1ea7361aeedd94518ad82"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A4_pena_muerte_gallegos.csv",
+      "sha256": "1760be208822d949337371d6b4f09b556fc80d91448e15e4e40f297edae63951"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A5_captura_ruth_lopez.csv",
+      "sha256": "334acd9f310cbae502561794edd0742bb1a3f79decbb16e07f7bd00f608ca0b0"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A5_familiares_detenidos.csv",
+      "sha256": "6c05f5654c6ccd5cd46ce8694bae351b899ba3b4fe6a9b8017a2b718f013c8fd"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A6_criminalidad_bukele.csv",
+      "sha256": "6e41f0a297dfd86dd23853549aaa7e0d892b37338cc8a41bf4c5f4cc01360a76"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A7_un_anio_regimen.csv",
+      "sha256": "2ac1646a480c92bf8d2505ba053d38d14ee389b296a01264ba521805abaa7247"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A8_agente_asesinado.csv",
+      "sha256": "934fce0b26b40987e657022c922c1cf606ff838da8f2bcc8200d7384d6ac56fe"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/A9_capturas_8000.csv",
+      "sha256": "58dca76b08e6f5da441586b14d003e7da444f94c9ac84381e0bdaf8b2c6379b6"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B10_pupusas_mesoamericanas.csv",
+      "sha256": "81e088d15c2ef1e080dd041da16f6af084e783be39dbff9183c45de3ae192468"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B11_chivo_wallet.csv",
+      "sha256": "97bd98d4aed59436205c45dbeb8a5913184809a53e46815a20694fceb124f3c0"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B12_bitcoin_perdidas.csv",
+      "sha256": "d5d16171e6669feb4713dfb3207de626264ade4480fd0cb280a0df13a3820911"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B13_derrota_guatemala.csv",
+      "sha256": "3168efdab68924d9d3bcd4b5b58242e4c116d84020404b3db6691e3657269e85"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B14_partido_puerto_rico.csv",
+      "sha256": "3be7c88d3623ac68b0e37e9a3a9e1fea5434eb2131eef9da26c5e087489191a4"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B15_ricky_messi.csv",
+      "sha256": "702f1e8032cbcf3b678510e7a090e6cc6b070681b0d429ca3c965d3004261c49"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B16_aficionado_lagrimas.csv",
+      "sha256": "2a81dcb8917c92686c9566529a873f8a47c177d29cf1893bd6fc866846170e11"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B17_dt_no_es_fracaso.csv",
+      "sha256": "05f0faadfb01bd114fdfdb10e0e86ab6c4ae07570f611612f33f0f359183bc9b"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B18_aficionados_fito.csv",
+      "sha256": "2f6d1157d9fb90127d056e57b5ae3ab5c7bbc019301aaaa93819cdaf3063a998"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B19_kurupi_millonario.csv",
+      "sha256": "d8cb924e403f296930638d58eefd017a575e31eea92a3f5e685ac2c4a1612f24"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B1_selecta_entradas.csv",
+      "sha256": "98d9c439f2e9383bdb9b1c5274806da7c5c3afe53c64f74863d7239d8d63e82d"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B1_selecta_martinica.csv",
+      "sha256": "36520248928f69c006eb5e9a6ea675ddc5d7de1a9e29ba6a51b154ae0bdf4be8"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B20_proponen_fito.csv",
+      "sha256": "8e709dcb6a4400fca38330be1af6aec105778e9e7a26eb5e19825d02e4cec53c"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B22_necesita_aficion.csv",
+      "sha256": "32ebed60d46748bf4759c1cd5fe15928cb263d78bfdc1d49a8e6413664ab8845"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B23_bienvenido_bolillo.csv",
+      "sha256": "bf6cb0eccd51e057ce0d07bf9c3ee0b5f45aa138cec4b9904329bce615e25243"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B26_encuesta_selecta_vergonzoso.csv",
+      "sha256": "09599d2e8d1d307ad783a56cd7b76619a3477c625cac27733f93cfbbcfe9749e"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B27_selecta_hasta_aca.csv",
+      "sha256": "58d23d00322f6861598b1a2af835cd48703c7632a598bb8970658bdabca54b98"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B28_selecta_san_vicente.csv",
+      "sha256": "0e9a51ed5b2eb354c45e9a60367015140f4211d4aa7dffbee2fefda7a05651a0"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B29_tenemos_selecta.csv",
+      "sha256": "a2686f2d24df0f592135be4d84febac074a8e3c73021e6e0f4bb5bbf069daf3d"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B2_pupusas_precio.csv",
+      "sha256": "8ce853fb5892d43e8f571ca47f571c40e16241d534747a5aa1639c9a8c1eb22b"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B31_jairo_empate.csv",
+      "sha256": "c4c0760fd74b672188c7f859d784ff52d352d565f822b5105d3c4d630e02c555"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B32_rubén_botada.csv",
+      "sha256": "73c1395a91e0b533ff8ff171fe94e444ccb55aad32f54ec988187e4d8f715776"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B33_alcalde_pupuseria.csv",
+      "sha256": "2e4502497a02090a457c09a30d635f18e5e8b4872329e58b5b0d7b7bf9d949d0"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B34_albos_emplumados.csv",
+      "sha256": "80de471e6be5ed2d7fbc05a4dd1582606a40cccd896b519c8926f1f8c6c713e5"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B35_zavaleta_roldan.csv",
+      "sha256": "eb0b32b8f3ae9c6d86864749b8276faffad31d471a43830f7f8cb4f4bfa84b9b"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B36_concierto_cuscatlan.csv",
+      "sha256": "c682172163b20e0b78f15b6a3a0f6bfd2cacc4e4b6a52161c55959af1cddc4e8"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B37_experimentados_selecta.csv",
+      "sha256": "8e3b9894ef997f74678b6bcf2e800fa55dd75905ac37e0476df2da83087d036e"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B3_diputado_adame.csv",
+      "sha256": "cfbe210d58d2b201ccc255af0254d3c63ed6a6cec41cba11b6d4df54a56e481f"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B4_pupuseria_tragantes.csv",
+      "sha256": "1221f4d0a358c3d6fedfa69f5419baa041e1af01dfe42bbde0f27f46eb4cc2d8"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B4_trafico_placas.csv",
+      "sha256": "022afe0b45fc66f8314514709bb96b20fd1927090b75e79f016c1521ffed94b9"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B5_aniversario_presidencial.csv",
+      "sha256": "cff4f9917568bab7d084a5934d945554d07544739afb7cf2dae98755611cc0be"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B6_aficion_alianza_fas.csv",
+      "sha256": "c210b95578faa1e61587e2f2c84e2d2e40ffa477ee17f42d4f1dad1f9b8e9919"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B7_intolerancia_calle.csv",
+      "sha256": "36675ebecba05e616f394a2cc740b81614f706dd5ff0b59d75a5495043dc332b"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B8_yeik_creador.csv",
+      "sha256": "999073e7b25b04457046a9cfef9e7ee32e0eed38980b44007056e8ecbca9c9c7"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/B9_censo_hinchas.csv",
+      "sha256": "ef3bcb9bec35cf8d3c36fe8d795b5261c3cc6e623c3281087ba0a5544faedc28"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C10_pasaje_un_dolar.csv",
+      "sha256": "a3bccf7a21e65adb5ae0ccc3eb8ee775d8f687f3f0cda46051d74f7c166f1f77"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C11_estadio_china.csv",
+      "sha256": "b53f94d1118bfaef9f382ca08238bedd0d93b5e1f89b1502c0c67f74aacdc879"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C12_bukele_fe.csv",
+      "sha256": "2655b239a05a08e08b30b83e3df701978fe2d5da5d1b3804c090f60db61d44a8"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C13_mesas_suspendidas.csv",
+      "sha256": "8a575e0f1a348cdb69a8cbb0a4817f2fc9953bfadc85b7ab9c1caa235173047a"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C14_uci_hospital.csv",
+      "sha256": "84110f97abee6edf8107f142e8b194b0857962fec7c4083d9b7b8111bc1fbbfb"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C15_ningun_salvadoreno_haiti.csv",
+      "sha256": "d0d7992512cb2bb41e7395bf514c2efa7165f340fa7b88c0abc65ee5517cdbae"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C16_elecciones_encuestas.csv",
+      "sha256": "e0a99471315b6c708e9cf52130c136ca11feca6cfb3d8b9f4a61dc6eb3848173"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C17_oposicion_gobierno.csv",
+      "sha256": "4650ae3795e786bfe26beb6b4bcd6b7af254d07d7ceb2ae5044ff9961f08d2c5"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C18_bukele_haiti.csv",
+      "sha256": "fc34927ecc1a52463841fb86348ca95a902a1e6410aacceaaed77af03900eb60"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C19_opositores_actos.csv",
+      "sha256": "9490c383a437b2aa26270f61790f8198f2733c8cde1455f634cf51bdc9b89ffc"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C1_canasta_basica.csv",
+      "sha256": "1bab284152b7641e7794b66d2930aa4c49033b697e64c6ee9ebb9ba3d8154ae1"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C20_diputadas_oposicion.csv",
+      "sha256": "130d31824d775cc0871dcd4b9ed95d6782220f460c75b950cdf624593dc2bf42"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C21_guerra_corruptos.csv",
+      "sha256": "1c23b9125910537167311b5242d76cbacd1bd9bb971df509c6c4faf8d9ab7473"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C22_nTN24_carcel_polemica.csv",
+      "sha256": "b6bed3dbdef8a3bf390c63e0fda0473f1daf0021017a39f851fa908dfa512278"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C23_tratos_inhumanos.csv",
+      "sha256": "be85b8a02293d1c08a133da33140add30164e13a66b9abd23cefa0d133f64f1a"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C24_cola_bukele.csv",
+      "sha256": "e72208d85be56abd84d000658fb376fb2837729fc8be370bc729b62a8200a4f7"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C25_apoyar_bukele.csv",
+      "sha256": "f6bcbddc120b96b17e322d0d74dd179b90452f486d907714766bfa0869254af6"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C26_no_encarcelamos_oposicion.csv",
+      "sha256": "f078fcafb6eed6e39d9283dd74b2dc9e7cba327d998dca9e8006c02c69dec194"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C27_mensaje_prensa.csv",
+      "sha256": "ec91fcba214491fd73d1efb99db5cb074d6558a5a7344afab7f8543eb291cfe6"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C28_analista_oposicion.csv",
+      "sha256": "20d7e198e2dceeffc1d95f03545bbbfab12a31339b77fc43502b1c8304e8a3d4"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C29_reeleccion_indefinida.csv",
+      "sha256": "077e416f2433cce3ca4fe7873a803400478c6aa7e9e9dff61d8097ae50304c4b"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C2_propuesta_retornados.csv",
+      "sha256": "4681e7bd903bccdceaeeedb0e3874948f3f192b5d5042d0bcb480cd79980c1b6"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C30_indefinida_zavala.csv",
+      "sha256": "e34d3320f9e937c9552e3be66ed6db7e6eb7f70673c320af8fd26c2ddd7cf92d"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C31_lorena_pena_movilizacion.csv",
+      "sha256": "dff042211570ba1b9b211dbec2ee670339cfcce2f5d5cbf5a4c1dc32cb1ae60d"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C32_jaime_bayly.csv",
+      "sha256": "d5cd3bb7db5d26752373703a0d52b4aca2afea2efb0df5dc7e4862fe15d0b39a"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C34_elfaro_peores_tradiciones.csv",
+      "sha256": "eb754785bae67aaec6348a70d3bfb2659c41a3bcc748006e08fb2361d5386e38"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C35_dictador_amparo.csv",
+      "sha256": "3e45eabb07a304b3f97103e59661149003f2fe24d2242c861ca91346fc6fa55f"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C36_david_qva_maduro.csv",
+      "sha256": "8f5bd7983a281c717b5eca5614cce9729685ecac9b86236535ddcd49147dd90f"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C3_oposicion_regimen_popular.csv",
+      "sha256": "3d9413a55591d43b71368055d37846d12f1fe1cd901b994580867aa0200e3074"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C4_oposicion_mentira.csv",
+      "sha256": "f138b9c7782334a5b1028a47cafc947d880fe5182332b594db1d293e1896a480"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C5_dejen_de_discutir.csv",
+      "sha256": "189acff99e98af184bd377d6fee8124a3f8ff96e8bf47b401d445d8640499a7b"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C6_muchas_personas_no_entienden.csv",
+      "sha256": "125fbd80a70c897baea72df7c2d0f1c861b897822b42de646ad9b0594b9bc9a8"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C7_mexicano_dictadura.csv",
+      "sha256": "b5428217b208b97770826d73caf196270690cba90f8e4e3e7f10d9172e966488"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C8_director_arriaza.csv",
+      "sha256": "1a4811f325b36fa346a0838a00f02901a2886c6127826af9bcd46a3971a5be62"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3/C9_navidad_gasolina.csv",
+      "sha256": "015554d75a6c95c1eb6cb5ade1a85cb667ef227d748cc84047903de5b8ee8e5a"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3_jerga/busqueda_achis.csv",
+      "sha256": "5340e77d1b3997559411456a4b135e00bf76b96191fa1a6fe6cb712fb0c3baba"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3_jerga/busqueda_cachimbon.csv",
+      "sha256": "ec2f3271296b77e418ac0e02691c872d35f4f11466b33bf9e87dd93123fdcf03"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3_jerga/busqueda_cerote.csv",
+      "sha256": "dcd6a099f9fe7071d4a1b9f876a85c1050062d125575839e2562056a78fe4b51"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3_jerga/busqueda_chulon.csv",
+      "sha256": "91eaa852dce00e8ff8010748d1653e919d21c8c24194159fd06c36fd1c454f75"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3_jerga/busqueda_jana.csv",
+      "sha256": "0e232c4c212da06f30e955b71e9c9c02ab65c5a400474c66b2e8c21402464064"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3_jerga/busqueda_puchica_vos.csv",
+      "sha256": "18cc403a017e5a682df6a7cdc6209d0c94f41d63f7229d76fa9e24a16bae93ae"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3_jerga/busqueda_que_onda_vos.csv",
+      "sha256": "7642e906c42f6b997536af4425eb885c6140f93c300f90e47c8c57fccacab3b5"
+    },
+    {
+      "action": "copied",
+      "path": "data/sources/x_threads/phase3_jerga/busqueda_que_pedo_maje.csv",
+      "sha256": "141108dd7b832d01274f0ada5d7837399947fc2a065e6d28d47813d9aa235492"
+    },
+    {
+      "action": "copied",
       "path": "data/sources/x_threads/test_externo_2_sin_etiquetar.csv",
       "sha256": "6bfd8e74b589e551e65ca33b01698be5cc1093e2c9f1a77f7eea26f56588877e"
     },
@@ -124,5 +709,5 @@
       "sha256": "70467150e7a75f4e1d957b39ea441da4ba8b66cd64ca9de93231255cb59463e2"
     }
   ],
-  "synced_at_utc": "2026-10-28T18:54:06+00:00"
+  "synced_at_utc": "2026-11-02T04:00:05+00:00"
 }

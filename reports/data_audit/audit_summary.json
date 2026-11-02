@@ -1,6 +1,6 @@
 {
   "all_labels_final": false,
-  "author_thread_template_relation_groups": 526,
+  "author_thread_template_relation_groups": 4080,
   "batteries": {
     "diagnostic_only": true,
     "observations": 288,
@@ -8,67 +8,72 @@
   },
   "candidate_sources": {
     "country_inferred_value_unspecified": 497,
-    "exact_text_matches_with_historical_splits": 0,
+    "exact_text_matches_with_historical_splits": 29,
     "platform_counts": {
+      "Facebook": 7045,
       "X": 2328
     },
     "provisional_label_counts": {
+      "Amenazas/Violencia": 176,
+      "Discurso de Odio": 175,
       "Discurso de odio": 1000,
-      "Lenguaje Ofensivo": 1328
+      "Lenguaje Ofensivo": 1692,
+      "No Tóxico": 6330
     },
-    "total": 2328,
+    "total": 9373,
     "training_readiness_counts": {
-      "NO": 2328
+      "NO": 9373
     },
     "validated_counts": {
-      "NO": 2328
+      "NO": 9373
     }
   },
   "canonical_disposition_counts": {
     "diagnostic_only": 144,
-    "frozen_evaluation_bank_only": 1390,
-    "human_adjudication_required": 4,
-    "legacy_split_label_unreviewed": 13559,
-    "quarantine_unlabeled_acquisition": 243,
-    "quarantine_unvalidated_candidate": 2320
+    "frozen_evaluation_bank_only": 1385,
+    "human_adjudication_required": 89,
+    "legacy_split_label_unreviewed": 22491,
+    "quarantine_unlabeled_acquisition": 17307,
+    "quarantine_unvalidated_candidate": 7006
   },
-  "canonical_entity_count": 17660,
+  "canonical_entity_count": 48422,
   "core_splits": {
     "origin_type_counts": {
-      "real": 9308,
+      "real": 18252,
       "synthetic": 1125,
       "synthetic_v3": 3127
     },
     "provisional_label_id_counts": {
-      "0": 5393,
-      "1": 3542,
-      "2": 2738,
-      "3": 1887
+      "0": 9906,
+      "1": 6221,
+      "2": 3138,
+      "3": 3239
     },
     "test": 460,
-    "total": 13560,
-    "train": 12641,
+    "total": 22504,
+    "train": 21585,
     "val": 459
   },
   "corpus_full_view": "same IDs and all fields as the union of train/val/test; imported zero extra rows",
   "date_audit_issue_counts": {
     "collection_date_precedes_x_publication_date": 445,
-    "missing_date": 18557
+    "future_date_relative_to_audit_day": 7045,
+    "missing_date": 53512
   },
   "deduplication_ledger_event_counts": {
-    "duplicate_publication_url": 1,
-    "exact_text_duplicate": 7698,
+    "duplicate_publication_url": 414,
+    "exact_text_duplicate": 16684,
     "frozen_evaluation_bank_source": 1391,
-    "label_conflict": 4,
-    "source_view_not_imported": 5,
-    "unlabeled_thread_acquisition_source": 7793,
-    "unvalidated_candidate_source": 2328
+    "label_conflict": 89,
+    "source_view_not_imported": 4,
+    "unlabeled_thread_acquisition_source": 33804,
+    "unvalidated_candidate_source": 9373
   },
   "empty_text_observations": 0,
-  "encoding_suspect_observation_count": 535,
-  "exact_duplicate_or_publication_groups": 7699,
+  "encoding_suspect_observation_count": 564,
+  "exact_duplicate_or_publication_groups": 17098,
   "exact_match_limit": "Zero exact matches against historical splits does not establish absence of near-duplicates, URL/post overlap, author/thread leakage, or template leakage.",
-  "exact_text_label_conflict_count": 3,
+  "exact_text_label_conflict_count": 7,
   "frozen_evaluation_bank": {
     "never_trainable": true,
     "observations": 1391,
@@ -120,7 +125,7 @@
       "dialect_inferred": 0,
       "dialect_unknown": 236
     },
-    "data/processed/test_adversarial_144.csv": {
+    "data/processed/test_adversarial.csv": {
       "country_confirmed": 0,
       "country_inferred": 0,
       "country_unknown": 144,
@@ -128,13 +133,13 @@
       "dialect_inferred": 0,
       "dialect_unknown": 144
     },
-    "data/raw/lenguaje_ofensivo.csv": {
+    "data/processed/test_adversarial_144.csv": {
       "country_confirmed": 0,
       "country_inferred": 0,
-      "country_unknown": 1328,
+      "country_unknown": 144,
       "dialect_confirmed": 0,
-      "dialect_inferred": 196,
-      "dialect_unknown": 1132
+      "dialect_inferred": 0,
+      "dialect_unknown": 144
     },
     "data/raw/test.csv": {
       "country_confirmed": 0,
@@ -144,29 +149,13 @@
       "dialect_inferred": 0,
       "dialect_unknown": 460
     },
-    "data/raw/test_adversarial.csv": {
-      "country_confirmed": 0,
-      "country_inferred": 0,
-      "country_unknown": 144,
-      "dialect_confirmed": 0,
-      "dialect_inferred": 0,
-      "dialect_unknown": 144
-    },
-    "data/raw/thenewdata_X.csv": {
-      "country_confirmed": 0,
-      "country_inferred": 497,
-      "country_unknown": 503,
-      "dialect_confirmed": 0,
-      "dialect_inferred": 317,
-      "dialect_unknown": 683
-    },
     "data/raw/train.csv": {
       "country_confirmed": 0,
       "country_inferred": 0,
-      "country_unknown": 12641,
+      "country_unknown": 21585,
       "dialect_confirmed": 0,
       "dialect_inferred": 0,
-      "dialect_unknown": 12641
+      "dialect_unknown": 21585
     },
     "data/raw/val.csv": {
       "country_confirmed": 0,
@@ -175,6 +164,22 @@
       "dialect_confirmed": 0,
       "dialect_inferred": 0,
       "dialect_unknown": 459
+    },
+    "data/sources/candidates/lenguaje_ofensivo.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 1328,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 196,
+      "dialect_unknown": 1132
+    },
+    "data/sources/candidates/thenewdata_X.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 497,
+      "country_unknown": 503,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 317,
+      "dialect_unknown": 683
     },
     "data/sources/x_threads/hilos_1_a_5_limpios_todos.csv": {
       "country_confirmed": 0,
@@ -216,6 +221,942 @@
       "dialect_inferred": 0,
       "dialect_unknown": 1387
     },
+    "data/sources/x_threads/phase3/A10_tercer_aniversario_regimen.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 239,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 239
+    },
+    "data/sources/x_threads/phase3/A11_casi_600_capturas.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 280,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 280
+    },
+    "data/sources/x_threads/phase3/A12_emma_dejar_morir_hambre.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 271,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 271
+    },
+    "data/sources/x_threads/phase3/A13_megacarcel_12000.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 290,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 290
+    },
+    "data/sources/x_threads/phase3/A14_movilizacion_70.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 148,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 148
+    },
+    "data/sources/x_threads/phase3/A15_duro_golpe_pandilleros.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 223,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 223
+    },
+    "data/sources/x_threads/phase3/A16_cecot_pandilleros_esto_es.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 207,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 207
+    },
+    "data/sources/x_threads/phase3/A17_solicito_regimen_asamblea.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 256,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 256
+    },
+    "data/sources/x_threads/phase3/A18_cena_navidad_cecot.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 305,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 305
+    },
+    "data/sources/x_threads/phase3/A19_convoca_consejo_ministros.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 274,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 274
+    },
+    "data/sources/x_threads/phase3/A1_capturas_4_dias.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 258,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 258
+    },
+    "data/sources/x_threads/phase3/A1_cecot_inauguracion.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 212,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 212
+    },
+    "data/sources/x_threads/phase3/A1_mensaje_criminales.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 245,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 245
+    },
+    "data/sources/x_threads/phase3/A20_brutal_venganza.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 136,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 136
+    },
+    "data/sources/x_threads/phase3/A21_te_gustaria_delincuentes.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 190,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 190
+    },
+    "data/sources/x_threads/phase3/A22_mega_carcel_40000.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 217,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 217
+    },
+    "data/sources/x_threads/phase3/A23_ropa_interior.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 317,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 317
+    },
+    "data/sources/x_threads/phase3/A24_mano_dura.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 249,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 249
+    },
+    "data/sources/x_threads/phase3/A25_duro_golpe_criminales.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 210,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 210
+    },
+    "data/sources/x_threads/phase3/A26_ocho_reclusos.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 274,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 274
+    },
+    "data/sources/x_threads/phase3/A27_candidato_arena_carcel.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 304,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 304
+    },
+    "data/sources/x_threads/phase3/A28_criminales_carcel.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 142,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 142
+    },
+    "data/sources/x_threads/phase3/A29_sobreviviente_terror.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 235,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 235
+    },
+    "data/sources/x_threads/phase3/A2_enfrentamiento_guatajiagua.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 311,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 311
+    },
+    "data/sources/x_threads/phase3/A30_segundo_grupo_traslado.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 282,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 282
+    },
+    "data/sources/x_threads/phase3/A31_cecot_familia.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 274,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 274
+    },
+    "data/sources/x_threads/phase3/A32_pandilleros_cecot_piensan.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 160,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 160
+    },
+    "data/sources/x_threads/phase3/A33_madrugada_ejecuta.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 214,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 214
+    },
+    "data/sources/x_threads/phase3/A34_regimen_se_rien.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 154,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 154
+    },
+    "data/sources/x_threads/phase3/A35_confinamiento_terrorismo.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 207,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 207
+    },
+    "data/sources/x_threads/phase3/A36_mega_carcel_mensaje.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 252,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 252
+    },
+    "data/sources/x_threads/phase3/A3_ladron_poste_bogota.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 231,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 231
+    },
+    "data/sources/x_threads/phase3/A4_pena_muerte_gallegos.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 291,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 291
+    },
+    "data/sources/x_threads/phase3/A5_captura_ruth_lopez.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 248,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 248
+    },
+    "data/sources/x_threads/phase3/A5_familiares_detenidos.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 308,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 308
+    },
+    "data/sources/x_threads/phase3/A6_criminalidad_bukele.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 211,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 211
+    },
+    "data/sources/x_threads/phase3/A7_un_anio_regimen.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 254,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 254
+    },
+    "data/sources/x_threads/phase3/A8_agente_asesinado.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 256,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 256
+    },
+    "data/sources/x_threads/phase3/A9_capturas_8000.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 270,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 270
+    },
+    "data/sources/x_threads/phase3/B10_pupusas_mesoamericanas.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 309,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 309
+    },
+    "data/sources/x_threads/phase3/B11_chivo_wallet.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 122,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 122
+    },
+    "data/sources/x_threads/phase3/B12_bitcoin_perdidas.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 140,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 140
+    },
+    "data/sources/x_threads/phase3/B13_derrota_guatemala.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 273,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 273
+    },
+    "data/sources/x_threads/phase3/B14_partido_puerto_rico.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 265,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 265
+    },
+    "data/sources/x_threads/phase3/B15_ricky_messi.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 216,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 216
+    },
+    "data/sources/x_threads/phase3/B16_aficionado_lagrimas.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 154,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 154
+    },
+    "data/sources/x_threads/phase3/B17_dt_no_es_fracaso.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 234,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 234
+    },
+    "data/sources/x_threads/phase3/B18_aficionados_fito.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 135,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 135
+    },
+    "data/sources/x_threads/phase3/B19_kurupi_millonario.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 141,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 141
+    },
+    "data/sources/x_threads/phase3/B1_selecta_entradas.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 172,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 172
+    },
+    "data/sources/x_threads/phase3/B1_selecta_martinica.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 179,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 179
+    },
+    "data/sources/x_threads/phase3/B20_proponen_fito.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 204,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 204
+    },
+    "data/sources/x_threads/phase3/B22_necesita_aficion.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 142,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 142
+    },
+    "data/sources/x_threads/phase3/B23_bienvenido_bolillo.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 153,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 153
+    },
+    "data/sources/x_threads/phase3/B26_encuesta_selecta_vergonzoso.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 191,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 191
+    },
+    "data/sources/x_threads/phase3/B27_selecta_hasta_aca.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 297,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 297
+    },
+    "data/sources/x_threads/phase3/B28_selecta_san_vicente.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 194,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 194
+    },
+    "data/sources/x_threads/phase3/B29_tenemos_selecta.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 259,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 259
+    },
+    "data/sources/x_threads/phase3/B2_pupusas_precio.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 306,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 306
+    },
+    "data/sources/x_threads/phase3/B31_jairo_empate.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 167,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 167
+    },
+    "data/sources/x_threads/phase3/B32_rubén_botada.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 132,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 132
+    },
+    "data/sources/x_threads/phase3/B33_alcalde_pupuseria.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 282,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 282
+    },
+    "data/sources/x_threads/phase3/B34_albos_emplumados.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 129,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 129
+    },
+    "data/sources/x_threads/phase3/B35_zavaleta_roldan.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 276,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 276
+    },
+    "data/sources/x_threads/phase3/B36_concierto_cuscatlan.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 302,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 302
+    },
+    "data/sources/x_threads/phase3/B37_experimentados_selecta.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 123,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 123
+    },
+    "data/sources/x_threads/phase3/B3_diputado_adame.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 148,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 148
+    },
+    "data/sources/x_threads/phase3/B4_pupuseria_tragantes.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 156,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 156
+    },
+    "data/sources/x_threads/phase3/B4_trafico_placas.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 196,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 196
+    },
+    "data/sources/x_threads/phase3/B5_aniversario_presidencial.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 250,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 250
+    },
+    "data/sources/x_threads/phase3/B6_aficion_alianza_fas.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 153,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 153
+    },
+    "data/sources/x_threads/phase3/B7_intolerancia_calle.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 292,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 292
+    },
+    "data/sources/x_threads/phase3/B8_yeik_creador.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 329,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 329
+    },
+    "data/sources/x_threads/phase3/B9_censo_hinchas.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 122,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 122
+    },
+    "data/sources/x_threads/phase3/C10_pasaje_un_dolar.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 255,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 255
+    },
+    "data/sources/x_threads/phase3/C11_estadio_china.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 302,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 302
+    },
+    "data/sources/x_threads/phase3/C12_bukele_fe.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 216,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 216
+    },
+    "data/sources/x_threads/phase3/C13_mesas_suspendidas.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 298,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 298
+    },
+    "data/sources/x_threads/phase3/C14_uci_hospital.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 160,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 160
+    },
+    "data/sources/x_threads/phase3/C15_ningun_salvadoreno_haiti.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 256,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 256
+    },
+    "data/sources/x_threads/phase3/C16_elecciones_encuestas.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 285,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 285
+    },
+    "data/sources/x_threads/phase3/C17_oposicion_gobierno.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 248,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 248
+    },
+    "data/sources/x_threads/phase3/C18_bukele_haiti.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 237,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 237
+    },
+    "data/sources/x_threads/phase3/C19_opositores_actos.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 326,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 326
+    },
+    "data/sources/x_threads/phase3/C1_canasta_basica.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 227,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 227
+    },
+    "data/sources/x_threads/phase3/C20_diputadas_oposicion.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 200,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 200
+    },
+    "data/sources/x_threads/phase3/C21_guerra_corruptos.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 183,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 183
+    },
+    "data/sources/x_threads/phase3/C22_nTN24_carcel_polemica.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 318,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 318
+    },
+    "data/sources/x_threads/phase3/C23_tratos_inhumanos.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 224,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 224
+    },
+    "data/sources/x_threads/phase3/C24_cola_bukele.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 236,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 236
+    },
+    "data/sources/x_threads/phase3/C25_apoyar_bukele.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 308,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 308
+    },
+    "data/sources/x_threads/phase3/C26_no_encarcelamos_oposicion.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 240,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 240
+    },
+    "data/sources/x_threads/phase3/C27_mensaje_prensa.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 272,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 272
+    },
+    "data/sources/x_threads/phase3/C28_analista_oposicion.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 279,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 279
+    },
+    "data/sources/x_threads/phase3/C29_reeleccion_indefinida.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 286,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 286
+    },
+    "data/sources/x_threads/phase3/C2_propuesta_retornados.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 188,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 188
+    },
+    "data/sources/x_threads/phase3/C30_indefinida_zavala.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 270,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 270
+    },
+    "data/sources/x_threads/phase3/C31_lorena_pena_movilizacion.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 127,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 127
+    },
+    "data/sources/x_threads/phase3/C32_jaime_bayly.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 162,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 162
+    },
+    "data/sources/x_threads/phase3/C34_elfaro_peores_tradiciones.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 248,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 248
+    },
+    "data/sources/x_threads/phase3/C35_dictador_amparo.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 328,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 328
+    },
+    "data/sources/x_threads/phase3/C36_david_qva_maduro.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 326,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 326
+    },
+    "data/sources/x_threads/phase3/C3_oposicion_regimen_popular.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 265,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 265
+    },
+    "data/sources/x_threads/phase3/C4_oposicion_mentira.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 281,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 281
+    },
+    "data/sources/x_threads/phase3/C5_dejen_de_discutir.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 314,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 314
+    },
+    "data/sources/x_threads/phase3/C6_muchas_personas_no_entienden.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 283,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 283
+    },
+    "data/sources/x_threads/phase3/C7_mexicano_dictadura.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 311,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 311
+    },
+    "data/sources/x_threads/phase3/C8_director_arriaza.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 266,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 266
+    },
+    "data/sources/x_threads/phase3/C9_navidad_gasolina.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 268,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 268
+    },
+    "data/sources/x_threads/phase3_jerga/busqueda_achis.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 268,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 268
+    },
+    "data/sources/x_threads/phase3_jerga/busqueda_cachimbon.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 33,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 33
+    },
+    "data/sources/x_threads/phase3_jerga/busqueda_cerote.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 107,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 107
+    },
+    "data/sources/x_threads/phase3_jerga/busqueda_chulon.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 20,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 20
+    },
+    "data/sources/x_threads/phase3_jerga/busqueda_jana.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 12,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 12
+    },
+    "data/sources/x_threads/phase3_jerga/busqueda_puchica_vos.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 1,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 1
+    },
+    "data/sources/x_threads/phase3_jerga/busqueda_que_onda_vos.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 28,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 28
+    },
+    "data/sources/x_threads/phase3_jerga/busqueda_que_pedo_maje.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 1,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 0,
+      "dialect_unknown": 1
+    },
     "data/sources/x_threads/test_externo_2_sin_etiquetar.csv": {
       "country_confirmed": 0,
       "country_inferred": 0,
@@ -239,6 +1180,14 @@
       "dialect_confirmed": 0,
       "dialect_inferred": 0,
       "dialect_unknown": 887
+    },
+    "versiones/v3/sources/dataset_willian_facebook.csv": {
+      "country_confirmed": 0,
+      "country_inferred": 0,
+      "country_unknown": 7045,
+      "dialect_confirmed": 0,
+      "dialect_inferred": 7045,
+      "dialect_unknown": 0
     }
   },
   "known_limitations": [
@@ -246,7 +1195,7 @@
     "Country and dialect are not inferred from membership in this project archive or from X/Twitter platform labels.",
     "Three exact-text conflicts and one same-publication text-version conflict remain unresolved until a human annotator enters reviewer, date, final label and rationale in the ledger."
   ],
-  "label_conflict_count": 4,
+  "label_conflict_count": 89,
   "label_conflict_status": "pending human adjudication; no automatic label selected",
   "method": {
     "author_thread_template": "reported as relation signals only; never automatic exclusion",
@@ -261,34 +1210,154 @@
       "threshold": 0.82
     }
   },
-  "same_publication_text_version_label_conflict_count": 1,
+  "same_publication_text_version_label_conflict_count": 82,
   "script_version": "1.1.0",
-  "similarity_candidate_count": 1365,
+  "similarity_candidate_count": 682,
   "source_row_counts": {
     "data/evaluation/frozen_bank/externo2.csv": 647,
     "data/evaluation/frozen_bank/migrantes.csv": 306,
     "data/evaluation/frozen_bank/militares.csv": 202,
     "data/evaluation/frozen_bank/xenofobia.csv": 236,
-    "data/processed/corpus_completo.csv": 4212,
+    "data/interim/corpus_completo.csv": 22504,
     "data/processed/test.csv": 460,
+    "data/processed/test_adversarial.csv": 144,
     "data/processed/test_adversarial_144.csv": 144,
-    "data/processed/train.csv": 12641,
+    "data/processed/train.csv": 21585,
     "data/processed/val.csv": 459,
-    "data/raw/corpus_completo.csv": 13560,
-    "data/raw/lenguaje_ofensivo.csv": 1328,
+    "data/raw/dataset_willian_facebook.csv": 0,
+    "data/raw/lenguaje_ofensivo.csv": 0,
     "data/raw/test.csv": 460,
-    "data/raw/test_adversarial.csv": 144,
-    "data/raw/thenewdata_X.csv": 1000,
-    "data/raw/train.csv": 12641,
+    "data/raw/thenewdata_X.csv": 0,
+    "data/raw/train.csv": 21585,
     "data/raw/val.csv": 459,
+    "data/sources/candidates/lenguaje_ofensivo.csv": 1328,
+    "data/sources/candidates/thenewdata_X.csv": 1000,
     "data/sources/x_threads/hilos_1_a_5_limpios_todos.csv": 1320,
     "data/sources/x_threads/hilos_nuevos_sin_etiquetar.csv": 536,
     "data/sources/x_threads/migrantes_sin_etiquetar.csv": 308,
     "data/sources/x_threads/phase1/fase1_ronda1_sin_etiquetar.csv": 2115,
     "data/sources/x_threads/phase1/fase1_ronda2_sin_etiquetar.csv": 1387,
+    "data/sources/x_threads/phase3/A10_tercer_aniversario_regimen.csv": 239,
+    "data/sources/x_threads/phase3/A11_casi_600_capturas.csv": 280,
+    "data/sources/x_threads/phase3/A12_emma_dejar_morir_hambre.csv": 271,
+    "data/sources/x_threads/phase3/A13_megacarcel_12000.csv": 290,
+    "data/sources/x_threads/phase3/A14_movilizacion_70.csv": 148,
+    "data/sources/x_threads/phase3/A15_duro_golpe_pandilleros.csv": 223,
+    "data/sources/x_threads/phase3/A16_cecot_pandilleros_esto_es.csv": 207,
+    "data/sources/x_threads/phase3/A17_solicito_regimen_asamblea.csv": 256,
+    "data/sources/x_threads/phase3/A18_cena_navidad_cecot.csv": 305,
+    "data/sources/x_threads/phase3/A19_convoca_consejo_ministros.csv": 274,
+    "data/sources/x_threads/phase3/A1_capturas_4_dias.csv": 258,
+    "data/sources/x_threads/phase3/A1_cecot_inauguracion.csv": 212,
+    "data/sources/x_threads/phase3/A1_mensaje_criminales.csv": 245,
+    "data/sources/x_threads/phase3/A20_brutal_venganza.csv": 136,
+    "data/sources/x_threads/phase3/A21_te_gustaria_delincuentes.csv": 190,
+    "data/sources/x_threads/phase3/A22_mega_carcel_40000.csv": 217,
+    "data/sources/x_threads/phase3/A23_ropa_interior.csv": 317,
+    "data/sources/x_threads/phase3/A24_mano_dura.csv": 249,
+    "data/sources/x_threads/phase3/A25_duro_golpe_criminales.csv": 210,
+    "data/sources/x_threads/phase3/A26_ocho_reclusos.csv": 274,
+    "data/sources/x_threads/phase3/A27_candidato_arena_carcel.csv": 304,
+    "data/sources/x_threads/phase3/A28_criminales_carcel.csv": 142,
+    "data/sources/x_threads/phase3/A29_sobreviviente_terror.csv": 235,
+    "data/sources/x_threads/phase3/A2_enfrentamiento_guatajiagua.csv": 311,
+    "data/sources/x_threads/phase3/A30_segundo_grupo_traslado.csv": 282,
+    "data/sources/x_threads/phase3/A31_cecot_familia.csv": 274,
+    "data/sources/x_threads/phase3/A32_pandilleros_cecot_piensan.csv": 160,
+    "data/sources/x_threads/phase3/A33_madrugada_ejecuta.csv": 214,
+    "data/sources/x_threads/phase3/A34_regimen_se_rien.csv": 154,
+    "data/sources/x_threads/phase3/A35_confinamiento_terrorismo.csv": 207,
+    "data/sources/x_threads/phase3/A36_mega_carcel_mensaje.csv": 252,
+    "data/sources/x_threads/phase3/A3_ladron_poste_bogota.csv": 231,
+    "data/sources/x_threads/phase3/A4_pena_muerte_gallegos.csv": 291,
+    "data/sources/x_threads/phase3/A5_captura_ruth_lopez.csv": 248,
+    "data/sources/x_threads/phase3/A5_familiares_detenidos.csv": 308,
+    "data/sources/x_threads/phase3/A6_criminalidad_bukele.csv": 211,
+    "data/sources/x_threads/phase3/A7_un_anio_regimen.csv": 254,
+    "data/sources/x_threads/phase3/A8_agente_asesinado.csv": 256,
+    "data/sources/x_threads/phase3/A9_capturas_8000.csv": 270,
+    "data/sources/x_threads/phase3/B10_pupusas_mesoamericanas.csv": 309,
+    "data/sources/x_threads/phase3/B11_chivo_wallet.csv": 122,
+    "data/sources/x_threads/phase3/B12_bitcoin_perdidas.csv": 140,
+    "data/sources/x_threads/phase3/B13_derrota_guatemala.csv": 273,
+    "data/sources/x_threads/phase3/B14_partido_puerto_rico.csv": 265,
+    "data/sources/x_threads/phase3/B15_ricky_messi.csv": 216,
+    "data/sources/x_threads/phase3/B16_aficionado_lagrimas.csv": 154,
+    "data/sources/x_threads/phase3/B17_dt_no_es_fracaso.csv": 234,
+    "data/sources/x_threads/phase3/B18_aficionados_fito.csv": 135,
+    "data/sources/x_threads/phase3/B19_kurupi_millonario.csv": 141,
+    "data/sources/x_threads/phase3/B1_selecta_entradas.csv": 172,
+    "data/sources/x_threads/phase3/B1_selecta_martinica.csv": 179,
+    "data/sources/x_threads/phase3/B20_proponen_fito.csv": 204,
+    "data/sources/x_threads/phase3/B22_necesita_aficion.csv": 142,
+    "data/sources/x_threads/phase3/B23_bienvenido_bolillo.csv": 153,
+    "data/sources/x_threads/phase3/B26_encuesta_selecta_vergonzoso.csv": 191,
+    "data/sources/x_threads/phase3/B27_selecta_hasta_aca.csv": 297,
+    "data/sources/x_threads/phase3/B28_selecta_san_vicente.csv": 194,
+    "data/sources/x_threads/phase3/B29_tenemos_selecta.csv": 259,
+    "data/sources/x_threads/phase3/B2_pupusas_precio.csv": 306,
+    "data/sources/x_threads/phase3/B31_jairo_empate.csv": 167,
+    "data/sources/x_threads/phase3/B32_rubén_botada.csv": 132,
+    "data/sources/x_threads/phase3/B33_alcalde_pupuseria.csv": 282,
+    "data/sources/x_threads/phase3/B34_albos_emplumados.csv": 129,
+    "data/sources/x_threads/phase3/B35_zavaleta_roldan.csv": 276,
+    "data/sources/x_threads/phase3/B36_concierto_cuscatlan.csv": 302,
+    "data/sources/x_threads/phase3/B37_experimentados_selecta.csv": 123,
+    "data/sources/x_threads/phase3/B3_diputado_adame.csv": 148,
+    "data/sources/x_threads/phase3/B4_pupuseria_tragantes.csv": 156,
+    "data/sources/x_threads/phase3/B4_trafico_placas.csv": 196,
+    "data/sources/x_threads/phase3/B5_aniversario_presidencial.csv": 250,
+    "data/sources/x_threads/phase3/B6_aficion_alianza_fas.csv": 153,
+    "data/sources/x_threads/phase3/B7_intolerancia_calle.csv": 292,
+    "data/sources/x_threads/phase3/B8_yeik_creador.csv": 329,
+    "data/sources/x_threads/phase3/B9_censo_hinchas.csv": 122,
+    "data/sources/x_threads/phase3/C10_pasaje_un_dolar.csv": 255,
+    "data/sources/x_threads/phase3/C11_estadio_china.csv": 302,
+    "data/sources/x_threads/phase3/C12_bukele_fe.csv": 216,
+    "data/sources/x_threads/phase3/C13_mesas_suspendidas.csv": 298,
+    "data/sources/x_threads/phase3/C14_uci_hospital.csv": 160,
+    "data/sources/x_threads/phase3/C15_ningun_salvadoreno_haiti.csv": 256,
+    "data/sources/x_threads/phase3/C16_elecciones_encuestas.csv": 285,
+    "data/sources/x_threads/phase3/C17_oposicion_gobierno.csv": 248,
+    "data/sources/x_threads/phase3/C18_bukele_haiti.csv": 237,
+    "data/sources/x_threads/phase3/C19_opositores_actos.csv": 326,
+    "data/sources/x_threads/phase3/C1_canasta_basica.csv": 227,
+    "data/sources/x_threads/phase3/C20_diputadas_oposicion.csv": 200,
+    "data/sources/x_threads/phase3/C21_guerra_corruptos.csv": 183,
+    "data/sources/x_threads/phase3/C22_nTN24_carcel_polemica.csv": 318,
+    "data/sources/x_threads/phase3/C23_tratos_inhumanos.csv": 224,
+    "data/sources/x_threads/phase3/C24_cola_bukele.csv": 236,
+    "data/sources/x_threads/phase3/C25_apoyar_bukele.csv": 308,
+    "data/sources/x_threads/phase3/C26_no_encarcelamos_oposicion.csv": 240,
+    "data/sources/x_threads/phase3/C27_mensaje_prensa.csv": 272,
+    "data/sources/x_threads/phase3/C28_analista_oposicion.csv": 279,
+    "data/sources/x_threads/phase3/C29_reeleccion_indefinida.csv": 286,
+    "data/sources/x_threads/phase3/C2_propuesta_retornados.csv": 188,
+    "data/sources/x_threads/phase3/C30_indefinida_zavala.csv": 270,
+    "data/sources/x_threads/phase3/C31_lorena_pena_movilizacion.csv": 127,
+    "data/sources/x_threads/phase3/C32_jaime_bayly.csv": 162,
+    "data/sources/x_threads/phase3/C34_elfaro_peores_tradiciones.csv": 248,
+    "data/sources/x_threads/phase3/C35_dictador_amparo.csv": 328,
+    "data/sources/x_threads/phase3/C36_david_qva_maduro.csv": 326,
+    "data/sources/x_threads/phase3/C3_oposicion_regimen_popular.csv": 265,
+    "data/sources/x_threads/phase3/C4_oposicion_mentira.csv": 281,
+    "data/sources/x_threads/phase3/C5_dejen_de_discutir.csv": 314,
+    "data/sources/x_threads/phase3/C6_muchas_personas_no_entienden.csv": 283,
+    "data/sources/x_threads/phase3/C7_mexicano_dictadura.csv": 311,
+    "data/sources/x_threads/phase3/C8_director_arriaza.csv": 266,
+    "data/sources/x_threads/phase3/C9_navidad_gasolina.csv": 268,
+    "data/sources/x_threads/phase3_jerga/busqueda_achis.csv": 268,
+    "data/sources/x_threads/phase3_jerga/busqueda_cachimbon.csv": 33,
+    "data/sources/x_threads/phase3_jerga/busqueda_cerote.csv": 107,
+    "data/sources/x_threads/phase3_jerga/busqueda_chulon.csv": 20,
+    "data/sources/x_threads/phase3_jerga/busqueda_jana.csv": 12,
+    "data/sources/x_threads/phase3_jerga/busqueda_puchica_vos.csv": 1,
+    "data/sources/x_threads/phase3_jerga/busqueda_que_onda_vos.csv": 28,
+    "data/sources/x_threads/phase3_jerga/busqueda_que_pedo_maje.csv": 1,
     "data/sources/x_threads/test_externo_2_sin_etiquetar.csv": 650,
     "data/sources/x_threads/test_externo_3_sin_etiquetar.csv": 590,
-    "data/sources/x_threads/test_externo_4_sin_etiquetar.csv": 887
+    "data/sources/x_threads/test_externo_4_sin_etiquetar.csv": 887,
+    "versiones/v3/sources/dataset_willian_facebook.csv": 7045
   },
   "train_holdout_leakage": {
     "expected_normalized_overlap_total": 0,
@@ -298,56 +1367,290 @@
     "raw_text_overlap_counts": {}
   },
   "unlabeled_thread_candidates": {
-    "observations": 7793,
+    "observations": 33804,
     "source_file_counts": {
       "data/sources/x_threads/hilos_1_a_5_limpios_todos.csv": 1320,
       "data/sources/x_threads/hilos_nuevos_sin_etiquetar.csv": 536,
       "data/sources/x_threads/migrantes_sin_etiquetar.csv": 308,
       "data/sources/x_threads/phase1/fase1_ronda1_sin_etiquetar.csv": 2115,
       "data/sources/x_threads/phase1/fase1_ronda2_sin_etiquetar.csv": 1387,
+      "data/sources/x_threads/phase3/A10_tercer_aniversario_regimen.csv": 239,
+      "data/sources/x_threads/phase3/A11_casi_600_capturas.csv": 280,
+      "data/sources/x_threads/phase3/A12_emma_dejar_morir_hambre.csv": 271,
+      "data/sources/x_threads/phase3/A13_megacarcel_12000.csv": 290,
+      "data/sources/x_threads/phase3/A14_movilizacion_70.csv": 148,
+      "data/sources/x_threads/phase3/A15_duro_golpe_pandilleros.csv": 223,
+      "data/sources/x_threads/phase3/A16_cecot_pandilleros_esto_es.csv": 207,
+      "data/sources/x_threads/phase3/A17_solicito_regimen_asamblea.csv": 256,
+      "data/sources/x_threads/phase3/A18_cena_navidad_cecot.csv": 305,
+      "data/sources/x_threads/phase3/A19_convoca_consejo_ministros.csv": 274,
+      "data/sources/x_threads/phase3/A1_capturas_4_dias.csv": 258,
+      "data/sources/x_threads/phase3/A1_cecot_inauguracion.csv": 212,
+      "data/sources/x_threads/phase3/A1_mensaje_criminales.csv": 245,
+      "data/sources/x_threads/phase3/A20_brutal_venganza.csv": 136,
+      "data/sources/x_threads/phase3/A21_te_gustaria_delincuentes.csv": 190,
+      "data/sources/x_threads/phase3/A22_mega_carcel_40000.csv": 217,
+      "data/sources/x_threads/phase3/A23_ropa_interior.csv": 317,
+      "data/sources/x_threads/phase3/A24_mano_dura.csv": 249,
+      "data/sources/x_threads/phase3/A25_duro_golpe_criminales.csv": 210,
+      "data/sources/x_threads/phase3/A26_ocho_reclusos.csv": 274,
+      "data/sources/x_threads/phase3/A27_candidato_arena_carcel.csv": 304,
+      "data/sources/x_threads/phase3/A28_criminales_carcel.csv": 142,
+      "data/sources/x_threads/phase3/A29_sobreviviente_terror.csv": 235,
+      "data/sources/x_threads/phase3/A2_enfrentamiento_guatajiagua.csv": 311,
+      "data/sources/x_threads/phase3/A30_segundo_grupo_traslado.csv": 282,
+      "data/sources/x_threads/phase3/A31_cecot_familia.csv": 274,
+      "data/sources/x_threads/phase3/A32_pandilleros_cecot_piensan.csv": 160,
+      "data/sources/x_threads/phase3/A33_madrugada_ejecuta.csv": 214,
+      "data/sources/x_threads/phase3/A34_regimen_se_rien.csv": 154,
+      "data/sources/x_threads/phase3/A35_confinamiento_terrorismo.csv": 207,
+      "data/sources/x_threads/phase3/A36_mega_carcel_mensaje.csv": 252,
+      "data/sources/x_threads/phase3/A3_ladron_poste_bogota.csv": 231,
+      "data/sources/x_threads/phase3/A4_pena_muerte_gallegos.csv": 291,
+      "data/sources/x_threads/phase3/A5_captura_ruth_lopez.csv": 248,
+      "data/sources/x_threads/phase3/A5_familiares_detenidos.csv": 308,
+      "data/sources/x_threads/phase3/A6_criminalidad_bukele.csv": 211,
+      "data/sources/x_threads/phase3/A7_un_anio_regimen.csv": 254,
+      "data/sources/x_threads/phase3/A8_agente_asesinado.csv": 256,
+      "data/sources/x_threads/phase3/A9_capturas_8000.csv": 270,
+      "data/sources/x_threads/phase3/B10_pupusas_mesoamericanas.csv": 309,
+      "data/sources/x_threads/phase3/B11_chivo_wallet.csv": 122,
+      "data/sources/x_threads/phase3/B12_bitcoin_perdidas.csv": 140,
+      "data/sources/x_threads/phase3/B13_derrota_guatemala.csv": 273,
+      "data/sources/x_threads/phase3/B14_partido_puerto_rico.csv": 265,
+      "data/sources/x_threads/phase3/B15_ricky_messi.csv": 216,
+      "data/sources/x_threads/phase3/B16_aficionado_lagrimas.csv": 154,
+      "data/sources/x_threads/phase3/B17_dt_no_es_fracaso.csv": 234,
+      "data/sources/x_threads/phase3/B18_aficionados_fito.csv": 135,
+      "data/sources/x_threads/phase3/B19_kurupi_millonario.csv": 141,
+      "data/sources/x_threads/phase3/B1_selecta_entradas.csv": 172,
+      "data/sources/x_threads/phase3/B1_selecta_martinica.csv": 179,
+      "data/sources/x_threads/phase3/B20_proponen_fito.csv": 204,
+      "data/sources/x_threads/phase3/B22_necesita_aficion.csv": 142,
+      "data/sources/x_threads/phase3/B23_bienvenido_bolillo.csv": 153,
+      "data/sources/x_threads/phase3/B26_encuesta_selecta_vergonzoso.csv": 191,
+      "data/sources/x_threads/phase3/B27_selecta_hasta_aca.csv": 297,
+      "data/sources/x_threads/phase3/B28_selecta_san_vicente.csv": 194,
+      "data/sources/x_threads/phase3/B29_tenemos_selecta.csv": 259,
+      "data/sources/x_threads/phase3/B2_pupusas_precio.csv": 306,
+      "data/sources/x_threads/phase3/B31_jairo_empate.csv": 167,
+      "data/sources/x_threads/phase3/B32_rubén_botada.csv": 132,
+      "data/sources/x_threads/phase3/B33_alcalde_pupuseria.csv": 282,
+      "data/sources/x_threads/phase3/B34_albos_emplumados.csv": 129,
+      "data/sources/x_threads/phase3/B35_zavaleta_roldan.csv": 276,
+      "data/sources/x_threads/phase3/B36_concierto_cuscatlan.csv": 302,
+      "data/sources/x_threads/phase3/B37_experimentados_selecta.csv": 123,
+      "data/sources/x_threads/phase3/B3_diputado_adame.csv": 148,
+      "data/sources/x_threads/phase3/B4_pupuseria_tragantes.csv": 156,
+      "data/sources/x_threads/phase3/B4_trafico_placas.csv": 196,
+      "data/sources/x_threads/phase3/B5_aniversario_presidencial.csv": 250,
+      "data/sources/x_threads/phase3/B6_aficion_alianza_fas.csv": 153,
+      "data/sources/x_threads/phase3/B7_intolerancia_calle.csv": 292,
+      "data/sources/x_threads/phase3/B8_yeik_creador.csv": 329,
+      "data/sources/x_threads/phase3/B9_censo_hinchas.csv": 122,
+      "data/sources/x_threads/phase3/C10_pasaje_un_dolar.csv": 255,
+      "data/sources/x_threads/phase3/C11_estadio_china.csv": 302,
+      "data/sources/x_threads/phase3/C12_bukele_fe.csv": 216,
+      "data/sources/x_threads/phase3/C13_mesas_suspendidas.csv": 298,
+      "data/sources/x_threads/phase3/C14_uci_hospital.csv": 160,
+      "data/sources/x_threads/phase3/C15_ningun_salvadoreno_haiti.csv": 256,
+      "data/sources/x_threads/phase3/C16_elecciones_encuestas.csv": 285,
+      "data/sources/x_threads/phase3/C17_oposicion_gobierno.csv": 248,
+      "data/sources/x_threads/phase3/C18_bukele_haiti.csv": 237,
+      "data/sources/x_threads/phase3/C19_opositores_actos.csv": 326,
+      "data/sources/x_threads/phase3/C1_canasta_basica.csv": 227,
+      "data/sources/x_threads/phase3/C20_diputadas_oposicion.csv": 200,
+      "data/sources/x_threads/phase3/C21_guerra_corruptos.csv": 183,
+      "data/sources/x_threads/phase3/C22_nTN24_carcel_polemica.csv": 318,
+      "data/sources/x_threads/phase3/C23_tratos_inhumanos.csv": 224,
+      "data/sources/x_threads/phase3/C24_cola_bukele.csv": 236,
+      "data/sources/x_threads/phase3/C25_apoyar_bukele.csv": 308,
+      "data/sources/x_threads/phase3/C26_no_encarcelamos_oposicion.csv": 240,
+      "data/sources/x_threads/phase3/C27_mensaje_prensa.csv": 272,
+      "data/sources/x_threads/phase3/C28_analista_oposicion.csv": 279,
+      "data/sources/x_threads/phase3/C29_reeleccion_indefinida.csv": 286,
+      "data/sources/x_threads/phase3/C2_propuesta_retornados.csv": 188,
+      "data/sources/x_threads/phase3/C30_indefinida_zavala.csv": 270,
+      "data/sources/x_threads/phase3/C31_lorena_pena_movilizacion.csv": 127,
+      "data/sources/x_threads/phase3/C32_jaime_bayly.csv": 162,
+      "data/sources/x_threads/phase3/C34_elfaro_peores_tradiciones.csv": 248,
+      "data/sources/x_threads/phase3/C35_dictador_amparo.csv": 328,
+      "data/sources/x_threads/phase3/C36_david_qva_maduro.csv": 326,
+      "data/sources/x_threads/phase3/C3_oposicion_regimen_popular.csv": 265,
+      "data/sources/x_threads/phase3/C4_oposicion_mentira.csv": 281,
+      "data/sources/x_threads/phase3/C5_dejen_de_discutir.csv": 314,
+      "data/sources/x_threads/phase3/C6_muchas_personas_no_entienden.csv": 283,
+      "data/sources/x_threads/phase3/C7_mexicano_dictadura.csv": 311,
+      "data/sources/x_threads/phase3/C8_director_arriaza.csv": 266,
+      "data/sources/x_threads/phase3/C9_navidad_gasolina.csv": 268,
+      "data/sources/x_threads/phase3_jerga/busqueda_achis.csv": 268,
+      "data/sources/x_threads/phase3_jerga/busqueda_cachimbon.csv": 33,
+      "data/sources/x_threads/phase3_jerga/busqueda_cerote.csv": 107,
+      "data/sources/x_threads/phase3_jerga/busqueda_chulon.csv": 20,
+      "data/sources/x_threads/phase3_jerga/busqueda_jana.csv": 12,
+      "data/sources/x_threads/phase3_jerga/busqueda_puchica_vos.csv": 1,
+      "data/sources/x_threads/phase3_jerga/busqueda_que_onda_vos.csv": 28,
+      "data/sources/x_threads/phase3_jerga/busqueda_que_pedo_maje.csv": 1,
       "data/sources/x_threads/test_externo_2_sin_etiquetar.csv": 650,
       "data/sources/x_threads/test_externo_3_sin_etiquetar.csv": 590,
       "data/sources/x_threads/test_externo_4_sin_etiquetar.csv": 887
     },
     "thread_group_counts": {
+      "aficion_alianza_fas": 153,
+      "aficionado_lagrimas": 154,
+      "aficionados_fito": 135,
+      "agente_asesinado": 256,
+      "albos_emplumados": 129,
+      "alcalde_pupuseria": 282,
+      "analista_oposicion": 279,
+      "aniversario_presidencial": 250,
+      "apoyar_bukele": 308,
       "bachelet": 236,
+      "bienvenido_bolillo": 153,
+      "bitcoin_perdidas": 140,
+      "brutal_venganza": 136,
+      "bukele_fe": 216,
+      "bukele_haiti": 237,
+      "busqueda_achis": 268,
+      "busqueda_cachimbon": 33,
+      "busqueda_cerote": 107,
+      "busqueda_chulon": 20,
+      "busqueda_jana": 12,
+      "busqueda_puchica_vos": 1,
+      "busqueda_que_onda_vos": 28,
+      "busqueda_que_pedo_maje": 1,
+      "canasta_basica": 227,
+      "candidato_arena_carcel": 304,
       "canje": 189,
+      "captura_ruth_lopez": 248,
+      "capturas_4_dias": 258,
+      "capturas_8000": 270,
+      "casi_600_capturas": 280,
       "cecot": 236,
+      "cecot_familia": 274,
+      "cecot_inauguracion": 212,
+      "cecot_pandilleros_esto_es": 207,
+      "cena_navidad_cecot": 305,
+      "censo_hinchas": 122,
+      "chivo_wallet": 122,
+      "cola_bukele": 236,
+      "concierto_cuscatlan": 302,
       "conductor_25_ninos": 224,
+      "confinamiento_terrorismo": 207,
+      "convoca_consejo_ministros": 274,
+      "criminales_carcel": 142,
+      "criminalidad_bukele": 211,
       "cubanos_rusos": 149,
+      "david_qva_maduro": 326,
+      "dejen_de_discutir": 314,
       "deportacion_senora": 274,
+      "derrota_guatemala": 273,
+      "dictador_amparo": 328,
+      "diputadas_oposicion": 200,
+      "diputado_adame": 148,
+      "director_arriaza": 266,
+      "dt_no_es_fracaso": 234,
+      "duro_golpe_criminales": 210,
+      "duro_golpe_pandilleros": 223,
+      "elecciones_encuestas": 285,
+      "elfaro_peores_tradiciones": 248,
+      "emma_dejar_morir_hambre": 271,
+      "encuesta_selecta_vergonzoso": 191,
+      "enfrentamiento_guatajiagua": 311,
       "espana_regulariza": 276,
+      "estadio_china": 302,
+      "experimentados_selecta": 123,
+      "familiares_detenidos": 308,
       "feminismo": 288,
       "feministas_ganaron": 210,
+      "guerra_corruptos": 183,
       "homicidios": 198,
+      "indefinida_zavala": 270,
       "infierno_tierra": 194,
+      "intolerancia_calle": 292,
       "invasion": 218,
+      "jaime_bayly": 162,
+      "jairo_empate": 167,
+      "kurupi_millonario": 141,
+      "ladron_poste_bogota": 231,
       "lgbt_bandera": 131,
       "lgbt_ferriz": 285,
       "lgbt_palestina_tv": 197,
       "lgbt_ultimahora": 212,
       "lgbt_vandalismo_cdmx": 239,
+      "lorena_pena_movilizacion": 127,
+      "madrugada_ejecuta": 214,
+      "mano_dura": 249,
+      "mega_carcel_40000": 217,
+      "mega_carcel_mensaje": 252,
+      "megacarcel_12000": 290,
+      "mensaje_criminales": 245,
+      "mensaje_prensa": 272,
+      "mesas_suspendidas": 298,
+      "mexicano_dictadura": 311,
       "migrantes": 308,
       "migrantes_inmigracion": 184,
       "militares_pandilleros": 203,
       "miss_el_salvador": 255,
+      "movilizacion_70": 148,
+      "muchas_personas_no_entienden": 283,
       "mujeres_iran": 56,
       "musulman_berlin": 255,
+      "nTN24_carcel_polemica": 318,
+      "navidad_gasolina": 268,
+      "necesita_aficion": 142,
+      "ningun_salvadoreno_haiti": 256,
+      "no_encarcelamos_oposicion": 240,
+      "ocho_reclusos": 274,
+      "oposicion_gobierno": 248,
+      "oposicion_mentira": 281,
+      "oposicion_regimen_popular": 265,
+      "opositores_actos": 326,
       "orgullo_los_angeles": 108,
+      "pandilleros_cecot_piensan": 160,
       "pandilleros_traslado": 193,
       "paraguayos_terreno": 282,
+      "partido_puerto_rico": 265,
+      "pasaje_un_dolar": 255,
+      "pena_muerte_gallegos": 291,
       "presos_90mil": 122,
+      "proponen_fito": 204,
+      "propuesta_retornados": 188,
+      "pupusas_mesoamericanas": 309,
+      "pupusas_precio": 306,
+      "pupuseria_tragantes": 156,
       "racismo": 163,
       "racismo_orgullo": 306,
+      "reeleccion_indefinida": 286,
+      "regimen_se_rien": 154,
       "repatriados": 134,
+      "ricky_messi": 216,
+      "ropa_interior": 317,
+      "rubén_botada": 132,
       "salvadoreno_bukele": 44,
+      "segundo_grupo_traslado": 282,
       "selecta": 216,
+      "selecta_entradas": 172,
+      "selecta_hasta_aca": 297,
+      "selecta_martinica": 179,
+      "selecta_san_vicente": 194,
       "sicarios_rusos_cubanos": 226,
+      "sobreviviente_terror": 235,
+      "solicito_regimen_asamblea": 256,
+      "te_gustaria_delincuentes": 190,
+      "tenemos_selecta": 259,
+      "tercer_aniversario_regimen": 239,
+      "trafico_placas": 196,
       "trans": 143,
+      "tratos_inhumanos": 224,
+      "uci_hospital": 160,
+      "un_anio_regimen": 254,
       "venezolanos2": 230,
       "violadores_pena_muerte": 179,
       "wokismo_occidente": 192,
-      "xenofobia_federico": 238
+      "xenofobia_federico": 238,
+      "yeik_creador": 329,
+      "zavaleta_roldan": 276
     }
   }
 }
