@@ -83,3 +83,11 @@ google-colab/metricas-proyecto-ml/
 google-colab/*.zip
 google-colab/00_colab_setup.ipynb
 .colab_zip_staging/
+
+# versiones/*/model: keep manifests and configs, not weights or trainer state
+versiones/**/model/checkpoint-*/
+versiones/**/model/**/*.safetensors
+versiones/**/model/**/optimizer.pt
+versiones/**/model/**/scheduler.pt
+versiones/**/model/**/rng_state.pth
+versiones/**/model/**/training_args.bin
