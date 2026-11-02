@@ -20,19 +20,24 @@ estándar de Python.
 
 ## Qué se considera una observación
 
-- `data/raw/train.csv`, `val.csv` y `test.csv` forman la vista histórica activa
-  (**dataset v1.8.0** sincronizado desde `cde-project-ml-2026/data/dataset/`).
+- `data/processed/train.csv`, `val.csv` y `test.csv` (y espejo en `data/raw/`) forman el corpus activo
+  (**dataset v1.9.0** sincronizado desde `cde-project-ml-2026/data/dataset/`).
+- Releases y checkpoints congelados: [`versiones/README.md`](../versiones/README.md) (`v1`…`v4`).
 - `data/evaluation/frozen_bank/*.csv` entra a la vista canónica solo para
   trazabilidad, detección de duplicados y **comprobación de fugas**; nunca es
   corpus entrenable (`frozen_evaluation_bank`).
 - `data/sources/x_threads/**/*.csv` son hilos X **sin etiquetar**
   (`candidate_unlabeled_thread`); quedan en cuarentena hasta anotación ISSUE-05.
-- `data/raw/lenguaje_ofensivo.csv` y `thenewdata_X.csv` se inventarían como
+- `data/sources/candidates/lenguaje_ofensivo.csv` y `thenewdata_X.csv` se inventarían como
   fuentes candidatas en cuarentena. No se integran a un split.
+- `versiones/v3/sources/dataset_willian_facebook.csv` (7 045 comentarios Facebook, octubre
+  2026) entra como `candidate_unvalidated`; etiquetas auto-heurísticas sin
+  validar. Tras auditoría, **29** textos normalizados coinciden con val/test y
+  deben excluirse del lote de anotación (`willian_holdout_blocklist.csv`).
 - Las baterías `test_adversarial.csv` (144 filas en v1.8) y
   `data/processed/test_adversarial_144.csv` (144 filas) se conservan como
   diagnóstico y nunca se tratan como corpus de entrenamiento.
-- `corpus_completo.csv` se compara con train/val/test y se registra en el
+- `data/interim/corpus_completo.csv` se compara con train/val/test y se registra en el
   inventario, pero no se vuelve a importar. Las copias de `data/processed/`
   también se inventarían sin sumar filas nuevas.
 
@@ -58,7 +63,7 @@ registros tienen país vacío y estado `inferred`, sin convertirlos en casos de
 El Salvador. Las etiquetas dialectales de las fuentes candidatas también se
 tratan como inferencias mientras no exista validación.
 
-## Sincronización v1.8.0
+## Sincronización CDE (v1.9.0 vigente)
 
 Desde la raíz de `ml-metricas`:
 
@@ -71,10 +76,10 @@ El manifiesto `reports/data_sync/last_sync.json` guarda SHA-256 por archivo;
 `integration_validation.json` comprueba conteos, MANIFEST del banco congelado,
 val/test históricos y fugas train→holdouts.
 
-## Hallazgos del corte actual (post v1.8.0)
+## Hallazgos del corte actual (post v1.9.0)
 
 Consulte `reports/data_audit/audit_summary.json` tras cada auditoría. Tras la
-integración v1.8.0, los splits activos son train **12 641**, val **459** y test
+integración v1.9.0, los splits activos son train **21 585**, val **459** y test
 **460**; el banco congelado y los hilos sin etiquetar suman observaciones
 canónicas adicionales sin habilitar entrenamiento. El resumen incluye
 `train_holdout_leakage` (objetivo: **0** fugas normalizadas train vs

@@ -1,0 +1,11 @@
+{
+  "version_id": "v2",
+  "release_id": "v4-gold-20261101",
+  "legacy_model_dir": "models/mbert-sv-v4-gold",
+  "description": "Release gold ISSUE-08 (train 12 641)",
+  "train_rows": 12641,
+  "metrics": {
+    "production_slo": "metrics/production_slo_baseline_v4_gold.json",
+    "official_run": "metrics/mbert_official_run_v4_gold.json"
+  }
+}

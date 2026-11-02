@@ -1,0 +1,21 @@
+{
+  "release_id": "training-v3-20261101",
+  "dataset_version": "1.9.0",
+  "seed": 42,
+  "source": "sync_cde_dataset",
+  "cde_root": "C:\\Users\\user6921\\Desktop\\cde-ml\\cde-project-ml-2026",
+  "class_weights": {
+    "0": 0.5585601904564745,
+    "1": 0.9141538200914789,
+    "2": 1.8298575788402849,
+    "3": 1.756591796875
+  },
+  "train_rows": 21585,
+  "val_rows": 459,
+  "test_rows": 460,
+  "files": {
+    "train": "train.csv",
+    "val": "val.csv",
+    "test": "test.csv"
+  }
+}

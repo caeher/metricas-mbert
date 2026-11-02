@@ -9,7 +9,7 @@ src/discurso_odio/data/loaders.py carga splits fijos y get_b2_class_weights() le
 
 ## Trabajo a realizar
 
-1. Crear scripts/build_dataset_v3.py desde exportaciones adjudicadas y manifiestos, evitando concatenar CSV crudos. Preservar texto original, rótulos previos/finales, estados, hashes y versiones.
+1. Crear [`argilla/scripts/build_dataset_v3.py`](../argilla/scripts/build_dataset_v3.py) desde exportaciones adjudicadas y manifiestos, evitando concatenar CSV crudos.
 
 2. Actualizar loaders para seleccionar una release explícita. Separar tipo de origen de familia sintética y no depender de una lista cerrada de nombres sintetico_*. Validar class final, no etiqueta provisional.
 

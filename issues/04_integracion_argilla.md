@@ -25,7 +25,7 @@ No se encontró integración Argilla en el proyecto. Hace falta convertir revisi
 
 Configuración Argilla, importador/exportador, dependencias opcionales y docs/argilla_workflow.md; rutas nuevas propuestas.
 
-Implementación: [compose local](../infra/argilla/docker-compose.yml), [extra opcional del SDK](../pyproject.toml), [.env de ejemplo](../.env.argilla.example), [importador](../scripts/import_argilla.py), [exportador/restaurador](../scripts/export_argilla.py) y [guía del flujo](../docs/argilla_workflow.md). Se fijaron SDK/servidor 2.8.0 y se verificaron firmas de la API del SDK instalado aislado. El piloto con respuestas de dos cuentas aún requiere que el usuario configure el servidor y que dos personas anoten.
+Implementación: [compose local](../infra/argilla/docker-compose.yml), [extra opcional del SDK](../pyproject.toml), [.env de ejemplo](../.env.argilla.example), [importador](../argilla/scripts/import_argilla.py), [exportador/restaurador](../argilla/scripts/export_argilla.py) y [guía del flujo](../docs/argilla_workflow.md). Se fijaron SDK/servidor 2.8.0 y se verificaron firmas de la API del SDK instalado aislado. El piloto con respuestas de dos cuentas aún requiere que el usuario configure el servidor y que dos personas anoten.
 
 ## Criterios de aceptación
 

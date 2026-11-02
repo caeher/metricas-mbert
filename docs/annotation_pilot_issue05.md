@@ -16,8 +16,8 @@ Ejecuta desde la raíz `ml-metricas`:
 
 ```powershell
 python scripts/prepare_annotation_pilot.py
-python scripts/import_argilla.py --campaign pilot --dry-run
-python scripts/import_argilla.py --campaign pilot
+python argilla/scripts/import_argilla.py --campaign pilot --dry-run
+python argilla/scripts/import_argilla.py --campaign pilot
 ```
 
 El manifiesto `reports/annotation/pilot_sample_v1.csv` es para el importador y contiene IDs junto con estratos de muestreo. No lo distribuyas a los anotadores. Argilla recibe solamente los IDs elegidos, texto original/normalizado y procedencia técnica; la campaña `pilot` no acepta sugerencias y no muestra rótulos previos como respuestas. Crea dos cuentas humanas distintas en el workspace antes de abrir la cola; ambos anotan cada registro independientemente.
@@ -27,11 +27,11 @@ El manifiesto `reports/annotation/pilot_sample_v1.csv` es para el importador y c
 Después del piloto y la recalibración necesaria, importa cada cohorte por separado. Mantén val y test en el workspace restringido de auditoría indicado en `docs/argilla_workflow.md`:
 
 ```powershell
-python scripts/import_argilla.py --campaign legacy_train_real --dry-run
-python scripts/import_argilla.py --campaign new_candidates --dry-run
-python scripts/import_argilla.py --campaign legacy_train_synthetic --dry-run
-python scripts/import_argilla.py --campaign historical_val_audit --dry-run
-python scripts/import_argilla.py --campaign historical_test_audit --dry-run
+python argilla/scripts/import_argilla.py --campaign legacy_train_real --dry-run
+python argilla/scripts/import_argilla.py --campaign new_candidates --dry-run
+python argilla/scripts/import_argilla.py --campaign legacy_train_synthetic --dry-run
+python argilla/scripts/import_argilla.py --campaign historical_val_audit --dry-run
+python argilla/scripts/import_argilla.py --campaign historical_test_audit --dry-run
 ```
 
 Quita `--dry-run` para crear las campañas cuando Argilla y los dos anotadores estén configurados. No combines `corpus_completo.csv` con sus splits. Los sintéticos se revisan en su propia campaña. Todo candidato nuevo permanece en cuarentena hasta tener anotación, decisión final y revisión humana de procedencia.

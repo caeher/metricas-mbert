@@ -80,11 +80,11 @@ python -m pip install -e ".[argilla]"
 Simula antes cada importación; la simulación no necesita conexión ni credenciales de Argilla:
 
 ```powershell
-python scripts/import_argilla.py --campaign legacy_train_real --limit 200 --dry-run
-python scripts/import_argilla.py --campaign legacy_train_real --limit 200
+python argilla/scripts/import_argilla.py --campaign legacy_train_real --limit 200 --dry-run
+python argilla/scripts/import_argilla.py --campaign legacy_train_real --limit 200
 python scripts/prepare_annotation_pilot.py
-python scripts/import_argilla.py --campaign pilot --dry-run
-python scripts/import_argilla.py --campaign calibration --dry-run
+python argilla/scripts/import_argilla.py --campaign pilot --dry-run
+python argilla/scripts/import_argilla.py --campaign calibration --dry-run
 ```
 
 Repetir el segundo comando no duplica registros. El script agrega registros faltantes, actualiza campos/procedencia de los existentes sin respuestas, y se detiene si detecta un cambio en un registro que ya tiene respuestas humanas. Puedes omitir `--limit` para importar la cohorte completa. `--records` permite pasar una nueva exportación canónica; la selección por campaña aplica los mismos filtros de aislamiento.
@@ -118,7 +118,7 @@ python scripts/export_argilla.py --campaign legacy_train_real
 Restaura en una instancia compatible:
 
 ```powershell
-python scripts/import_argilla.py --restore-export data/argilla_exports/<directorio>
+python argilla/scripts/import_argilla.py --restore-export data/argilla_exports/<directorio>
 ```
 
 La restauración conserva los IDs, la procedencia y los autores de respuestas si las cuentas con esos UUID ya existen en el workspace destino. Es reanudable e idempotente: conserva respuestas existentes, agrega las ausentes y se detiene ante conflictos de valor/estado para el mismo usuario y pregunta. No altera una sugerencia asociada a respuestas humanas. Para recuperar toda la instancia, usuarios y permisos, prefiere restaurar la copia completa de los volúmenes.

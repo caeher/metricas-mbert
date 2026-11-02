@@ -1,0 +1,11 @@
+{
+  "version_id": "v1",
+  "release_id": "v3-pilot-argilla-20261031",
+  "legacy_model_dir": "models/mbert-sv-v3-pilot",
+  "description": "Piloto Argilla (overlays B2, train 12 641)",
+  "train_rows": 12641,
+  "metrics": {
+    "production_slo": "metrics/production_slo_baseline_v3_pilot.json",
+    "official_run": "metrics/mbert_official_run_v3_pilot.json"
+  }
+}

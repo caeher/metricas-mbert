@@ -1,0 +1,28 @@
+{
+  "release_id": "v5-facebook-willian-20261101",
+  "taxonomy_version": "2.0.0",
+  "seed": 42,
+  "source_adjudicated": "reports\\annotation\\adjudicated_records.csv",
+  "adjudicated_record_count": 644,
+  "label_overrides": {
+    "train": 88,
+    "val": 0,
+    "test": 0
+  },
+  "appended_candidate_rows": 464,
+  "candidate_source_appended": "versiones/v3/sources/dataset_willian_facebook.csv",
+  "class_weights": {
+    "0": 0.606712962962963,
+    "1": 0.9806195749775516,
+    "2": 1.2837970219435737,
+    "3": 1.8080849889624724
+  },
+  "train_rows": 13105,
+  "val_rows": 459,
+  "test_rows": 460,
+  "files": {
+    "train": "train.csv",
+    "val": "val.csv",
+    "test": "test.csv"
+  }
+}

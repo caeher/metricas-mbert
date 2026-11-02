@@ -1,0 +1,12 @@
+{
+  "version_id": "v4",
+  "release_id": "training-v3-20261101",
+  "legacy_model_dir": "models/mbert-sv-training-v3",
+  "description": "CDE dataset v1.9.0 only (train 21 585)",
+  "dataset_version": "1.9.0",
+  "train_rows": 21585,
+  "metrics": {
+    "production_slo": "metrics/production_slo_baseline_training_v3.json",
+    "official_run": "metrics/mbert_official_run_training_v3.json"
+  }
+}

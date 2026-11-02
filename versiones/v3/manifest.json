@@ -1,0 +1,12 @@
+{
+  "version_id": "v3",
+  "release_id": "v5-facebook-willian-20261101",
+  "legacy_model_dir": "models/mbert-sv-v5-facebook-willian",
+  "description": "Fine-tune v4 + 464 gold Facebook Willian (train 13 105)",
+  "train_rows": 13105,
+  "candidate_source": "sources/dataset_willian_facebook.csv",
+  "metrics": {
+    "production_slo": "metrics/production_slo_baseline_v5_facebook_willian.json",
+    "official_run": "metrics/mbert_official_run_v5_facebook_willian.json"
+  }
+}
