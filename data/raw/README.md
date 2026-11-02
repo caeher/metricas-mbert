@@ -1,6 +1,8 @@
 # Dataset — corpus salvadoreño de toxicidad
 
-**Vigente:** dataset **v1.8.0** (`metadata.json`, train **12 641** / val **459** / test **460**).
+**Vigente:** dataset **v1.9.0** en `data/processed/` y espejo `data/raw/` (`metadata.json`, train **21 585** / val **459** / test **460**). Solo splits + metadata en esas carpetas; candidatos y versiones congeladas viven en [`versiones/`](../versiones/README.md).
+Sincronizado desde `cde-project-ml-2026/data/dataset/`. Línea CDE congelada:
+`versiones/v4/dataset/` → checkpoint `versiones/v4/model` (distinto de `versiones/v1` Argilla).
 Sincronización reproducible desde el repo hermano:
 
 ```powershell
