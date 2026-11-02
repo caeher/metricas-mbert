@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Sync dataset v1.8.0 and related sources from cde-project-ml-2026 into ml-metricas."""
+"""Sync the active CDE dataset from cde-project-ml-2026 into ml-metricas (e.g. v1.9.0)."""
 
 from __future__ import annotations
 
@@ -17,17 +17,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CDE_ROOT = ROOT.parent / "cde-project-ml-2026"
 
-DATASET_FILES = (
-    "train.csv",
-    "val.csv",
-    "test.csv",
-    "test_adversarial.csv",
-    "metadata.json",
-)
-PROCESSED_MIRROR = ("train.csv", "val.csv", "test.csv", "test_adversarial.csv")
-PROCESSED_EXTRA = (
-    ("test_adversarial.csv", "test_adversarial_144.csv"),
-)
+RAW_MIRROR = ("train.csv", "val.csv", "test.csv", "metadata.json")
+PROCESSED_MIRROR = ("train.csv", "val.csv", "test.csv", "test_adversarial.csv", "metadata.json")
+V4_DATASET_DIR = ROOT / "versiones" / "v4" / "dataset"
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -108,13 +100,13 @@ def write_corpus_completo(train_path: Path, val_path: Path, test_path: Path, out
     }
 
 
-def run_sync(cde_root: Path, *, dry_run: bool) -> dict[str, object]:
+def run_sync(cde_root: Path, *, dry_run: bool, update_v4_snapshot: bool = False) -> dict[str, object]:
     dataset_src = cde_root / "data" / "dataset"
     if not dataset_src.is_dir():
         raise FileNotFoundError(f"Expected dataset directory: {dataset_src}")
 
     copied: list[dict[str, str]] = []
-    for name in DATASET_FILES:
+    for name in RAW_MIRROR:
         source = dataset_src / name
         if not source.exists():
             raise FileNotFoundError(f"Missing dataset file: {source}")
@@ -122,11 +114,27 @@ def run_sync(cde_root: Path, *, dry_run: bool) -> dict[str, object]:
 
     for name in PROCESSED_MIRROR:
         source = dataset_src / name
+        if not source.exists():
+            raise FileNotFoundError(f"Missing dataset file: {source}")
         copied.append(atomic_copy(source, ROOT / "data" / "processed" / name, dry_run=dry_run))
 
-    for source_name, dest_name in PROCESSED_EXTRA:
-        source = dataset_src / source_name
-        copied.append(atomic_copy(source, ROOT / "data" / "processed" / dest_name, dry_run=dry_run))
+    if update_v4_snapshot:
+        for name in RAW_MIRROR:
+            source = dataset_src / name
+            copied.append(atomic_copy(source, V4_DATASET_DIR / name, dry_run=dry_run))
+
+    if not dry_run:
+        sys.path.insert(0, str(ROOT / "src"))
+        from discurso_odio.data.adversarial_battery import write_adversarial_144_csv
+
+        path_144 = write_adversarial_144_csv()
+        copied.append(
+            {
+                "path": path_144.relative_to(ROOT).as_posix(),
+                "sha256": sha256_file(path_144),
+                "action": "regenerated_adversarial_144",
+            }
+        )
 
     copied.extend(
         copy_tree_csvs(
@@ -147,7 +155,7 @@ def run_sync(cde_root: Path, *, dry_run: bool) -> dict[str, object]:
         dataset_src / "train.csv",
         dataset_src / "val.csv",
         dataset_src / "test.csv",
-        ROOT / "data" / "raw" / "corpus_completo.csv",
+        ROOT / "data" / "interim" / "corpus_completo.csv",
         dry_run=dry_run,
     )
 
@@ -172,9 +180,18 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--cde-root", type=Path, default=DEFAULT_CDE_ROOT, help="Root of cde-project-ml-2026")
     parser.add_argument("--dry-run", action="store_true", help="Print planned actions without writing files")
+    parser.add_argument(
+        "--update-v4-snapshot",
+        action="store_true",
+        help="Refresh versiones/v4/dataset/ from CDE (same files as data/raw core).",
+    )
     args = parser.parse_args()
     try:
-        manifest = run_sync(args.cde_root.resolve(), dry_run=args.dry_run)
+        manifest = run_sync(
+            args.cde_root.resolve(),
+            dry_run=args.dry_run,
+            update_v4_snapshot=args.update_v4_snapshot,
+        )
     except (FileNotFoundError, OSError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1

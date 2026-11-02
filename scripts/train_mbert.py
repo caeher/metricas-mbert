@@ -84,7 +84,7 @@ def main():
         "--release",
         type=str,
         default=None,
-        help="Release ISSUE-08 en data/releases/<id> (sustituye train/val procesados).",
+        help="Release ISSUE-08 en versiones/vN/dataset o data/releases/<id> (alias v1…v4).",
     )
     args = parser.parse_args()
 

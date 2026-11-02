@@ -31,24 +31,30 @@ LABEL_TEXT_TO_ID = {
     "amenazas/violencia": "3",
 }
 CORE_SOURCES = {
+    "data/processed/train.csv": "core_split",
+    "data/processed/val.csv": "core_split",
+    "data/processed/test.csv": "core_split",
     "data/raw/train.csv": "core_split",
     "data/raw/val.csv": "core_split",
     "data/raw/test.csv": "core_split",
 }
 CANDIDATE_SOURCES = {
+    "data/sources/candidates/lenguaje_ofensivo.csv": "candidate_unvalidated",
+    "data/sources/candidates/thenewdata_X.csv": "candidate_unvalidated",
+    "versiones/v3/sources/dataset_willian_facebook.csv": "candidate_unvalidated",
     "data/raw/lenguaje_ofensivo.csv": "candidate_unvalidated",
     "data/raw/thenewdata_X.csv": "candidate_unvalidated",
+    "data/raw/dataset_willian_facebook.csv": "candidate_unvalidated",
 }
 BATTERY_SOURCES = {
-    "data/raw/test_adversarial.csv": "diagnostic_battery",
+    "data/processed/test_adversarial.csv": "diagnostic_battery",
     "data/processed/test_adversarial_144.csv": "diagnostic_battery",
 }
 REFERENCE_SOURCES = {
-    "data/raw/corpus_completo.csv": "redundant_corpus_view",
+    "data/interim/corpus_completo.csv": "redundant_corpus_view",
     "data/processed/train.csv": "byte_identical_copy",
     "data/processed/val.csv": "byte_identical_copy",
     "data/processed/test.csv": "byte_identical_copy",
-    "data/processed/corpus_completo.csv": "byte_identical_copy",
 }
 SOURCES = {**CORE_SOURCES, **CANDIDATE_SOURCES, **BATTERY_SOURCES, **REFERENCE_SOURCES}
 
@@ -920,7 +926,7 @@ def run_audit(root: Path, report_dir: Path, interim_dir: Path, similarity_thresh
             counterpart = rel.replace("data/processed/", "data/raw/")
             if rel.startswith("data/processed/") and counterpart in loaded:
                 entry["byte_identical_to"] = counterpart if entry["file_sha256"] == next((x.get("file_sha256") for x in inventory if x["source_file"] == counterpart), "") else ""
-        if rel == "data/raw/corpus_completo.csv":
+        if rel == "data/interim/corpus_completo.csv":
             entry["row_set_compared_with_splits"] = "pending"
 
     entities, duplicate_ledger = build_canonical_entities(observations)
@@ -1010,7 +1016,7 @@ def run_audit(root: Path, report_dir: Path, interim_dir: Path, similarity_thresh
     # Identify whether the full corpus view is the same row set and fields as the splits.
     core_refs = [o for o in observations if o["source_role"] == "core_split"]
     full_rows, full_inventory = ([], None)
-    full_path = root / "data/raw/corpus_completo.csv"
+    full_path = root / "data/interim/corpus_completo.csv"
     if full_path.exists():
         full_rows, _, _, _, _ = read_csv(full_path)
         by_id = {o["source_record_id"]: o for o in core_refs}
@@ -1022,7 +1028,7 @@ def run_audit(root: Path, report_dir: Path, interim_dir: Path, similarity_thresh
             if member and row_hash == member["raw_row_sha256"]:
                 full_exact_matches += 1
         for entry in inventory:
-            if entry["source_file"] == "data/raw/corpus_completo.csv":
+            if entry["source_file"] == "data/interim/corpus_completo.csv":
                 entry["row_set_compared_with_splits"] = "same_ids_and_all_fields" if len(full_rows) == len(core_refs) == full_id_matches == full_exact_matches else "different_or_partial"
                 entry["split_id_matches"] = full_id_matches
                 entry["split_exact_record_matches"] = full_exact_matches

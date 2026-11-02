@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Validate ml-metricas integration of cde-project dataset v1.8.0."""
+"""Validate ml-metricas integration of cde-project dataset (e.g. v1.9.0)."""
 
 from __future__ import annotations
 
@@ -129,8 +129,14 @@ def verify_sync_manifest(sync_path: Path) -> dict[str, object]:
         return {"ok": False, "error": "missing last_sync.json"}
     manifest = json.loads(sync_path.read_text(encoding="utf-8"))
     mismatches: list[str] = []
+    skipped_legacy = {
+        "data/raw/test_adversarial.csv",
+        "data/raw/corpus_completo.csv",
+    }
     for entry in manifest.get("files", []):
         rel = entry.get("path", "")
+        if rel in skipped_legacy:
+            continue
         expected = entry.get("sha256", "")
         path = ROOT / rel
         if not path.exists():
@@ -139,7 +145,10 @@ def verify_sync_manifest(sync_path: Path) -> dict[str, object]:
         if expected and sha256_file(path) != expected:
             mismatches.append(f"sha256:{rel}")
     corpus = manifest.get("corpus_completo", {})
-    corpus_path = ROOT / str(corpus.get("path", ""))
+    corpus_path_rel = str(corpus.get("path", ""))
+    if corpus_path_rel.startswith("data/raw/"):
+        corpus_path_rel = corpus_path_rel.replace("data/raw/", "data/interim/", 1)
+    corpus_path = ROOT / corpus_path_rel
     if corpus_path.exists() and corpus.get("sha256") and sha256_file(corpus_path) != corpus["sha256"]:
         mismatches.append(f"sha256:{corpus_path.relative_to(ROOT).as_posix()}")
     return {"ok": not mismatches, "mismatches": mismatches, "dataset_version": manifest.get("dataset_version")}
@@ -151,7 +160,7 @@ def run_validation(*, reference_dir: Path) -> dict[str, object]:
     train_path = ROOT / "data" / "raw" / "train.csv"
     val_path = ROOT / "data" / "raw" / "val.csv"
     test_path = ROOT / "data" / "raw" / "test.csv"
-    adversarial_path = ROOT / "data" / "raw" / "test_adversarial.csv"
+    adversarial_path = ROOT / "data" / "processed" / "test_adversarial.csv"
     bank_dir = ROOT / "data" / "evaluation" / "frozen_bank"
 
     row_counts_ok = (
@@ -191,9 +200,10 @@ def run_validation(*, reference_dir: Path) -> dict[str, object]:
         "leakage_ok": leakage_ok,
         "sync_manifest": verify_sync_manifest(ROOT / "reports" / "data_sync" / "last_sync.json"),
     }
+    supported_versions = {"1.8.0", "1.9.0"}
     results["ok"] = all(
         (
-            metadata.get("version") == "1.8.0",
+            metadata.get("version") in supported_versions,
             row_counts_ok,
             class_ok,
             results["historical_val_test"]["ok"],

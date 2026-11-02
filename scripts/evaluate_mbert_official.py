@@ -37,6 +37,11 @@ def main():
         default=1000,
         help="Réplicas bootstrap para IC 95%%",
     )
+    parser.add_argument(
+        "--skip-official-f1-check",
+        action="store_true",
+        help="No exigir F1≈0.761 del checkpoint B2 empaquetado (baselines v3 u otros).",
+    )
     args = parser.parse_args()
 
     REPORTS_METRICS.mkdir(parents=True, exist_ok=True)
@@ -44,6 +49,7 @@ def main():
         model_dir=args.model_dir,
         max_length=args.max_length,
         n_bootstrap=args.n_bootstrap,
+        skip_official_f1_check=args.skip_official_f1_check,
     )
     logger.info(
         "Evaluación oficial completada: F1-macro=%.4f [%.4f, %.4f] run_id=%s",

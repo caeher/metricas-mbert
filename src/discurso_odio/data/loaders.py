@@ -19,6 +19,7 @@ from discurso_odio.paths import (
     TEST_CSV,
     TRAIN_CSV,
     VAL_CSV,
+    VERSIONES_DIR,
 )
 
 THREAT_SYNTHETIC_ORIGINS = frozenset(
@@ -39,6 +40,55 @@ TEMPLATE_HEAVY_ORIGINS = frozenset(
 REAL_ORIGIN = "real"
 
 
+@lru_cache(maxsize=1)
+def _version_release_index() -> dict[str, Path]:
+    """Map release_id or version_id (v1…) to dataset directory."""
+    index: dict[str, Path] = {}
+    if not VERSIONES_DIR.is_dir():
+        return index
+    for child in sorted(VERSIONES_DIR.iterdir()):
+        if not child.is_dir() or child.name.startswith("."):
+            continue
+        manifest_path = child / "manifest.json"
+        dataset_dir = child / "dataset"
+        if not dataset_dir.is_dir():
+            continue
+        version_id = child.name
+        index[version_id.casefold()] = dataset_dir
+        if manifest_path.is_file():
+            with open(manifest_path, encoding="utf-8") as handle:
+                manifest = json.load(handle)
+            release_id = str(manifest.get("release_id", "")).strip()
+            if release_id:
+                index[release_id.casefold()] = dataset_dir
+            manifest_version = str(manifest.get("version_id", "")).strip()
+            if manifest_version:
+                index[manifest_version.casefold()] = dataset_dir
+    return index
+
+
+def release_dir(release_id: str) -> Path:
+    key = release_id.strip().casefold()
+    indexed = _version_release_index().get(key)
+    if indexed is not None:
+        return indexed
+    legacy = RELEASES_DIR / release_id
+    if legacy.is_dir():
+        return legacy
+    raise FileNotFoundError(
+        f"Release no encontrada: {release_id!r} (buscado en versiones/ y {RELEASES_DIR})"
+    )
+
+
+def load_release_metadata(release_id: str) -> dict[str, Any]:
+    base = release_dir(release_id)
+    manifest = base / "metadata.json"
+    if not manifest.exists():
+        raise FileNotFoundError(f"Falta metadata de release: {manifest}")
+    with open(manifest, encoding="utf-8") as handle:
+        return json.load(handle)
+
+
 def load_split(name: str, *, release: str | None = None) -> pd.DataFrame:
     if release:
         return load_release_split(release, name)
@@ -55,22 +105,12 @@ def load_split(name: str, *, release: str | None = None) -> pd.DataFrame:
     path = paths[name]
     if not path.exists():
         raise FileNotFoundError(f"Split no encontrado: {path}")
-    return pd.read_csv(path)
+    df = pd.read_csv(path)
+    if name in ("adversarial", "adversarial_144"):
+        from discurso_odio.data.adversarial_battery import coerce_adversarial_split
 
-
-def release_dir(release_id: str) -> Path:
-    path = RELEASES_DIR / release_id
-    if not path.is_dir():
-        raise FileNotFoundError(f"Release no encontrada: {path}")
-    return path
-
-
-def load_release_metadata(release_id: str) -> dict[str, Any]:
-    manifest = release_dir(release_id) / "metadata.json"
-    if not manifest.exists():
-        raise FileNotFoundError(f"Falta metadata de release: {manifest}")
-    with open(manifest, encoding="utf-8") as handle:
-        return json.load(handle)
+        df = coerce_adversarial_split(name, df)
+    return df
 
 
 def load_release_split(release_id: str, split: str) -> pd.DataFrame:

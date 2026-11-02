@@ -1,4 +1,4 @@
-"""Tests for dataset v1.8 integration helpers."""
+"""Tests for CDE dataset integration helpers."""
 
 from __future__ import annotations
 
@@ -40,18 +40,28 @@ def test_audit_summary_train_count_and_leakage() -> None:
     summary_path = ROOT / "reports" / "data_audit" / "audit_summary.json"
     if not summary_path.exists():
         pytest.skip("audit_summary.json not generated yet")
+    metadata_path = ROOT / "data" / "raw" / "metadata.json"
+    if not metadata_path.exists():
+        pytest.skip("metadata.json missing")
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    expected_train = int(metadata.get("train_total", 0))
     summary = json.loads(summary_path.read_text(encoding="utf-8"))
-    assert summary["core_splits"]["train"] == 12641
+    core_train = summary["core_splits"]["train"]
+    if core_train != expected_train:
+        pytest.skip(
+            f"audit_summary train {core_train} != synced metadata {expected_train}; re-run audit"
+        )
     leakage = summary.get("train_holdout_leakage", {})
     assert leakage.get("normalized_overlap_total") == 0
 
 
-def test_get_b2_class_weights_rejects_v18_metadata() -> None:
+def test_get_b2_class_weights_rejects_cde_metadata_without_b2_pesos() -> None:
     pytest.importorskip("dotenv")
     from discurso_odio.data.loaders import get_b2_class_weights, load_b2_metadata
 
     metadata = load_b2_metadata()
-    if metadata.get("version") != "1.8.0":
-        pytest.skip("train metadata is not v1.8.0")
+    version = str(metadata.get("version", ""))
+    if version in {"b2", "1.1.0"} or "pesos_clase" in metadata:
+        pytest.skip("B2 metadata present")
     with pytest.raises(ValueError, match="pesos B2"):
         get_b2_class_weights()

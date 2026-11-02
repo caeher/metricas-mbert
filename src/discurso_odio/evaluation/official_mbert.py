@@ -449,6 +449,7 @@ def evaluate_mbert_official(
     model_dir: Path | None = None,
     max_length: int | None = None,
     n_bootstrap: int = 1000,
+    skip_official_f1_check: bool = False,
 ) -> dict[str, Any]:
     """Evalúa el checkpoint oficial una vez sobre test y exporta artefactos alineados."""
     model_dir = model_dir or default_mbert_model_dir()
@@ -589,7 +590,7 @@ def evaluate_mbert_official(
     _refresh_model_comparison(f1_raw)
     export_traceability(official_f1_raw=f1_raw, manifest=manifest)
 
-    if abs(f1_official - OFFICIAL_F1_MACRO) > F1_TOLERANCE:
+    if not skip_official_f1_check and abs(f1_official - OFFICIAL_F1_MACRO) > F1_TOLERANCE:
         raise ValueError(
             f"F1 oficial {f1_official} fuera de tolerancia respecto a {OFFICIAL_F1_MACRO}"
         )

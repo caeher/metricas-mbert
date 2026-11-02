@@ -81,7 +81,7 @@ def adversarial_text_set(df: pd.DataFrame | None = None) -> set[str]:
 def build_battery_manifest(*, write: bool = True) -> dict[str, Any]:
     """Construye o valida el manifiesto versionado de la batería adversarial."""
     adv_path = TEST_ADVERSARIAL_CSV
-    adv_df = pd.read_csv(adv_path)
+    adv_df = load_split("adversarial")
     manifest: dict[str, Any] = {
         "battery_version": BATTERY_VERSION,
         "created_at": datetime.now(timezone.utc).isoformat(),

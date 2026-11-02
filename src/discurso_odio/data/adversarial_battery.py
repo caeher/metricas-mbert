@@ -110,8 +110,96 @@ def _rows_for_group(group: str, cases: list[dict[str, Any]], start_idx: int) -> 
     return rows
 
 
+FAMILY_SPECS_144: dict[str, dict[str, Any]] = {
+    "A. Ofuscación de groserías": {"key": "A", "n": 20, "metric": "accuracy"},
+    "B. Emojis": {"key": "B", "n": 18, "metric": "accuracy"},
+    "C. Amenazas ofuscadas": {"key": "C", "n": 11, "metric": "accuracy"},
+    "D. Jerga salvadoreña inofensiva": {"key": "D", "n": 14, "metric": "fpr"},
+    "E. Control sin jerga": {"key": "E", "n": 12, "metric": "fpr"},
+    GROUP_F: {"key": "F", "n": 34, "metric": "fpr"},
+    GROUP_G: {"key": "G", "n": 35, "metric": "emoji_pair"},
+}
+
+BATTERY_144_N = 144
+BATTERY_V1_N = 75
+
+
+def is_cde_adversarial_schema(df: pd.DataFrame) -> bool:
+    return "grupo_de_prueba" in df.columns and "texto_normalizado" in df.columns
+
+
+def normalize_adversarial_eval_df(df: pd.DataFrame) -> pd.DataFrame:
+    """Map CDE test_adversarial.csv columns to the legacy evaluation schema."""
+    if not is_cde_adversarial_schema(df):
+        return df
+    labels = pd.to_numeric(df["label_esperado"], errors="coerce").fillna(0).astype(int)
+    return pd.DataFrame(
+        {
+            "ID": df["ID"].astype(str),
+            "grupo": df["grupo_de_prueba"].astype(str),
+            "base": df["subgrupo"].astype(str),
+            "variante": df["variante"].astype(str),
+            "texto_original": df["texto"].astype(str),
+            "texto_modelo": df["texto_normalizado"].astype(str),
+            "clase": df["resultado_esperado"].astype(str),
+            "label": labels,
+        }
+    )
+
+
+def _v1_group_names() -> tuple[str, ...]:
+    return tuple(name for name in FAMILY_SPECS_144 if name not in (GROUP_F, GROUP_G))
+
+
+def cde_adversarial_is_full_144(df: pd.DataFrame) -> bool:
+    if not is_cde_adversarial_schema(df) or len(df) != BATTERY_144_N:
+        return False
+    groups = set(df["grupo_de_prueba"].astype(str))
+    return set(FAMILY_SPECS_144.keys()).issubset(groups)
+
+
+def coerce_adversarial_split(name: str, df: pd.DataFrame) -> pd.DataFrame:
+    """Normalize raw CSV rows for adversarial evaluation splits."""
+    if name == "adversarial_144":
+        if is_cde_adversarial_schema(df) and len(df) == BATTERY_144_N:
+            return normalize_adversarial_eval_df(df)
+        if "grupo" in df.columns and len(df) == BATTERY_144_N:
+            return df
+        raise ValueError(
+            f"Split adversarial_144 inconsistente: {len(df)} filas; "
+            f"ejecute scripts/build_adversarial_144.py tras sync CDE."
+        )
+    if name == "adversarial":
+        if is_cde_adversarial_schema(df):
+            normalized = normalize_adversarial_eval_df(df)
+            if len(normalized) == BATTERY_144_N:
+                v1_groups = _v1_group_names()
+                subset = normalized[normalized["grupo"].isin(v1_groups)].reset_index(drop=True)
+                if len(subset) != BATTERY_V1_N:
+                    raise ValueError(
+                        f"CDE adversarial: se esperaban {BATTERY_V1_N} casos A–E, hay {len(subset)}."
+                    )
+                return subset
+            if len(normalized) == BATTERY_V1_N:
+                return normalized
+        if len(df) == BATTERY_V1_N and "grupo" in df.columns:
+            return df
+        raise ValueError(
+            f"Split adversarial inconsistente: {len(df)} filas; "
+            "no coincide con batería v1 (n=75) ni CDE v1.9.0 (n=144)."
+        )
+    raise ValueError(f"Split adversarial desconocido: {name}")
+
+
 def build_adversarial_144_dataframe() -> pd.DataFrame:
     base_df = pd.read_csv(TEST_ADVERSARIAL_CSV)
+    if cde_adversarial_is_full_144(base_df):
+        return normalize_adversarial_eval_df(base_df)
+    if len(base_df) != BATTERY_V1_N:
+        raise ValueError(
+            f"test_adversarial.csv tiene {len(base_df)} filas; "
+            f"se esperaba legacy n={BATTERY_V1_N} o CDE n={BATTERY_144_N}."
+        )
     f_rows = _rows_for_group(GROUP_F, F_CASES, start_idx=len(base_df) + 1)
     g_rows = _rows_for_group(GROUP_G, G_CASES, start_idx=len(base_df) + len(f_rows) + 1)
     extended = pd.DataFrame(f_rows + g_rows)
@@ -124,16 +212,3 @@ def write_adversarial_144_csv(path: Path | None = None) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     df.to_csv(path, index=False)
     return path
-
-
-FAMILY_SPECS_144: dict[str, dict[str, Any]] = {
-    "A. Ofuscación de groserías": {"key": "A", "n": 20, "metric": "accuracy"},
-    "B. Emojis": {"key": "B", "n": 18, "metric": "accuracy"},
-    "C. Amenazas ofuscadas": {"key": "C", "n": 11, "metric": "accuracy"},
-    "D. Jerga salvadoreña inofensiva": {"key": "D", "n": 14, "metric": "fpr"},
-    "E. Control sin jerga": {"key": "E", "n": 12, "metric": "fpr"},
-    GROUP_F: {"key": "F", "n": 34, "metric": "fpr"},
-    GROUP_G: {"key": "G", "n": 35, "metric": "emoji_pair"},
-}
-
-BATTERY_144_N = 144

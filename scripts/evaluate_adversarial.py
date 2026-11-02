@@ -74,6 +74,11 @@ def main() -> None:
         action="store_true",
         help="Regenera adversarial_144_battery_manifest.json",
     )
+    parser.add_argument(
+        "--manifest-only",
+        action="store_true",
+        help="Tras --build-manifest/--build-manifest-144, no evaluar modelo",
+    )
     args = parser.parse_args()
 
     if args.build_manifest:
@@ -82,6 +87,9 @@ def main() -> None:
     if args.build_manifest_144:
         manifest = build_battery_144_manifest(write=True)
         logger.info("Manifiesto 144 escrito: %s", manifest["sha256"])
+
+    if args.manifest_only:
+        return
 
     output_prefix = args.output_prefix or args.model_name.replace("-", "_")
     official = load_official_run_metadata() if args.model_name == "mbert" else None
