@@ -5,15 +5,16 @@
 
 \begin{enumerate}[leftmargin=*]
   \input{generated/mbert_conclusions_prose}
-  \item El reentrenamiento B2 mejora robustez adversarial (64/75 en batería v1
-        vs.\ 45/75 del checkpoint v1; 120/144 en batería extendida) y reduce el
-        sesgo dialectal (FPR gap 0.07 vs.\ 0.86), a costa de una caída puntual
-        del F1-macro en test de $0{,}7777$ a $0{,}7610$.
-  \item La prueba de McNemar confirma superioridad significativa de mBERT B2
-        frente a MultinomialNB y frente a XLM-RoBERTa v1 ($\alpha=0{,}05$).
-        Frente a LinearSVC y Logistic Regression no se rechaza la hipótesis nula.
-  \item Los cortes revelan fragilidad ante ironía y sarcasmo, y peor desempeño
-        en Facebook respecto a X.
+  \item mBERT v6 alcanza el mejor F1-macro reproducible en test entre los
+        checkpoints publicados ($0{,}7784$ vs.\ $0{,}7777$ v1 y $0{,}7610$ B2),
+        con validación F1-macro $0{,}8157$ por encima de la meta $0{,}80$.
+  \item La batería adversarial reporta 71/75 y 122/144 aciertos con gap FPR
+        dialectal 0{,}07; no se activó mitigación adicional en esta corrida.
+  \item El score operativo SLO es $0{,}6963$ (meta 0{,}90): el cuello de botella
+        es Facebook (F1-macro $0{,}6963$) y el recall mínimo de Amenazas
+        ($0{,}759$).
+  \item Los cortes revelan fragilidad ante ironía ($0{,}497$, baja potencia) y
+        sarcasmo; X supera a Facebook en F1-macro.
   \input{generated/dialect_bias_conclusions}
   \input{generated/adversarial_conclusions}
   \item El benchmark zero-shot (F1-macro $0{,}14$--$0{,}31$, checkpoint v1)
@@ -24,25 +25,27 @@
 
 \begin{itemize}[leftmargin=*]
   \item Tamaño moderado del test y de algunos slices (jerga, ironía).
-  \item Calibración imperfecta (ECE $\approx 0{,}16$).
-  \item Benchmark externo no re-ejecutado con pesos B2.
+  \item Calibración imperfecta (ECE $\approx 0{,}18$ en v6).
+  \item Benchmark externo no re-ejecutado con pesos v6.
+  \item Las pruebas de McNemar en el repositorio pueden corresponder a
+        checkpoints anteriores si no se regeneran con
+        \texttt{run\_mcnemar.py} sobre v6; no sustituyen el intervalo bootstrap
+        del F1-macro oficial.
   \item Concordancia LIME--SHAP nula en la corrida reportada; pesos globales
         LIME no exportados.
-  \item El F1-macro puntual del B2 queda por debajo de LinearSVC en el train B2
-        ampliado, aunque mejora en escenarios adversariales.
 \end{itemize}
 
 \section{Trabajo futuro}
 
 \begin{itemize}[leftmargin=*]
   \item Ampliar datos etiquetados reales, especialmente ironía/sarcasmo y Facebook.
-  \item Re-ejecutar benchmark zero-shot con checkpoint B2.
+  \item Re-ejecutar benchmark zero-shot y McNemar con checkpoint v6.
   \item Técnicas de calibración para reducir el ECE sin sacrificar robustez.
-  \item Re-ejecutar y estabilizar el pipeline SHAP; enriquecer explicaciones
-        globales LIME.
+  \item Cerrar brechas del SLO operativo (Facebook y recall de amenazas).
   \item Explorar modelos más recientes multilingües o específicos de español.
 \end{itemize}
 
-En conjunto, el sistema B2 es más robusto ante ataques retóricos y jerga
-salvadoreña que el v1, con trazabilidad reproducible, pero requiere más datos
-reales y calibración antes de un despliegue de moderación automatizada.
+En conjunto, mBERT v6 mejora la métrica principal en test y mantiene robustez
+adversarial documentada, con trazabilidad reproducible (CDE v1.9.0,
+\texttt{checkpoint-4050}), pero aún requiere más datos reales y calibración
+antes de un despliegue de moderación automatizada.

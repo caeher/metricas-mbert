@@ -60,6 +60,10 @@ reports/tables/*.md
 reports/latex/figures/*.png
 reports/latex/main.docx
 reports/latex/main.pdf
+reports/latex/build/
+!reports/latex/informe_metricas_v6.docx
+!reports/latex/informe_metricas_v6.pdf
+tools/tectonic/
 reports/latex/*.aux
 reports/latex/*.log
 reports/latex/*.out

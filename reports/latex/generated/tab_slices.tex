@@ -2,15 +2,15 @@
 \toprule
 Modelo & Corte & Definición & n & Clases & F1-macro & IC / nota & Accuracy \\
 \midrule
-mBERT & con\_jerga & n\_jerga > 0 & 278 & 29/117/72/60 & 0.7439 & [0.6835, 0.7981] & 0.7806 \\
-mBERT & contexto\_politico\_no & Contexto\_Politico in \{NO/FALSE/0/N\} & 368 & 107/97/93/71 & 0.7468 & [0.7018, 0.7903] & 0.7473 \\
-mBERT & contexto\_politico\_si & Contexto\_Politico in \{SI/SÍ/YES/TRUE/1\} & 92 & 16/62/2/12 & 0.7535 & baja potencia: clase con n<5 & 0.8478 \\
-mBERT & ironia\_no & Presencia\_Ironia in \{NO/FALSE/0/N\} & 401 & 94/136/88/83 & 0.7576 & [0.7137, 0.7964] & 0.7606 \\
-mBERT & ironia\_si & Presencia\_Ironia in \{SI/SÍ/YES/TRUE/1\} & 59 & 29/23/7/0 & 0.5781 & baja potencia: faltan clases (n=59) & 0.8136 \\
-mBERT & plataforma\_Facebook & Plataforma == 'Facebook' & 232 & 75/88/30/39 & 0.6648 & [0.5968, 0.7317] & 0.7112 \\
-mBERT & plataforma\_X & Plataforma == 'X' & 228 & 48/71/65/44 & 0.8190 & [0.7692, 0.8694] & 0.8246 \\
-mBERT & sarcasmo\_no & Presencia\_Sarcasmo in \{NO/FALSE/0/N\} & 370 & 91/111/87/81 & 0.7690 & [0.7249, 0.8120] & 0.7703 \\
-mBERT & sarcasmo\_si & Presencia\_Sarcasmo in \{SI/SÍ/YES/TRUE/1\} & 90 & 32/48/8/2 & 0.6142 & baja potencia: clase con n<5 & 0.7556 \\
-mBERT & sin\_jerga & n\_jerga == 0 & 182 & 94/42/23/23 & 0.6880 & [0.6008, 0.7660] & 0.7473 \\
+mBERT & con\_jerga & n\_jerga > 0 & 278 & 29/117/72/60 & 0.8001 & [0.7406, 0.8483] & 0.8273 \\
+mBERT & contexto\_politico\_no & Contexto\_Politico in \{NO/FALSE/0/N\} & 368 & 107/97/93/71 & 0.7624 & [0.7213, 0.8043] & 0.7609 \\
+mBERT & contexto\_politico\_si & Contexto\_Politico in \{SI/SÍ/YES/TRUE/1\} & 92 & 16/62/2/12 & 0.7131 & baja potencia: clase con n<5 & 0.8587 \\
+mBERT & ironia\_no & Presencia\_Ironia in \{NO/FALSE/0/N\} & 401 & 94/136/88/83 & 0.7911 & [0.7510, 0.8303] & 0.7930 \\
+mBERT & ironia\_si & Presencia\_Ironia in \{SI/SÍ/YES/TRUE/1\} & 59 & 29/23/7/0 & 0.4975 & baja potencia: faltan clases (n=59) & 0.6949 \\
+mBERT & plataforma\_Facebook & Plataforma == 'Facebook' & 232 & 75/88/30/39 & 0.6963 & [0.6246, 0.7619] & 0.7328 \\
+mBERT & plataforma\_X & Plataforma == 'X' & 228 & 48/71/65/44 & 0.8257 & [0.7774, 0.8724] & 0.8289 \\
+mBERT & sarcasmo\_no & Presencia\_Sarcasmo in \{NO/FALSE/0/N\} & 370 & 91/111/87/81 & 0.7921 & [0.7481, 0.8335] & 0.7919 \\
+mBERT & sarcasmo\_si & Presencia\_Sarcasmo in \{SI/SÍ/YES/TRUE/1\} & 90 & 32/48/8/2 & 0.6222 & baja potencia: clase con n<5 & 0.7333 \\
+mBERT & sin\_jerga & n\_jerga == 0 & 182 & 94/42/23/23 & 0.6400 & [0.5485, 0.7175] & 0.7088 \\
 \bottomrule
 \end{tabular}

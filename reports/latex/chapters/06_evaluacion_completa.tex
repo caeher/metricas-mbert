@@ -28,7 +28,7 @@ resultados centrales del proyecto sobre el conjunto de prueba ($n = 460$).
 
 La matriz de confusión (Figura~\ref{fig:cm}) confirma confusiones
 preferentemente entre clases adyacentes en la escala ordinal (p.\,ej.\ ofensivo
-$\leftrightarrow$ odio), coherente con el MAE ordinal de $0{,}352$.
+$\leftrightarrow$ odio), coherente con el MAE ordinal de $0{,}335$.
 
 \begin{figure}[H]
 \centering
@@ -71,27 +71,32 @@ McNemar en la sección siguiente sobre las mismas $n=460$ instancias.
 \input{generated/tab_mbert_traceability}
 \end{table}
 
-\section{Comparación v1 vs.\ B2}
+\section{Evolución v1, B2 y v6}
 
 La Tabla~\ref{tab:mbert-traceability} documenta la evolución del F1-macro. En
-test principal el B2 desciende de $0{,}7777$ (v1) a $0{,}7610$, pero mejora en
-robustez adversarial (64/75 vs.\ 45/75 en batería v1) y reduce la brecha FPR
-dialectal (0.07 vs.\ 0.86). En cortes, Facebook pasa de F1 $0{,}673$ a
-$0{,}665$ y X de $0{,}839$ a $0{,}819$.
+test, v1 alcanzaba $0{,}7777$, B2 $0{,}7610$ (mayor robustez adversarial) y v6
+\textbf{$0{,}7784$}. En batería $n=75$, v6 reporta 71/75 aciertos (B2: 64/75;
+v1: 45/75); en $n=144$, v6 alcanza 122/144. En plataforma, Facebook pasa de
+F1 $0{,}665$ (B2) a $0{,}696$ (v6); X se mantiene en torno a $0{,}826$.
+
+\section{Score operativo (SLO)}
+
+El baseline \texttt{production\_slo\_baseline\_v6\_gold.json} evalúa el
+contrato \texttt{production\_slo\_v1.json} sobre el checkpoint oficial. El
+\textbf{score operativo} es $0{,}6963$ frente a meta $0{,}90$ (\texttt{slo\_pass:
+false}). Componentes limitantes: F1-macro mínimo por corte
+(\texttt{min\_required\_slice\_f1\_macro}$=0{,}6963$, Facebook) y recall de
+Amenazas/Violencia ($0{,}759$, umbral $0{,}759$). Las restricciones adversariales
+(75/45 aciertos mínimos, gap FPR dialectal $\le 0{,}17$) sí se cumplen.
 
 \section{Pruebas de McNemar}
 
-La Tabla~\ref{tab:mcnemar} reporta la prueba de McNemar~\cite{mcnemar1947}
-entre mBERT y cada baseline, y la comparación pareada mBERT vs.\ XLM-RoBERTa
-sobre las mismas $n=460$ instancias de test ($\alpha = 0{,}05$).
+La Tabla~\ref{tab:mcnemar} reporta comparaciones pareadas exportadas en
+\texttt{mcnemar\_tests.csv} cuando están disponibles. Deben interpretarse junto
+con el F1-macro bootstrap oficial; si el CSV no se regeneró sobre v6, la tabla
+puede reflejar rutas de checkpoint históricas.
 
 \input{generated/mcnemar_prose}
-
-La diferencia frente a MultinomialNB es significativa ($p \approx 0{,}005$).
-Frente a Logistic Regression ($p \approx 0{,}24$) y LinearSVC ($p \approx 0{,}53$)
-no se rechaza la hipótesis nula. Frente a XLM-RoBERTa v1 la diferencia sí es
-significativa ($p \approx 0{,}04$), con XLM-R acertando más instancias en este
-test ($b=26$, $c=44$).
 
 \begin{table}[H]
 \centering
@@ -221,7 +226,7 @@ cifras históricas no reproducibles frente a la línea oficial.
 
 \begin{table}[H]
 \centering
-\caption{Comparación antes/después de mitigación B2 (si aplica).}
+\caption{Comparación histórica de mitigación (v1 / B2 / v6, si aplica).}
 \label{tab:adversarial-before-after}
 \input{generated/tab_adversarial_before_after}
 \end{table}

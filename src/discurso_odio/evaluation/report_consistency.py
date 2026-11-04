@@ -445,10 +445,10 @@ def check_mbert_official_metrics(
                 )
         if "0.7862" in text or "0{,}7862" in text:
             errors.append(ConsistencyError(f"{name} contiene F1 histórico 0.7862"))
-        if "0.778" in text or "0{,}778" in text:
+        if "0{,}7780" in text or "0.7780" in text:
             errors.append(
                 ConsistencyError(
-                    f"{name} contiene redondeo legacy 0.778 en lugar del oficial"
+                    f"{name} contiene redondeo legacy 0.7780 en lugar del oficial"
                 )
             )
 
@@ -509,6 +509,7 @@ def check_adversarial_consistency(generated_dir: Path) -> list[ConsistencyError]
     metrics_dir = PROJECT_ROOT / "reports" / "metrics"
     summary_path = None
     for name in (
+        "mbert_slo_144_adversarial_summary.json",
         "mbert_b2_144_adversarial_summary.json",
         "mbert_v1_144_adversarial_summary.json",
         "mbert_144_adversarial_summary.json",

@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 
 from discurso_odio.evaluation.slices import platform_rows
 from discurso_odio.models.mbert import default_mbert_model_dir
@@ -89,6 +89,9 @@ def plot_confusion_matrix():
         return
 
     model_dir = default_mbert_model_dir()
+    v6_dir = PROJECT_ROOT / "versiones" / "v6" / "model"
+    if not (model_dir / "model.safetensors").exists() and (v6_dir / "model.safetensors").exists():
+        model_dir = v6_dir
     if not model_dir.exists():
         print("Modelo mBERT no encontrado; se omite 04_confusion_matrix.png")
         return
@@ -399,6 +402,9 @@ def plot_lime_weights():
 def plot_training_curve():
     out = REPORTS_FIGURES / "09_training_loss.png"
     model_dir = default_mbert_model_dir()
+    v6_dir = PROJECT_ROOT / "versiones" / "v6" / "model"
+    if not (model_dir / "train_metrics.json").exists() and (v6_dir / "train_metrics.json").exists():
+        model_dir = v6_dir
     state_paths = list(model_dir.glob("checkpoint-*/trainer_state.json"))
     root_state = model_dir / "trainer_state.json"
     if root_state.exists():
@@ -472,6 +478,10 @@ def copy_to_latex_figures():
 
 def plot_adversarial_families():
     path = REPORTS_METRICS / "mbert_adversarial_family_metrics.csv"
+    if not path.exists():
+        alt = REPORTS_METRICS / "mbert_slo_144_adversarial_family_metrics.csv"
+        if alt.exists():
+            path = alt
     out = REPORTS_FIGURES / "11_adversarial_families.png"
     if not path.exists():
         _placeholder_figure(out, "mbert_adversarial_family_metrics.csv\nno disponible")

@@ -1,10 +1,10 @@
 \chapter*{Resumen ejecutivo}
 \addcontentsline{toc}{chapter}{Resumen ejecutivo}
 
-Este informe documenta la evaluación del modelo \textbf{mBERT B2}
-(\texttt{bert-base-multilingual-cased}, checkpoint \texttt{checkpoint-1644})
-reentrenado sobre el corpus ampliado con datos sintéticos dirigidos
-(train $n=3{,}293$; val/test sin cambios respecto al v1).
+Este informe documenta la evaluación del modelo \textbf{mBERT v6}
+(\texttt{bert-base-multilingual-cased}, checkpoint \texttt{checkpoint-4050})
+entrenado sobre el corpus CDE \textbf{v1.9.0} (train $n=21{,}585$; val $n=459$;
+test $n=460$ sin cambios respecto a corridas anteriores).
 
 \input{generated/mbert_intro_prose}
 
@@ -15,9 +15,12 @@ reentrenado sobre el corpus ampliado con datos sintéticos dirigidos
 \input{generated/tab_mbert_global}
 \end{table}
 
-Los cortes más difíciles son ironía y sarcasmo; Facebook presenta menor
-F1-macro que X. La batería adversarial extendida ($n=144$) mejora frente al
-checkpoint v1 (120/144 aciertos vs.\ 69/144), aunque el F1-macro en test
-principal desciende de $0{,}7777$ (v1) a $0{,}7610$ (B2).
+Los cortes más difíciles siguen siendo ironía y sarcasmo (baja potencia
+estadística); Facebook presenta menor F1-macro que X. La batería adversarial
+extendida ($n=144$) alcanza 122/144 aciertos con gap FPR dialectal 0{,}07.
+Frente a checkpoints históricos, v6 recupera F1-macro en test
+($0{,}7784$) por encima de B2 ($0{,}7610$) y ligeramente por encima de v1
+($0{,}7777$), con score operativo SLO aún por debajo de la meta 0{,}90 por el
+corte Facebook.
 
 \clearpage

@@ -1,69 +1,68 @@
-\chapter{Fine-tuning de mBERT B2}
+\chapter{Fine-tuning de mBERT v6}
 \label{ch:mbert}
 
 Este capítulo corresponde al notebook \texttt{04\_finetuning\_mbert}. Se
-describe el reentrenamiento de \texttt{bert-base-multilingual-cased}
-~\cite{devlin2019bert} sobre el corpus B2 salvadoreño.
+describe el entrenamiento de \texttt{bert-base-multilingual-cased}
+~\cite{devlin2019bert} sobre CDE v1.9.0 con inicialización desde el release v4.
 
 \section{Configuración de entrenamiento}
 
-Los hiperparámetros principales (modo CPU, según \texttt{config/settings.yaml})
-se resumen en la Tabla~\ref{tab:hparams}.
+Los hiperparámetros principales (GPU, \texttt{training\_run.json}) se resumen en
+la Tabla~\ref{tab:hparams}.
 
 \begin{table}[H]
 \centering
-\caption{Hiperparámetros de fine-tuning B2 (CPU).}
+\caption{Hiperparámetros de fine-tuning v6 (Transformers).}
 \label{tab:hparams}
 \begin{tabular}{lc}
 \toprule
 Parámetro & Valor \\
 \midrule
 Modelo base & \texttt{bert-base-multilingual-cased} \\
-Directorio de salida & \texttt{models/mbert-sv-b2} \\
-Train & 3{,}293 (2{,}144 reales + 1{,}149 sintéticos) \\
-Épocas & 4 \\
-Batch size (train) & 8 \\
-Batch size (eval) & 16 \\
+Directorio de salida & \texttt{versiones/v6/model} \\
+Train / val & 21{,}585 / 459 \\
+Épocas & 5 \\
+Batch size (train / eval) & 16 / 32 \\
 Learning rate & $2 \times 10^{-5}$ \\
 Warmup ratio & 0{,}1 \\
 Weight decay & 0{,}01 \\
 Max length & 128 \\
-Label smoothing (B2) & 0{,}05 \\
-Early stopping patience & 2 \\
+Label smoothing & 0{,}0 \\
+Pérdida & CE + peso ordinal 0{,}3 \\
 Semilla & 42 \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\section{Pesos de clase B2}
+\section{Pesos de clase}
 
-Los pesos publicados en \texttt{metadata.json} (Tabla~\ref{tab:weights}) mitigan
-el desbalance y se combinan con masa efectiva $\approx 90$ en amenazas sintéticas
-durante el entrenamiento.
+Los pesos publicados en el metadata del dataset (Tabla~\ref{tab:weights}) mitigan
+el desbalance; la receta v6 mantiene masa efectiva en amenazas sintéticas
+(\texttt{threat\_synthetic\_effective\_n}$\approx 90$).
 
 \section{Métricas de validación}
 
-Al finalizar el entrenamiento (época 4), el mejor checkpoint
-(\texttt{checkpoint-1644}) alcanza en validación un F1-macro de \textbf{0{,}756}
-y una accuracy de \textbf{0{,}756} (\texttt{train\_metrics.json}). La
-Figura~\ref{fig:training} resume las métricas finales de validación; el historial
-completo de pérdida por step no fue exportado desde Colab.
+El mejor checkpoint (\texttt{checkpoint-4050}, paso global 4050) alcanza en
+validación un F1-macro de \textbf{0{,}8157} y accuracy \textbf{0{,}8235}
+(\texttt{training\_run.json}). La Figura~\ref{fig:training} resume las métricas
+finales de validación exportadas; el historial completo de pérdida por step no se
+versiona en Git.
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{09_training_loss.png}
-\caption{Curva de entrenamiento: métricas finales de validación B2.}
+\caption{Curva de entrenamiento: métricas finales de validación v6.}
 \label{fig:training}
 \end{figure}
 
-El checkpoint oficial se guarda en \texttt{models/mbert-sv-b2/}. Los pesos no
-se versionan en Git. El contrato de inferencia (\texttt{inference\_contract.json})
+El checkpoint oficial se congela en \texttt{versiones/v6/model/} (pesos en
+Hugging Face). El contrato de inferencia (\texttt{inference\_contract.json})
 fija \texttt{max\_length=128}, columna \texttt{texto\_modelo} y normalizador
 \texttt{normalize\_for\_model} v1.1.
 
-\section{Comparación con el checkpoint v1}
+\section{Comparación con checkpoints históricos}
 
-El checkpoint v1 (\texttt{checkpoint-1072}, train 2{,}144) alcanzaba F1-macro
-\textbf{0{,}7777} en test. El B2 prioriza robustez adversarial y equidad
-dialectal; la evaluación del Capítulo~\ref{ch:evaluacion} cuantifica el
-intercambio frente al v1.
+El checkpoint v1 (\texttt{checkpoint-1072}) alcanzaba F1-macro \textbf{0{,}7777}
+en test; B2 (\texttt{checkpoint-1644}) \textbf{0{,}7610}, priorizando robustez
+adversarial. v6 recupera \textbf{0{,}7784} en test con 71/75 y 122/144 aciertos
+adversariales y gap FPR dialectal 0{,}07 (Capítulo~\ref{ch:evaluacion}).

@@ -8,7 +8,7 @@ import logging
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 
 from discurso_odio.evaluation.mcnemar import run_mcnemar_tests
 from discurso_odio.paths import MODELS_DIR, REPORTS_METRICS

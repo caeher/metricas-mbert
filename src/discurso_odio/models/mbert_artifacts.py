@@ -22,7 +22,7 @@ MANIFEST_REPORT_PATH = PROJECT_ROOT / "reports" / "metrics" / "mbert_checkpoint_
 VERIFY_REPORT_PATH = PROJECT_ROOT / "reports" / "metrics" / "mbert_checkpoint_verify.json"
 
 F1_TOLERANCE = 1e-4
-OFFICIAL_F1_MACRO = 0.7610
+OFFICIAL_F1_MACRO = 0.7784
 BASE_MODEL = "bert-base-multilingual-cased"
 
 REQUIRED_FILES = (

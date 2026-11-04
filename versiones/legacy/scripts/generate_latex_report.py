@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pandas as pd
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[4] / "src"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "src"))
 
 from discurso_odio.evaluation.report_consistency import (
     assert_adversarial_consistency,
@@ -25,6 +25,10 @@ from discurso_odio.paths import MODELS_DIR, PROJECT_ROOT, REPORTS_FIGURES, REPOR
 LATEX_DIR = PROJECT_ROOT / "reports" / "latex"
 GENERATED_DIR = LATEX_DIR / "generated"
 LATEX_FIGURES = LATEX_DIR / "figures"
+
+
+def _official_model_label() -> str:
+    return "mBERT v6"
 
 
 def latex_escape(value) -> str:
@@ -124,12 +128,41 @@ def gen_baselines():
 def gen_model_comparison():
     path = REPORTS_METRICS / "model_comparison.csv"
     out = GENERATED_DIR / "tab_model_comparison.tex"
-    if not path.exists():
+    rows: list[tuple[str, float]] = []
+    if path.exists():
+        df = pd.read_csv(path).sort_values("f1_macro", ascending=False)
+        for _, r in df.iterrows():
+            rows.append((str(r["model"]), float(r["f1_macro"])))
+    else:
+        bl_path = REPORTS_METRICS / "baselines_tfidf.csv"
+        if bl_path.exists():
+            bl = pd.read_csv(bl_path)
+            if "model" not in bl.columns:
+                bl = pd.read_csv(bl_path, index_col=0).reset_index()
+                bl.columns = ["model", "f1_macro"]
+            for _, r in bl.iterrows():
+                rows.append((str(r["model"]), float(r["f1_macro"])))
+        m_path = REPORTS_METRICS / "mbert_test_metrics.csv"
+        if m_path.exists():
+            m = pd.read_csv(m_path).iloc[0]
+            rows.append(("mBERT v6", float(m["f1_macro"])))
+        xlmr_pred = REPORTS_METRICS / "xlmr_test_predictions.csv"
+        if xlmr_pred.exists():
+            from sklearn.metrics import f1_score
+
+            from discurso_odio.data.loaders import load_split
+
+            test_df = load_split("test")
+            pred_df = pd.read_csv(xlmr_pred)
+            y_true = test_df["label"].values
+            y_pred = pred_df["y_pred_xlmr"].values
+            rows.append(("XLM-RoBERTa v1", float(f1_score(y_true, y_pred, average="macro"))))
+    if not rows:
         placeholder(out)
         return
-    df = pd.read_csv(path).sort_values("f1_macro", ascending=False)
-    rows = [[latex_escape(r["model"]), fmt_num(r["f1_macro"])] for _, r in df.iterrows()]
-    write_tabular(out, ["Modelo", "F1-macro"], rows)
+    rows.sort(key=lambda item: item[1], reverse=True)
+    table_rows = [[latex_escape(name), fmt_num(f1)] for name, f1 in rows]
+    write_tabular(out, ["Modelo", "F1-macro"], table_rows)
 
 
 def _mbert_metrics_row() -> pd.Series | None:
@@ -223,7 +256,7 @@ def gen_mbert_intro_prose():
         out.write_text("% mbert_test_metrics.csv no disponible\n", encoding="utf-8")
         return
     text = (
-        f"Sobre el conjunto de prueba ($n = 460$), el modelo mBERT B2 alcanza un "
+        f"Sobre el conjunto de prueba ($n = 460$), el modelo {_official_model_label()} alcanza un "
         f"\\textbf{{F1-macro de {_latex_num(row['f1_macro'])}}} "
         f"(intervalo bootstrap 95\\,\\%: $[{_latex_num(row['f1_bootstrap_lo'])},\\ "
         f"{_latex_num(row['f1_bootstrap_hi'])}]$), "
@@ -252,7 +285,7 @@ def gen_mbert_conclusions_prose():
     else:
         comparison = f"supera a LinearSVC (${linear_f1}$) y al resto de baselines"
     line = (
-        f"  \\item mBERT B2 alcanza F1-macro \\textbf{{{_latex_num(row['f1_macro'])}}} en test "
+        f"  \\item {_official_model_label()} alcanza F1-macro \\textbf{{{_latex_num(row['f1_macro'])}}} en test "
         f"($n=460$), {comparison}, pero \\textbf{{sin alcanzar}} la meta de $0{{,}}80$ "
         f"definida en la configuración del proyecto. "
         f"{_target_goal_note(row).replace('El objetivo', 'La meta')}"
@@ -288,18 +321,18 @@ def gen_mbert_comparison_prose():
     linear = _linear_svc_f1()
     if best is not None and linear is not None and mbert_f1 < best - 1e-6:
         text = (
-            f"En ranking descriptivo, XLM-RoBERTa v1 lidera el F1-macro puntual; mBERT B2 "
+            f"En ranking descriptivo, XLM-RoBERTa v1 lidera el F1-macro puntual; {_official_model_label()} "
             f"(${_latex_num(mbert_f1)}$) queda por debajo de LinearSVC "
             f"(${_latex_num(linear)}$). La superioridad estadística se evalúa con McNemar."
         )
     elif linear is not None:
         text = (
-            f"Entre baselines TF-IDF, mBERT B2 obtiene F1-macro "
+            f"Entre baselines TF-IDF, {_official_model_label()} obtiene F1-macro "
             f"${_latex_num(mbert_f1)}$, con LinearSVC a ${_latex_num(linear)}$."
         )
     else:
         text = (
-            f"mBERT B2 obtiene F1-macro puntual ${_latex_num(mbert_f1)}$."
+            f"{_official_model_label()} obtiene F1-macro puntual ${_latex_num(mbert_f1)}$."
         )
     out.write_text(text + "\n", encoding="utf-8")
     print(f"Generado: {out.name}")
@@ -387,8 +420,8 @@ def gen_mbert_traceability_prose():
         f"\\texttt{{{latex_escape(str(run['test_sha256'])[:16])}}}\\ldots, "
         f"evaluación \\texttt{{{latex_escape(str(run['evaluated_at'])[:10])}}}). "
         f"La cifra $0{{,}}7862$ del informe de auditoría queda archivada como "
-        f"\\emph{{no reproducible}}. El checkpoint v1 (F1-macro $0{{,}}7777$) se conserva "
-        f"como referencia histórica reproducible en la misma tabla."
+        f"\\emph{{no reproducible}}. Los checkpoints v1 ($0{{,}}7777$) y B2 ($0{{,}}7610$) "
+        f"se conservan como referencia histórica en la misma tabla."
     )
     out.write_text(text + "\n", encoding="utf-8")
     print(f"Generado: {out.name}")
@@ -1049,8 +1082,9 @@ def gen_dialect_bias_conclusions():
 
 
 def _load_adversarial_summary() -> dict | None:
-    """Prefiere la batería extendida 144 del checkpoint B2 sobre históricos."""
+    """Prefiere la batería extendida 144 del checkpoint oficial (v6)."""
     for name in (
+        "mbert_slo_144_adversarial_summary.json",
         "mbert_b2_144_adversarial_summary.json",
         "mbert_v1_144_adversarial_summary.json",
         "mbert_144_adversarial_summary.json",
@@ -1065,6 +1099,7 @@ def _load_adversarial_summary() -> dict | None:
 
 def _adversarial_family_metrics_path() -> Path | None:
     for name in (
+        "mbert_slo_144_adversarial_family_metrics.csv",
         "mbert_b2_144_adversarial_family_metrics.csv",
         "mbert_v1_144_adversarial_family_metrics.csv",
         "mbert_144_adversarial_family_metrics.csv",
@@ -1078,6 +1113,7 @@ def _adversarial_family_metrics_path() -> Path | None:
 
 def _adversarial_v1_summary() -> dict | None:
     for name in (
+        "mbert_slo_adversarial_summary.json",
         "mbert_b2_adversarial_summary.json",
         "mbert_adversarial_summary.json",
     ):
@@ -1188,7 +1224,7 @@ def gen_adversarial_prose():
         reasons = ", ".join(summary.get("mitigation_reasons", []))
         lines.append(
             f"La puerta de mitigación se activó ({latex_escape(reasons)}); "
-            f"se entrenó un candidato B2 sin filas de train que coinciden con la batería."
+            f"se documentó un candidato de mitigación sin filas de train que coinciden con la batería."
         )
     else:
         lines.append(
@@ -1301,28 +1337,36 @@ def gen_adversarial_before_after():
 
 def gen_adversarial_tradeoffs():
     out = GENERATED_DIR / "adversarial_tradeoffs.tex"
-    meta_path = REPORTS_METRICS / "mbert_adversarial_before_after.json"
-    if not meta_path.exists():
+    run_path = REPORTS_METRICS / "mbert_official_run.json"
+    summary = _load_adversarial_summary()
+    if not run_path.exists():
         out.write_text(
-            "% Sin candidato B2: riesgos residuales documentados en adversarial_prose.tex\n",
+            "% mbert_official_run.json no disponible; ver adversarial_prose.tex\n",
             encoding="utf-8",
         )
         return
-    with open(meta_path, encoding="utf-8") as handle:
-        meta = json.load(handle)
-    adopted = meta.get("mitigation_adopted")
-    notes = meta.get("adoption_notes", "")
-    if adopted:
-        line = (
-            f"El checkpoint B2 fue adoptado como modelo oficial: "
-            f"{latex_escape(notes)}. La métrica publicada en test principal es "
-            f"F1-macro $0{{,}}7610$ (checkpoint \\texttt{{checkpoint-1644}})."
+    with open(run_path, encoding="utf-8") as handle:
+        run = json.load(handle)
+    adv_note = ""
+    if summary:
+        adv_note = (
+            f" En batería adversarial extendida ($n={summary.get('n_cases', 144)}$) "
+            f"el modelo acierta {summary.get('global_correct')}/{summary.get('n_cases')} casos."
         )
-    else:
-        line = (
-            f"El candidato B2 no se adoptó como mitigación oficial: {latex_escape(notes)}. "
-            f"Se mantienen los riesgos residuales en amenazas ofuscadas, emojis y jerga dialectal."
-        )
+    line = (
+        f"El release oficial {_official_model_label()} usa el checkpoint "
+        f"\\texttt{{{latex_escape(run['checkpoint'])}}} con F1-macro "
+        f"${_latex_num(run['official_f1_macro'])}$ en \\texttt{{test.csv}} "
+        f"(CDE v1.9.0, train $n=21\\,585$).{adv_note} "
+        f"Los checkpoints v1 y B2 permanecen en la tabla de trazabilidad como línea histórica."
+    )
+    meta_path = REPORTS_METRICS / "mbert_adversarial_before_after.json"
+    if meta_path.exists():
+        with open(meta_path, encoding="utf-8") as handle:
+            meta = json.load(handle)
+        notes = meta.get("adoption_notes", "")
+        if notes:
+            line += f" {latex_escape(notes)}"
     out.write_text(line + "\n", encoding="utf-8")
     print(f"Generado: {out.name}")
 

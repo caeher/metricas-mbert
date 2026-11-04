@@ -7,8 +7,9 @@ datasets públicos en español/latam hospedados en Hugging Face
 ~\cite{socialtox,sinodio,contextualizedhate,textdetox,aliaes,exist}.
 
 \textbf{Nota metodológica:} las cifras de este capítulo provienen del checkpoint
-v1 (\texttt{checkpoint-1072}). El B2 no fue re-evaluado en zero-shot externo en
-esta corrida; el test local ($n=460$) sí corresponde al B2 oficial.
+v1 (\texttt{checkpoint-1072}). El release v6 no fue re-evaluado en zero-shot
+externo en esta corrida; el test local ($n=460$) sí corresponde al checkpoint
+oficial \texttt{checkpoint-4050}.
 
 \section{Protocolo}
 
@@ -22,7 +23,7 @@ La Tabla~\ref{tab:benchmark} y la Figura~\ref{fig:benchmark} resumen los seis
 datasets evaluados con estado \texttt{ok}. El mejor F1-macro zero-shot es
 $0{,}313$ (contextualized hate speech); el peor, $0{,}139$ (SinOdio-LATAM).
 En métrica binaria algunos datasets alcanzan F1 $\approx 0{,}70$, pero el
-\input{generated/mbert_benchmark_prose}.
+\input{generated/mbert_benchmark_prose}
 
 \begin{table}[H]
 \centering
