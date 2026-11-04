@@ -1,0 +1,6 @@
+{
+  "max_length": 128,
+  "text_column": "texto_modelo",
+  "normalizer": "normalize_for_model",
+  "normalizer_version": "1.1"
+}

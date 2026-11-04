@@ -1,0 +1,34 @@
+{
+  "release_id": "v6-gold-20261103",
+  "taxonomy_version": "2.0.0",
+  "seed": 42,
+  "parent_baseline": "training-v3-20261101",
+  "argilla_campaign": "legacy_train_real",
+  "argilla_manifest": "reports/annotation/legacy_train_real_batch_v1.csv",
+  "argilla_export_id": "legacy-train-real__20261103T042651228774Z",
+  "argilla_export_note": "Export local dual heurística guía v2 (generate_legacy_train_real_dual_export.py)",
+  "source_adjudicated": "reports/annotation/adjudicated_records.csv",
+  "adjudicated_record_count": 599,
+  "legacy_train_real_adjudicated_count": 474,
+  "label_overrides": {
+    "train": 88,
+    "val": 0,
+    "test": 0
+  },
+  "appended_candidate_rows": 0,
+  "candidate_source_appended": "",
+  "class_weights": {
+    "0": 0.5542573952341824,
+    "1": 0.9157050738163923,
+    "2": 1.8499314364072676,
+    "3": 1.7756663376110562
+  },
+  "train_rows": 21585,
+  "val_rows": 459,
+  "test_rows": 460,
+  "files": {
+    "train": "train.csv",
+    "val": "val.csv",
+    "test": "test.csv"
+  }
+}

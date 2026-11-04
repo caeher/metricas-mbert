@@ -1,0 +1,80 @@
+{
+  "recorded_at": "2026-11-03T04:53:59.758584+00:00",
+  "git_commit": "13116ddf90b379ac21bdf6499c1b8e775b4c349a",
+  "base_model": "bert-base-multilingual-cased",
+  "model_dir": "C:\\Users\\user6921\\Desktop\\cde-ml\\ml-metricas\\versiones\\v6\\model",
+  "seed": 42,
+  "checkpoint_identity": {
+    "checkpoint": "checkpoint-4050",
+    "epoch": 5.0,
+    "global_step": 4050,
+    "best_metric_val_f1_macro": 0.8156693593379709,
+    "best_model_checkpoint": "checkpoint-4050"
+  },
+  "parameters": {
+    "total_params": 177856516,
+    "trainable_params": 177856516
+  },
+  "training_arguments": {
+    "output_dir": "versiones\\v6\\model",
+    "num_train_epochs": 5,
+    "max_steps": -1,
+    "per_device_train_batch_size": 16,
+    "per_device_eval_batch_size": 32,
+    "learning_rate": 2e-05,
+    "warmup_ratio": 0.1,
+    "weight_decay": 0.01,
+    "seed": 42,
+    "fp16": true,
+    "eval_strategy": "epoch",
+    "save_strategy": "epoch",
+    "load_best_model_at_end": true,
+    "metric_for_best_model": "f1_macro"
+  },
+  "runtime": {
+    "global_step": 4050,
+    "epoch": 3.0,
+    "best_metric": 0.8156693593379709,
+    "best_model_checkpoint": "versiones\\v6\\model\\checkpoint-4050"
+  },
+  "dataset": {
+    "dataset_metadata_path": "data\\processed\\metadata.json",
+    "dataset_version": "1.9.0",
+    "train_total": 21585,
+    "train.csv_sha256": "7ab0ad17422624b674bc12e06cbbb1b796c1ed389d0e4aa872efcd0d3a2111d4",
+    "val.csv_sha256": "7967228844f8715a40e24668a2eec9b99137d36f53b303715e2dbf07cf0de383",
+    "test.csv_sha256": "b63a04906bedda1befb41a7d147c582dc0ebee2f02f0cb3617ab461bdf932294"
+  },
+  "training_recipe": {
+    "release": "v6",
+    "synthetic_policy": "b2_full",
+    "synthetic_effective_fraction": null,
+    "threat_synthetic_effective_n": 90.0,
+    "platform_class_boost": "none",
+    "label_smoothing": 0.0,
+    "loss_type": "ce",
+    "ordinal_weight": 0.3,
+    "focal_gamma": 2.0,
+    "layerwise_lr_decay": null,
+    "classifier_dropout": null,
+    "learning_rate": null,
+    "epochs": 5,
+    "early_stopping_patience": null,
+    "seed": 42,
+    "use_b2": false,
+    "exclude_adversarial_overlap": false,
+    "use_v1_class_weights": false,
+    "init_model_dir": "versiones\\v4\\model",
+    "train_rows": 21585,
+    "val_rows": 459
+  },
+  "eval_metrics": {
+    "eval_loss": 1.155531883239746,
+    "eval_f1_macro": 0.817364486135725,
+    "eval_accuracy": 0.8235294117647058,
+    "eval_runtime": 1.2714,
+    "eval_samples_per_second": 361.022,
+    "eval_steps_per_second": 11.798,
+    "epoch": 5.0
+  }
+}
