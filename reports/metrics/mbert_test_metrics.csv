@@ -1,12 +1,12 @@
 accuracy,balanced_accuracy,f1_macro,f1_weighted,precision_macro,recall_macro,ordinal_mae,ordinal_rmse,large_error_pct,qwk,kappa_linear,mcc,precision_No Tóxico,recall_No Tóxico,f1_No Tóxico,support_No Tóxico,precision_Lenguaje Ofensivo,recall_Lenguaje Ofensivo,f1_Lenguaje Ofensivo,support_Lenguaje Ofensivo,precision_Discurso de Odio,recall_Discurso de Odio,f1_Discurso de Odio,support_Discurso de Odio,precision_Amenazas/Violencia,recall_Amenazas/Violencia,f1_Amenazas/Violencia,support_Amenazas/Violencia,roc_auc_ovr_macro,log_loss,ece,brier_macro,classification_report,f1_bootstrap_mean,f1_bootstrap_lo,f1_bootstrap_hi
-0.7739130434782608,0.7715743347357021,0.7707676452942657,0.7744179814932773,0.7712712129642509,0.7715743347357021,0.3391304347826087,0.7745966692414834,9.565217391304348,0.7248803827751196,0.7064286240273607,0.6926172865666688,0.8205128205128205,0.7804878048780488,0.8,123,0.7848101265822784,0.779874213836478,0.7823343848580442,159,0.7047619047619048,0.7789473684210526,0.74,95,0.775,0.7469879518072289,0.7607361963190185,83,0.9373271366896783,0.6198130051772568,0.08385318154874055,0.07870448008179665,"                    precision    recall  f1-score   support
+0.7804347826086957,0.7775921716755364,0.7783502375885903,0.780665860893601,0.7800123855054208,0.7775921716755364,0.3347826086956522,0.7745966692414834,9.782608695652174,0.7285601888276947,0.7118052447865391,0.7011265559730816,0.7480916030534351,0.7967479674796748,0.7716535433070866,123,0.8116883116883117,0.7861635220125787,0.7987220447284346,159,0.7525773195876289,0.7684210526315789,0.7604166666666666,95,0.8076923076923077,0.7590361445783133,0.782608695652174,83,0.9288829207561153,0.972182918436676,0.17770021447668907,0.09379137121140957,"                    precision    recall  f1-score   support
 
-         No Tóxico       0.82      0.78      0.80       123
- Lenguaje Ofensivo       0.78      0.78      0.78       159
-  Discurso de Odio       0.70      0.78      0.74        95
-Amenazas/Violencia       0.78      0.75      0.76        83
+         No Tóxico       0.75      0.80      0.77       123
+ Lenguaje Ofensivo       0.81      0.79      0.80       159
+  Discurso de Odio       0.75      0.77      0.76        95
+Amenazas/Violencia       0.81      0.76      0.78        83
 
-          accuracy                           0.77       460
-         macro avg       0.77      0.77      0.77       460
-      weighted avg       0.78      0.77      0.77       460
-",0.7691018109087183,0.7292984001767001,0.8042642618730764
+          accuracy                           0.78       460
+         macro avg       0.78      0.78      0.78       460
+      weighted avg       0.78      0.78      0.78       460
+",0.7769133021679226,0.7408330741776383,0.8150727312256523

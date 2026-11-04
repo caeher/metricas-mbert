@@ -1,5 +1,5 @@
 run_id,model,checkpoint,split,n_test,group,n,fp,fpr,fpr_ci_lo,fpr_ci_hi,jerga_definition
-639ceeed-4e1c-41eb-b895-8d3965d90225,mbert,checkpoint-2700,test.csv,460,con_jerga,29,11,0.3793103448275862,0.22688022100809843,0.5599745579401147,n_jerga > 0
-639ceeed-4e1c-41eb-b895-8d3965d90225,mbert,checkpoint-2700,test.csv,460,sin_jerga,94,16,0.1702127659574468,0.10757621191020428,0.25874558309060186,n_jerga > 0
+dd6d6238-5e1e-4927-940c-a1e88d96990f,mbert,checkpoint-4050,test.csv,460,con_jerga,29,11,0.3793103448275862,0.22688022100809843,0.5599745579401147,n_jerga > 0
+dd6d6238-5e1e-4927-940c-a1e88d96990f,mbert,checkpoint-4050,test.csv,460,sin_jerga,94,14,0.14893617021276595,0.09084047958659412,0.2345988505755543,n_jerga > 0
 0f93eb01-69e5-4807-ac78-bbc1f7b66cbb,xlm-roberta,C:\Users\echoe\Desktop\metricas-proyecto-ml\reports\metrics\xlmr_test_predictions.csv,test.csv,460,con_jerga,29,13,0.4482758620689655,0.2841316802303719,0.6245203678902908,n_jerga > 0
 0f93eb01-69e5-4807-ac78-bbc1f7b66cbb,xlm-roberta,C:\Users\echoe\Desktop\metricas-proyecto-ml\reports\metrics\xlmr_test_predictions.csv,test.csv,460,sin_jerga,94,15,0.1595744680851064,0.0991561368860525,0.2467244256954247,n_jerga > 0

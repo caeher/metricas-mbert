@@ -1,17 +1,17 @@
 true_label,true_class,pred_label,pred_class,count
-0,No Tóxico,0,No Tóxico,96
-0,No Tóxico,1,Lenguaje Ofensivo,13
-0,No Tóxico,2,Discurso de Odio,10
-0,No Tóxico,3,Amenazas/Violencia,4
-1,Lenguaje Ofensivo,0,No Tóxico,11
-1,Lenguaje Ofensivo,1,Lenguaje Ofensivo,124
-1,Lenguaje Ofensivo,2,Discurso de Odio,16
-1,Lenguaje Ofensivo,3,Amenazas/Violencia,8
-2,Discurso de Odio,0,No Tóxico,6
-2,Discurso de Odio,1,Lenguaje Ofensivo,9
-2,Discurso de Odio,2,Discurso de Odio,74
+0,No Tóxico,0,No Tóxico,98
+0,No Tóxico,1,Lenguaje Ofensivo,14
+0,No Tóxico,2,Discurso de Odio,8
+0,No Tóxico,3,Amenazas/Violencia,3
+1,Lenguaje Ofensivo,0,No Tóxico,16
+1,Lenguaje Ofensivo,1,Lenguaje Ofensivo,125
+1,Lenguaje Ofensivo,2,Discurso de Odio,12
+1,Lenguaje Ofensivo,3,Amenazas/Violencia,6
+2,Discurso de Odio,0,No Tóxico,12
+2,Discurso de Odio,1,Lenguaje Ofensivo,4
+2,Discurso de Odio,2,Discurso de Odio,73
 2,Discurso de Odio,3,Amenazas/Violencia,6
-3,Amenazas/Violencia,0,No Tóxico,4
-3,Amenazas/Violencia,1,Lenguaje Ofensivo,12
-3,Amenazas/Violencia,2,Discurso de Odio,5
-3,Amenazas/Violencia,3,Amenazas/Violencia,62
+3,Amenazas/Violencia,0,No Tóxico,5
+3,Amenazas/Violencia,1,Lenguaje Ofensivo,11
+3,Amenazas/Violencia,2,Discurso de Odio,4
+3,Amenazas/Violencia,3,Amenazas/Violencia,63

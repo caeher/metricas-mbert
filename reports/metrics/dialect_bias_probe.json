@@ -1,12 +1,12 @@
 {
-  "created_at": "2026-11-02T05:32:57.375515+00:00",
-  "git_commit": "e3f5856329b252b822b2b8946059c2af7ff13ddf",
+  "created_at": "2026-11-03T04:57:54.915303+00:00",
+  "git_commit": "13116ddf90b379ac21bdf6499c1b8e775b4c349a",
   "jerga_definition": "n_jerga > 0",
   "rows": [
     {
-      "run_id": "639ceeed-4e1c-41eb-b895-8d3965d90225",
+      "run_id": "dd6d6238-5e1e-4927-940c-a1e88d96990f",
       "model": "mbert",
-      "checkpoint": "checkpoint-2700",
+      "checkpoint": "checkpoint-4050",
       "split": "test.csv",
       "n_test": 460,
       "group": "con_jerga",
@@ -18,17 +18,17 @@
       "jerga_definition": "n_jerga > 0"
     },
     {
-      "run_id": "639ceeed-4e1c-41eb-b895-8d3965d90225",
+      "run_id": "dd6d6238-5e1e-4927-940c-a1e88d96990f",
       "model": "mbert",
-      "checkpoint": "checkpoint-2700",
+      "checkpoint": "checkpoint-4050",
       "split": "test.csv",
       "n_test": 460,
       "group": "sin_jerga",
       "n": 94,
-      "fp": 16,
-      "fpr": 0.1702127659574468,
-      "fpr_ci_lo": 0.10757621191020428,
-      "fpr_ci_hi": 0.25874558309060186,
+      "fp": 14,
+      "fpr": 0.14893617021276595,
+      "fpr_ci_lo": 0.09084047958659412,
+      "fpr_ci_hi": 0.2345988505755543,
       "jerga_definition": "n_jerga > 0"
     },
     {
@@ -60,8 +60,8 @@
       "jerga_definition": "n_jerga > 0"
     }
   ],
-  "run_id": "639ceeed-4e1c-41eb-b895-8d3965d90225",
-  "checkpoint": "checkpoint-2700",
-  "evaluated_at": "2026-11-02T05:32:50.923327+00:00",
-  "official_f1_macro": 0.7708
+  "run_id": "dd6d6238-5e1e-4927-940c-a1e88d96990f",
+  "checkpoint": "checkpoint-4050",
+  "evaluated_at": "2026-11-03T04:57:48.744284+00:00",
+  "official_f1_macro": 0.7784
 }
