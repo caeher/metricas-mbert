@@ -18,6 +18,7 @@ from argilla_workflow import WorkflowError
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_LEDGER = ROOT / "reports/annotation/adjudication_ledger.csv"
+DEFAULT_CAMPAIGNS = ("pilot", "new_candidates", "legacy_train_real")
 CANDIDATE_ROLES = {"candidate_unvalidated", "candidate_unlabeled_thread"}
 
 
@@ -25,6 +26,12 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--ledger", type=Path, default=DEFAULT_LEDGER)
     parser.add_argument("--adjudicator", default="cde-adjudicator")
+    parser.add_argument(
+        "--campaigns",
+        nargs="+",
+        default=list(DEFAULT_CAMPAIGNS),
+        help="Campañas a auto-adjudicar cuando decision_type=pending_human_adjudication.",
+    )
     return parser.parse_args()
 
 
@@ -46,10 +53,11 @@ def main() -> int:
         rows = list(reader)
         fields = reader.fieldnames or []
 
+    allowed_campaigns = set(args.campaigns)
     updated = 0
     for row in rows:
         campaign = row.get("campaign", "")
-        if campaign not in {"pilot", "new_candidates"}:
+        if campaign not in allowed_campaigns:
             continue
         decision = row.get("decision_type", "")
         if decision == "pending_human_adjudication":

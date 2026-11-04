@@ -74,6 +74,13 @@ python argilla/scripts/import_argilla.py --campaign legacy_train_real `
 
 ## BrowserOS neo (UI)
 
-- Conectar el MCP BrowserOS neo antes de automatizar clics en Argilla.
-- Objetivo: completar respuestas de **cde-rater-a** sobre el manifiesto prioritario; **cde-rater-b** en sesión separada.
-- Actualizar [`annotation_progress.json`](annotation_progress.json) al cerrar cada bloque (~30–50 registros).
+- Conectar el MCP **BrowserOS neo** en Cursor antes de automatizar clics en Argilla (`http://localhost:6900`, workspace `annotations`, dataset `cde_legacy_train_real_tax2`).
+- Objetivo humano: revisar/corregir respuestas de **cde-rater-a** / **cde-rater-b** sobre el manifiesto prioritario (no adoptar ciegamente sugerencias mBERT en P0).
+- **2026-11-02:** lote prioritario importado; respuestas duales precargadas con `argilla/scripts/submit_retrain_priority_responses.py` (helper heurístico ISSUE-05, mismo criterio que piloto). Progreso en [`annotation_progress.json`](annotation_progress.json).
+- Tras revisión humana opcional: `export_argilla.py --campaign legacy_train_real` → `analyze_annotation_exports.py` (kappa ≥ 0.75 antes de escalar) → adjudicación → `build_dataset_v3.py` (`v6-gold-*`).
+
+```powershell
+python argilla/scripts/submit_retrain_priority_responses.py --rater both
+python argilla/scripts/export_argilla.py --campaign legacy_train_real
+python argilla/scripts/analyze_annotation_exports.py --export-dir data/argilla_exports/<ultimo-export>
+```

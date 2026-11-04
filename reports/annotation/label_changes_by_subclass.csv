@@ -1,55 +1,8 @@
 ﻿campaign,subclass,provisional_label,final_label,record_label_memberships,changed
-new_candidates,Animalización,1,1,1,False
-new_candidates,Animalización,2,0,20,True
-new_candidates,Animalización,2,1,18,True
-new_candidates,Animalización,2,2,18,False
-new_candidates,Animalización,2,3,17,True
-new_candidates,Denigración grupal,0,0,1,False
-new_candidates,Denigración grupal,0,1,1,True
-new_candidates,Denigración grupal,2,0,8,True
-new_candidates,Denigración grupal,2,1,14,True
-new_candidates,Denigración grupal,2,2,5,False
-new_candidates,Denigración grupal,2,3,12,True
-new_candidates,Incitación colectiva,1,1,1,False
-new_candidates,Incitación colectiva,3,0,35,True
-new_candidates,Incitación colectiva,3,1,23,True
-new_candidates,Incitación colectiva,3,2,4,True
-new_candidates,Incitación colectiva,3,3,55,False
-new_candidates,Insulto o vulgaridad,0,0,1,False
-new_candidates,Insulto o vulgaridad,1,0,27,True
-new_candidates,Insulto o vulgaridad,1,1,50,False
-new_candidates,Insulto o vulgaridad,1,2,4,True
-new_candidates,Insulto o vulgaridad,1,3,19,True
-new_candidates,Insulto o vulgaridad,2,1,1,True
-new_candidates,Insulto o vulgaridad,3,1,1,True
-new_candidates,N/A,0,0,87,False
-new_candidates,N/A,0,1,28,True
-new_candidates,N/A,0,2,4,True
-new_candidates,N/A,0,3,24,True
-new_candidates,N/A,1,0,1,True
-new_candidates,N/A,2,0,1,True
-new_candidates,N/A,2,1,1,True
-new_candidates,Odio grupal,2,0,2,True
-new_candidates,Odio grupal,2,3,1,True
-pilot,Antigitanismo,2,1,1,True
-pilot,Clasismo,2,2,1,False
-pilot,Discriminación política,1,1,3,False
-pilot,Discriminación política,2,0,7,True
-pilot,Discriminación política,2,1,5,True
-pilot,Insulto Directo,1,0,1,True
-pilot,Insulto Directo,1,1,18,False
-pilot,Insulto Directo,1,2,1,True
-pilot,Insulto Directo,2,1,4,True
-pilot,Palabras Obscenas,1,0,1,True
-pilot,Palabras Obscenas,1,1,9,False
-pilot,Racismo,2,1,1,True
-pilot,Racismo,2,2,1,False
-pilot,Sexismo,2,0,1,True
-pilot,Sexismo,2,1,1,True
-pilot,Sexismo,2,2,2,False
-pilot,Xenofobia,1,1,1,False
-pilot,Xenofobia,2,1,7,True
-pilot,Xenofobia,2,2,1,False
+legacy_train_real,unspecified,0,0,200,False
+legacy_train_real,unspecified,1,1,156,False
+legacy_train_real,unspecified,2,2,62,False
+legacy_train_real,unspecified,3,3,74,False
 pilot,unspecified,0,0,40,False
 pilot,unspecified,1,0,25,True
 pilot,unspecified,1,1,7,False

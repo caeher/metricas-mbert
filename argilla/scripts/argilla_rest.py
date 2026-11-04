@@ -28,6 +28,14 @@ def login_bearer(api_url: str, username: str, password: str) -> str:
     raise WorkflowError(f"No se pudo autenticar {username}")
 
 
+def admin_client(api_url: str, api_key: str) -> httpx.Client:
+    return httpx.Client(
+        base_url=api_url.rstrip("/"),
+        headers={"X-Argilla-Api-Key": api_key},
+        timeout=120.0,
+    )
+
+
 def bearer_client(api_url: str, token: str) -> httpx.Client:
     return httpx.Client(
         base_url=api_url.rstrip("/"),
@@ -79,7 +87,20 @@ def list_records(client: httpx.Client, dataset_id: str, *, limit: int = 500) -> 
     return records
 
 
+def response_rows(user_id: str, values: dict[str, Any]) -> list[dict[str, Any]]:
+    return [
+        {
+            "user_id": user_id,
+            "status": "submitted",
+            "question_name": name,
+            "value": value,
+        }
+        for name, value in values.items()
+    ]
+
+
 def user_response_payload(user_id: str, values: dict[str, Any]) -> dict[str, Any]:
+    """Deprecated single-blob shape; prefer response_rows for PATCH bodies."""
     return {
         "user_id": user_id,
         "status": "submitted",
@@ -96,7 +117,7 @@ def upsert_user_responses(
     record_id = record["id"]
     existing = list(record.get("responses") or [])
     filtered = [item for item in existing if str(item.get("user_id")) != str(user_id)]
-    filtered.append(user_response_payload(user_id, values))
+    filtered.extend(response_rows(user_id, values))
     body = {
         "fields": record.get("fields") or {},
         "metadata": record.get("metadata") or {},

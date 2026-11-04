@@ -1,49 +1,49 @@
 {
   "campaigns": {
-    "new_candidates": {
+    "legacy_train_real": {
       "annotators": [
-        "1c1f2c2e-4b76-4c12-a58c-e3168b3c36c7",
-        "36a85e1d-dd1e-41dd-87a6-551736fb96b4"
+        "36a85e1d-dd1e-41dd-87a6-551736fb96b4",
+        "a38788bc-e555-48ca-baf6-550cf5b5e763"
       ],
       "estimator": "cohen_kappa",
-      "expected_agreement": 0.29721140787686734,
-      "kappa": 0.9152313103075118,
-      "meets_operational_target": true,
-      "n": 470,
-      "observed_agreement": 0.9404255319148936,
-      "pairwise_comparisons": 470,
-      "percent_agreement": 94.04255319148936,
+      "expected_agreement": 0.3986383766276687,
+      "kappa": 0.1077159815344032,
+      "meets_operational_target": false,
+      "n": 492,
+      "observed_agreement": 0.4634146341463415,
+      "pairwise_comparisons": 492,
+      "percent_agreement": 46.34146341463415,
       "record_count": 500,
-      "records_flagged_insufficient_context": 30,
-      "records_flagged_quality_review": 61,
+      "records_flagged_insufficient_context": 8,
+      "records_flagged_quality_review": 290,
       "records_with_two_submitted_annotators": 500,
       "unique_annotator_count": 2,
       "unique_annotators": [
-        "1c1f2c2e-4b76-4c12-a58c-e3168b3c36c7",
-        "36a85e1d-dd1e-41dd-87a6-551736fb96b4"
+        "36a85e1d-dd1e-41dd-87a6-551736fb96b4",
+        "a38788bc-e555-48ca-baf6-550cf5b5e763"
       ]
     }
   },
   "exports": [
     {
-      "campaign": "new_candidates",
-      "export_id": "new-candidates-willian-batch-v1__20261101T101145980164Z",
-      "path": "C:\\Users\\user6921\\Desktop\\cde-ml\\ml-metricas\\data\\argilla_exports\\new-candidates-willian-batch-v1__20261101T101145980164Z",
+      "campaign": "legacy_train_real",
+      "export_id": "legacy-train-real__20261103T042651228774Z",
+      "path": "data\\argilla_exports\\legacy-train-real__20261103T042651228774Z",
       "record_count": 500,
-      "response_count": 9940
+      "response_count": 9988
     }
   ],
   "guideline_version": "2.0.0",
   "operational_kappa_target": 0.75,
   "qualitative_analysis": {
-    "cases_for_human_review": 64,
+    "cases_for_human_review": 290,
     "cases_with_human_theme": 0,
     "queue_path": "C:\\Users\\user6921\\Desktop\\cde-ml\\ml-metricas\\reports\\annotation\\qualitative_review.csv",
     "status": "pending_human_coding"
   },
   "release": {
-    "eligible_records": 644,
-    "held_records": 56,
+    "eligible_records": 613,
+    "held_records": 33,
     "qc_gates": [
       "dos o más respuestas humanas enviadas",
       "estado final anotado y clase final 0..3",
